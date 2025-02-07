@@ -1,0 +1,11 @@
+{
+   "configurations": [
+      {
+         "name": "C#: BitTimeScheduler",
+         "type": "dotnet",
+         "request": "launch",
+         "projectPath": "${workspaceFolder}/BitTimeScheduler/BitTimeScheduler.csproj",
+         "launchConfigurationId": "TargetFramework=;BitTimeScheduler"
+      }
+   ]
+}

@@ -2,7 +2,6 @@
 
 namespace BitTimeTestApp
 {
-
     class Program
     {
         static void Main(string[] args)
@@ -28,11 +27,6 @@ namespace BitTimeTestApp
             test3.RunFunctionalTests();
             test3.RunPerformanceTests();
 
-
-            Console.WriteLine("\nPress any key to exit...");
-            Console.ReadKey();
         }
-
     }
-
 }
