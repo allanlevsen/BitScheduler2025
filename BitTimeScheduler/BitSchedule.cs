@@ -25,27 +25,88 @@ namespace BitTimeScheduler
         // The current configuration.
         private BitScheduleConfiguration _configuration;
 
+        public bool IsDirty { get; set; } = false;
+
         /// <summary>
         /// Gets or sets the schedule configuration.
-        /// If AutoRefreshOnConfigurationChange is true, setting a new configuration triggers a data refresh.
+        /// If AutoRefreshOnConfigurationChange is true, setting a new configuration triggers a data refresh
+        /// only if any of the configuration properties (DateRange, ActiveDays, or TimeBlock) have changed.
         /// </summary>
         public BitScheduleConfiguration Configuration
         {
             get { return _configuration; }
             set
             {
+                bool hasChanged = false;
+
+                // If no configuration was previously set, then it's a change.
+                if (_configuration == null)
+                {
+                    hasChanged = true;
+                }
+                else if (value == null)
+                {
+                    // If the new configuration is null, treat that as a change.
+                    hasChanged = true;
+                }
+                else
+                {
+                    // Compare DateRange.
+                    if (!_configuration.DateRange.StartDate.Equals(value.DateRange.StartDate) ||
+                        !_configuration.DateRange.EndDate.Equals(value.DateRange.EndDate))
+                    {
+                        hasChanged = true;
+                    }
+                    else
+                    {
+                        // Compare ActiveDays arrays.
+                        if ((_configuration.ActiveDays == null && value.ActiveDays != null) ||
+                            (_configuration.ActiveDays != null && value.ActiveDays == null))
+                        {
+                            hasChanged = true;
+                        }
+                        else if (_configuration.ActiveDays != null && value.ActiveDays != null)
+                        {
+                            if (_configuration.ActiveDays.Length != value.ActiveDays.Length)
+                            {
+                                hasChanged = true;
+                            }
+                            else
+                            {
+                                for (int i = 0; i < _configuration.ActiveDays.Length; i++)
+                                {
+                                    if (_configuration.ActiveDays[i] != value.ActiveDays[i])
+                                    {
+                                        hasChanged = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Compare TimeBlock.
+                        if (!hasChanged)
+                        {
+                            if (!_configuration.TimeBlock.StartTime.Equals(value.TimeBlock.StartTime) ||
+                                !_configuration.TimeBlock.EndTime.Equals(value.TimeBlock.EndTime))
+                            {
+                                hasChanged = true;
+                            }
+                        }
+                    }
+                }
+
+                // Update the configuration.
                 _configuration = value;
-                if (AutoRefreshOnConfigurationChange)
+                IsDirty = hasChanged;
+
+                // Refresh schedule data only if a change was detected and the auto-refresh flag is enabled.
+                if (hasChanged && value.AutoRefreshOnConfigurationChange)
                 {
                     RefreshScheduleData();
                 }
             }
         }
-
-        /// <summary>
-        /// When set to true, changes to the Configuration property automatically refresh the internal schedule data.
-        /// </summary>
-        public bool AutoRefreshOnConfigurationChange { get; set; } = true;
 
         /// <summary>
         /// Empty constructor. Initializes the internal schedule data to empty.
@@ -59,7 +120,7 @@ namespace BitTimeScheduler
         {
             _configuration = configuration;
             _mockData = new MockData();
-            scheduleData = _mockData.LoadMockData(_configuration);
+            RefreshScheduleData();
         }
 
         /// <summary>
@@ -71,6 +132,7 @@ namespace BitTimeScheduler
             if (_configuration != null)
             {
                 scheduleData = _mockData.LoadMockData(_configuration);
+                IsDirty = false;
             }
         }
 

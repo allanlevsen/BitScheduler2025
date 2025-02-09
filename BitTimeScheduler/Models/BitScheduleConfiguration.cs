@@ -6,8 +6,9 @@
     /// </summary>
     public class BitScheduleConfiguration
     {
-        public BitDateRange DateRange { get; set; }
-        public DayOfWeek[] ActiveDays { get; set; }
-        public BitTimeRange TimeBlock { get; set; }
+        public bool AutoRefreshOnConfigurationChange { get; set; } = false;
+        public BitDateRange DateRange { get; set; } = new BitDateRange();
+        public DayOfWeek[] ActiveDays { get; set; } = new DayOfWeek[0];
+        public BitTimeRange TimeBlock { get; set; } = new BitTimeRange();
     }
 }

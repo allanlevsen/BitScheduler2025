@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BitTimeScheduler.TestsPerformanceTesting
+﻿namespace BitTimeScheduler.TestsPerformanceTesting
 {
     using System;
     using System.Diagnostics;
@@ -27,8 +24,16 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                     StartDate = new DateTime(2025, 8, 1),
                     EndDate = new DateTime(2025, 8, 31)
                 },
-                ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10))
+                ActiveDays = new DayOfWeek[]
+                {
+                    DayOfWeek.Monday,
+                    DayOfWeek.Wednesday,
+                    DayOfWeek.Friday
+                },
+                TimeBlock = BitDay.CreateRangeFromTimes(
+                    TimeSpan.FromHours(9),
+                    TimeSpan.FromHours(10)
+                )
             };
 
             // Construct a BitSchedule using the configuration.
@@ -49,7 +54,10 @@ namespace BitTimeScheduler.TestsPerformanceTesting
 
             // Read the schedule using the request.
             BitScheduleResponse response = schedule.ReadSchedule(request);
-            Console.WriteLine("Functional Test: ReadSchedule returned {0} days", response.ScheduledDays.Count);
+            Console.WriteLine(
+                "Functional Test: ReadSchedule returned {0} days",
+                response.ScheduledDays.Count
+            );
 
             // Attempt to write the schedule (i.e. reserve the time block on all matching days).
             bool writeResult = schedule.WriteSchedule(request);
@@ -57,9 +65,89 @@ namespace BitTimeScheduler.TestsPerformanceTesting
 
             // Re-read the schedule after writing.
             BitScheduleResponse responseAfter = schedule.ReadSchedule(request);
-            Console.WriteLine("Functional Test: After WriteSchedule, ReadSchedule returned {0} days", responseAfter.ScheduledDays.Count);
+            Console.WriteLine(
+                "Functional Test: After WriteSchedule, ReadSchedule returned {0} days", 
+                responseAfter.ScheduledDays.Count
+            );
 
             Console.WriteLine("=== End Functional Tests ===\n");
+        }
+
+        /// <summary>
+        /// Tests the configuration change behavior of BitSchedule.
+        /// When setting the Configuration property:
+        /// - If the new configuration is identical, no refresh should occur.
+        /// - If any property has changed, a refresh should occur.
+        /// This test uses reflection to check the internal schedule data reference.
+        /// </summary>
+        public void TestConfigurationChangeRefresh()
+        {
+            Console.WriteLine("=== Test Configuration Change Refresh ===");
+
+            // Create initial configuration (configA).
+            var configA = new BitScheduleConfiguration
+            {
+                DateRange = new BitDateRange
+                {
+                    StartDate = new DateTime(2025, 8, 1),
+                    EndDate = new DateTime(2025, 8, 31)
+                },
+                ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
+                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10))
+            };
+
+            // Instantiate BitSchedule with configuration A.
+            BitSchedule schedule = new BitSchedule(configA);
+
+            // Use reflection to access the private "scheduleData" field.
+            FieldInfo fieldInfo = typeof(BitSchedule).GetField("scheduleData", BindingFlags.NonPublic | BindingFlags.Instance);
+            List<BitDay> originalData = (List<BitDay>)fieldInfo.GetValue(schedule);
+            Console.WriteLine("Original scheduleData count: " + originalData.Count);
+
+            // Create a new configuration (configB) identical to configA.
+            var configB = new BitScheduleConfiguration
+            {
+                DateRange = new BitDateRange
+                {
+                    StartDate = new DateTime(2025, 8, 1),
+                    EndDate = new DateTime(2025, 8, 31)
+                },
+                ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
+                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10))
+            };
+
+            // Set the configuration to configB.
+            schedule.Configuration = configB;
+
+            if (!schedule.IsDirty)
+                Console.WriteLine("PASS: Identical configuration did not refresh schedule data.");
+            else
+                Console.WriteLine("FAIL: Identical configuration unexpectedly refreshed schedule data.");
+
+            // Create a new configuration (configC) that differs in one property (change TimeBlock EndTime).
+            var configC = new BitScheduleConfiguration
+            {
+                DateRange = new BitDateRange
+                {
+                    StartDate = new DateTime(2025, 8, 1),
+                    EndDate = new DateTime(2025, 8, 31)
+                },
+                ActiveDays = new DayOfWeek[] { DayOfWeek.Wednesday },
+                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10))
+            };
+
+            // Set the configuration to configC.
+            schedule.Configuration = configC;
+
+            // Get the internal schedule data after setting a different configuration.
+            List<BitDay> dataAfterDifferentConfig = (List<BitDay>)fieldInfo.GetValue(schedule);
+
+            if (!object.ReferenceEquals(originalData, dataAfterDifferentConfig))
+                Console.WriteLine("PASS: Different configuration refreshed schedule data.");
+            else
+                Console.WriteLine("FAIL: Different configuration did not refresh schedule data as expected.");
+
+            Console.WriteLine("=== End Test Configuration Change Refresh ===\n");
         }
 
         /// <summary>
@@ -77,8 +165,16 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                     StartDate = new DateTime(2025, 8, 1),
                     EndDate = new DateTime(2025, 8, 31)
                 },
-                ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10))
+                ActiveDays = new DayOfWeek[]
+                {
+                    DayOfWeek.Monday,
+                    DayOfWeek.Wednesday,
+                    DayOfWeek.Friday
+                },
+                TimeBlock = BitDay.CreateRangeFromTimes(
+                    TimeSpan.FromHours(9),
+                    TimeSpan.FromHours(10)
+                )
             };
 
             // Construct a BitSchedule with the configuration.
@@ -106,7 +202,11 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 BitScheduleResponse resp = schedule.ReadSchedule(request);
             }
             sw.Stop();
-            Console.WriteLine("Performance Test: ReadSchedule {0:N0} iterations took {1} ms", iterations, sw.ElapsedMilliseconds);
+            Console.WriteLine(
+                "Performance Test: ReadSchedule {0:N0} iterations took {1} ms", 
+                iterations, 
+                sw.ElapsedMilliseconds
+            );
 
             // Performance test for WriteSchedule.
             sw.Restart();
@@ -115,7 +215,11 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 bool result = schedule.WriteSchedule(request);
             }
             sw.Stop();
-            Console.WriteLine("Performance Test: WriteSchedule {0:N0} iterations took {1} ms", iterations, sw.ElapsedMilliseconds);
+            Console.WriteLine(
+                "Performance Test: WriteSchedule {0:N0} iterations took {1} ms", 
+                iterations, 
+                sw.ElapsedMilliseconds
+            );
 
             Console.WriteLine("=== End Performance Tests ===\n");
         }

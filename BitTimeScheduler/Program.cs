@@ -26,6 +26,7 @@ namespace BitTimeTestApp
             var test3 = new BitScheduleTests();
             test3.RunFunctionalTests();
             test3.RunPerformanceTests();
+            test3.TestConfigurationChangeRefresh();
 
         }
     }
