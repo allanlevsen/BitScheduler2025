@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace BitTimeScheduler
         private BitScheduleConfiguration _configuration;
 
         public bool IsDirty { get; set; } = false;
+        public DateTime LastRefreshed { get; set; }
 
         /// <summary>
         /// Gets or sets the schedule configuration.
@@ -37,68 +39,79 @@ namespace BitTimeScheduler
             get { return _configuration; }
             set
             {
+                // Unsubscribe from old configuration events if present.
+                if (_configuration != null)
+                {
+                    _configuration.PropertyChanged -= OnConfigurationChanged;
+                }
                 bool hasChanged = false;
+
 
                 // If no configuration was previously set, then it's a change.
                 if (_configuration == null)
                 {
                     hasChanged = true;
                 }
-                else if (value == null)
+
+                // If the new configuration is null, treat that as a change.
+                if (value == null)
                 {
-                    // If the new configuration is null, treat that as a change.
                     hasChanged = true;
                 }
-                else
+
+                // Compare DateRange.
+                if (!_configuration.DateRange.StartDate.Equals(value.DateRange.StartDate) ||
+                    !_configuration.DateRange.EndDate.Equals(value.DateRange.EndDate))
                 {
-                    // Compare DateRange.
-                    if (!_configuration.DateRange.StartDate.Equals(value.DateRange.StartDate) ||
-                        !_configuration.DateRange.EndDate.Equals(value.DateRange.EndDate))
+                    hasChanged = true;
+                }
+
+                // Compare ActiveDays arrays.
+                if ((_configuration.ActiveDays == null && value.ActiveDays != null) ||
+                    (_configuration.ActiveDays != null && value.ActiveDays == null))
+                {
+                    hasChanged = true;
+                }
+
+                if (_configuration.ActiveDays != null && value.ActiveDays != null)
+                {
+                    if (_configuration.ActiveDays.Length != value.ActiveDays.Length)
                     {
                         hasChanged = true;
                     }
                     else
                     {
-                        // Compare ActiveDays arrays.
-                        if ((_configuration.ActiveDays == null && value.ActiveDays != null) ||
-                            (_configuration.ActiveDays != null && value.ActiveDays == null))
+                        for (int i = 0; i < _configuration.ActiveDays.Length; i++)
                         {
-                            hasChanged = true;
-                        }
-                        else if (_configuration.ActiveDays != null && value.ActiveDays != null)
-                        {
-                            if (_configuration.ActiveDays.Length != value.ActiveDays.Length)
+                            if (_configuration.ActiveDays[i] != value.ActiveDays[i])
                             {
                                 hasChanged = true;
-                            }
-                            else
-                            {
-                                for (int i = 0; i < _configuration.ActiveDays.Length; i++)
-                                {
-                                    if (_configuration.ActiveDays[i] != value.ActiveDays[i])
-                                    {
-                                        hasChanged = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        // Compare TimeBlock.
-                        if (!hasChanged)
-                        {
-                            if (!_configuration.TimeBlock.StartTime.Equals(value.TimeBlock.StartTime) ||
-                                !_configuration.TimeBlock.EndTime.Equals(value.TimeBlock.EndTime))
-                            {
-                                hasChanged = true;
+                                break;
                             }
                         }
                     }
                 }
 
+                if (_configuration.AutoRefreshOnConfigurationChange != value.AutoRefreshOnConfigurationChange)
+                {
+                    hasChanged = true;
+                }
+
+                if (!_configuration.TimeBlock.StartTime.Equals(value.TimeBlock.StartTime) ||
+                            !_configuration.TimeBlock.EndTime.Equals(value.TimeBlock.EndTime))
+                {
+                    hasChanged = true;
+                }
+
                 // Update the configuration.
                 _configuration = value;
                 IsDirty = hasChanged;
+
+                // Subscribe to the new configuration's change events.
+                if (_configuration != null)
+                {
+                    _configuration.PropertyChanged += OnConfigurationChanged;
+                }
 
                 // Refresh schedule data only if a change was detected and the auto-refresh flag is enabled.
                 if (hasChanged && value.AutoRefreshOnConfigurationChange)
@@ -108,17 +121,35 @@ namespace BitTimeScheduler
             }
         }
 
+        // Event handler for property changes on the configuration.
+        protected void OnConfigurationChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Mark the schedule as dirty whenever any property of the configuration changes.
+            IsDirty = true;
+
+            // Optionally, immediately refresh if auto-refresh is enabled.
+            if (_configuration.AutoRefreshOnConfigurationChange)
+            {
+                RefreshScheduleData();
+            }
+        }
+
         /// <summary>
         /// Empty constructor. Initializes the internal schedule data to empty.
         /// </summary>
         public BitSchedule()
         {
             scheduleData = new List<BitDay>();
+            _configuration = new BitScheduleConfiguration();
+            _configuration.PropertyChanged += OnConfigurationChanged;
+            _mockData = new MockData();
+            LastRefreshed = DateTime.MinValue;
         }
 
         public BitSchedule(BitScheduleConfiguration configuration)
         {
             _configuration = configuration;
+            _configuration.PropertyChanged += OnConfigurationChanged;
             _mockData = new MockData();
             RefreshScheduleData();
         }
@@ -132,6 +163,7 @@ namespace BitTimeScheduler
             if (_configuration != null)
             {
                 scheduleData = _mockData.LoadMockData(_configuration);
+                LastRefreshed = DateTime.Now;
                 IsDirty = false;
             }
         }

@@ -28,6 +28,8 @@ namespace BitTimeTestApp
             test3.RunPerformanceTests();
             test3.TestConfigurationChangeRefresh();
 
+            //Console.ReadLine();
+
         }
     }
 }

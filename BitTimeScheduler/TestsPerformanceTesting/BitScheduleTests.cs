@@ -99,11 +99,6 @@
             // Instantiate BitSchedule with configuration A.
             BitSchedule schedule = new BitSchedule(configA);
 
-            // Use reflection to access the private "scheduleData" field.
-            FieldInfo fieldInfo = typeof(BitSchedule).GetField("scheduleData", BindingFlags.NonPublic | BindingFlags.Instance);
-            List<BitDay> originalData = (List<BitDay>)fieldInfo.GetValue(schedule);
-            Console.WriteLine("Original scheduleData count: " + originalData.Count);
-
             // Create a new configuration (configB) identical to configA.
             var configB = new BitScheduleConfiguration
             {
@@ -139,15 +134,67 @@
             // Set the configuration to configC.
             schedule.Configuration = configC;
 
-            // Get the internal schedule data after setting a different configuration.
-            List<BitDay> dataAfterDifferentConfig = (List<BitDay>)fieldInfo.GetValue(schedule);
-
-            if (!object.ReferenceEquals(originalData, dataAfterDifferentConfig))
-                Console.WriteLine("PASS: Different configuration refreshed schedule data.");
+            if (schedule.IsDirty)
+                Console.WriteLine("PASS: Different configuration.");
             else
-                Console.WriteLine("FAIL: Different configuration did not refresh schedule data as expected.");
+                Console.WriteLine("FAIL: Different configuration but not flagged as dirty.");
+
+            // Create a new configuration (configC) that differs in one property (change TimeBlock EndTime).
+            long rl = schedule.LastRefreshed.Millisecond;
+            Console.WriteLine($"Last Refreshed {rl}");
+
+            var configD = new BitScheduleConfiguration
+            {
+                DateRange = new BitDateRange
+                {
+                    StartDate = new DateTime(2025, 8, 1),
+                    EndDate = new DateTime(2025, 8, 31)
+                },
+                ActiveDays = new DayOfWeek[] { DayOfWeek.Wednesday, DayOfWeek.Thursday },
+                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                AutoRefreshOnConfigurationChange = true
+            };
+            schedule.Configuration = configD;
+
+            long rr = schedule.LastRefreshed.Millisecond;
+            Console.WriteLine($"Last Refreshed {rr}");
+
+            if (rl != rr)
+                Console.WriteLine("PASS: Different data as config change should refresh data...\n");
+            else
+                Console.WriteLine("FAIL: Different configuration but data was not refreshed...\n");
+            
+            if (!schedule.IsDirty)
+                Console.WriteLine("PASS: Different configuration causes a refresh which resets the dirty flag.\n");
+            else
+                Console.WriteLine("FAIL: Different configuration and a refresh should have happened - but dirty flag is still true\n");
+
+            Console.WriteLine("\n=== Testing the OnConfiguration Change...\n");
+            Console.WriteLine("Changing the ActiveDays - with the autorefresh on - data should change...");
+            rl = schedule.LastRefreshed.Millisecond;
+            schedule.Configuration.ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Thursday };
+            rr = schedule.LastRefreshed.Millisecond;
+
+            if (rl != rr)
+                Console.WriteLine("PASS: Data was reloaded after Active days changed...\n");
+            else
+                Console.WriteLine("FAIL: Data was NOT reloaded after Active days changed...\n");
+
+
+            schedule.Configuration.AutoRefreshOnConfigurationChange = false;
+            Console.WriteLine("Changing the ActiveDays - with the autorefresh off - data should NOT change...");
+            rl = schedule.LastRefreshed.Millisecond;
+            schedule.Configuration.ActiveDays = new DayOfWeek[] { DayOfWeek.Tuesday, DayOfWeek.Friday };
+            rr = schedule.LastRefreshed.Millisecond;
+
+            if (rl == rr)
+                Console.WriteLine("PASS: Data was NOT reloaded after Active days changed - as expected...\n");
+            else
+                Console.WriteLine("FAIL: Data was reloaded after Active days changed - should not reload data...\n");
+
 
             Console.WriteLine("=== End Test Configuration Change Refresh ===\n");
+
         }
 
         /// <summary>
