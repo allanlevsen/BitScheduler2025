@@ -5,6 +5,10 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitTimeScheduler", "BitTimeScheduler\BitTimeScheduler.csproj", "{637E8629-E819-4A99-8A0A-770EE2476971}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitScheduleApi", "BitScheduleApi\BitScheduleApi.csproj", "{12B97EB1-9C3E-4A6D-88A3-3BC10F81D124}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitSchedulerCore", "BitSchedulerCore\BitSchedulerCore.csproj", "{C2069B96-908C-4E29-B15F-3C0B1A6CA927}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{637E8629-E819-4A99-8A0A-770EE2476971}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{637E8629-E819-4A99-8A0A-770EE2476971}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{637E8629-E819-4A99-8A0A-770EE2476971}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12B97EB1-9C3E-4A6D-88A3-3BC10F81D124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12B97EB1-9C3E-4A6D-88A3-3BC10F81D124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12B97EB1-9C3E-4A6D-88A3-3BC10F81D124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12B97EB1-9C3E-4A6D-88A3-3BC10F81D124}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2069B96-908C-4E29-B15F-3C0B1A6CA927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2069B96-908C-4E29-B15F-3C0B1A6CA927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2069B96-908C-4E29-B15F-3C0B1A6CA927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2069B96-908C-4E29-B15F-3C0B1A6CA927}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

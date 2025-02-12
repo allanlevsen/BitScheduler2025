@@ -1,0 +1,9 @@
+*.dll
+*.cache
+*.pdb
+*.suo
+*.sqlite
+.vs
+bin/
+obj/
+/.vs
