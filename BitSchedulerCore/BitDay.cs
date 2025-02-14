@@ -1,4 +1,5 @@
-﻿using BitTimeScheduler.Models;
+﻿using BitSchedulerCore;
+using BitTimeScheduler.Models;
 
 namespace BitTimeScheduler
 {
@@ -11,11 +12,6 @@ namespace BitTimeScheduler
     /// </summary>
     public class BitDay
     {
-        /// <summary>
-        /// Total number of 15–minute slots in a day (24 * 4).
-        /// </summary>
-        public const int TotalSlots = 96;
-
 
         // The complete 128–bit state is stored using two 64–bit unsigned integers.
         // _bitsLow holds bits 0–63.
@@ -54,12 +50,25 @@ namespace BitTimeScheduler
         #region Public Day Properties
 
         /// <summary>
-        /// The date this BitDay represents.
+        /// Total number of 15–minute slots in a day (24 * 4).
         /// </summary>
+        public const int TotalSlots = 96;
+
+        // Surrogate key as primary key.
+        public int BitDayId { get; set; }
+
+        // Multi-tenant: which client owns this BitDay.
+        public Guid ClientId { get; set; }
+
+        // The day this record represents.
         public DateTime Date { get; set; }
 
-        public ulong BitsHigh { get => _bitsHigh; }
-        public ulong BitsLow { get => _bitsLow; }
+        // Bitmask fields representing schedule data.
+        public ulong BitsLow { get; set; }
+        public ulong BitsHigh { get; set; }
+
+        // Navigation property for associated reservations.
+        public virtual ICollection<BitReservation> Reservations { get; set; } = new List<BitReservation>();
 
         #endregion
 
@@ -212,20 +221,57 @@ namespace BitTimeScheduler
         }
 
         /// <summary>
-        /// Creates a BitTimeRange from start and end block indices.
-        /// Assumes that the block range is inclusive.
-        /// The StartTime is calculated from the startBlock and the EndTime from (endBlock + 1).
+        /// Creates a BitTimeRange from a pair of block indices (startBlock and endBlock).
+        /// 
+        /// Each block represents a 15‐minute interval in the day:
+        ///   - Block 0 represents 00:00–00:15,
+        ///   - Block 1 represents 00:15–00:30, etc.
+        /// 
+        /// The method uses an inclusive convention for the block range:
+        ///   - To represent a single block (e.g., the first block), pass startBlock = 0 and endBlock = 0.
+        ///     In that case, StartTime = BlockIndexToTime(0) = 00:00 and EndTime = BlockIndexToTime(0 + 1) = 00:15.
+        ///   - To represent multiple contiguous blocks (e.g., blocks 0 and 1), pass startBlock = 0 and endBlock = 1,
+        ///     resulting in StartTime = 00:00 and EndTime = BlockIndexToTime(1 + 1) = BlockIndexToTime(2) = 00:30.
+        /// 
+        /// Validation:
+        ///   - Both startBlock and endBlock must be in the valid range (0 to TotalSlots - 1).
+        ///   - The method allows startBlock to equal endBlock (for a single block), but throws an exception if startBlock is greater than endBlock.
+        /// 
+        /// Note:
+        ///   - EndTime is computed as BlockIndexToTime(endBlock + 1). Therefore, to represent the final block of the day,
+        ///     you must pass endBlock = TotalSlots - 1 (e.g., if TotalSlots is 96, then endBlock = 95 yields EndTime = BlockIndexToTime(96) = 24:00).
         /// </summary>
+        /// <param name="startBlock">The starting block index (0-indexed); 0 represents the first block starting at midnight.</param>
+        /// <param name="endBlock">The ending block index (0-indexed, inclusive); use TotalSlots - 1 for the last block.</param>
+        /// <returns>A BitTimeRange object representing the time range for the given block indices.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if either startBlock or endBlock is outside the range 0 to TotalSlots - 1.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown if startBlock is greater than endBlock.
+        /// </exception>
         public static BitTimeRange CreateRangeFromBlocks(int startBlock, int endBlock)
         {
-            BitTimeRange range = new BitTimeRange
+            // Validate that block indices are within valid range.
+            if (startBlock < 0 || startBlock >= TotalSlots)
+                throw new ArgumentOutOfRangeException(nameof(startBlock), $"startBlock must be between 0 and {TotalSlots - 1}.");
+            if (endBlock < 0 || endBlock >= TotalSlots)
+                throw new ArgumentOutOfRangeException(nameof(endBlock), $"endBlock must be between 0 and {TotalSlots - 1}.");
+
+            // Validate that startBlock is not greater than endBlock.
+            if (startBlock > endBlock)
+                throw new ArgumentException("startBlock must be less than or equal to endBlock.");
+
+            // Create and return the BitTimeRange.
+            return new BitTimeRange
             {
                 StartBlock = startBlock,
                 EndBlock = endBlock,
+                // Convert block indices to TimeSpan.
                 StartTime = BlockIndexToTime(startBlock),
+                // EndTime is computed as BlockIndexToTime(endBlock + 1) since the end block is inclusive.
                 EndTime = BlockIndexToTime(endBlock + 1)
             };
-            return range;
         }
 
         /// <summary>

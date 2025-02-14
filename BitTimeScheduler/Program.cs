@@ -22,6 +22,7 @@ namespace BitTimeTestApp
             var test2 = new BitDayUtilityTests();
             test2.RunUtilityMethodsTests();
             test2.RunUtilityMethodsPerformanceTests();
+            test2.TestCreateRangeFromBlocks();
 
             var test3 = new BitScheduleTests();
             test3.RunFunctionalTests();

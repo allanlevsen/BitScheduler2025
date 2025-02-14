@@ -1,7 +1,16 @@
 
+// Schema updates
+//
+// Add-Migration InitialCreate -Project BitSchedulerCore -StartupProject BitScheduleApi
+// Update-Database -Project BitSchedulerCore -StartupProject BitScheduleApi
+
+
 using BitTimeScheduler.Models;
 using BitTimeScheduler;
 using BitScheduleApi.Utility;
+using BitSchedulerCore.Models;
+using BitSchedulerCore.Data.BitTimeScheduler.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BitScheduleApi
 {
@@ -20,26 +29,79 @@ namespace BitScheduleApi
                 options.SerializerOptions.Converters.Add(new ULongConverter());
             });
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            //builder.Services.AddEndpointsApiExplorer();
-            //builder.Services.AddSwaggerGen();
+            // Retrieve the connection string from appsettings.json.
+            string connectionString = builder.Configuration.GetConnectionString("BitScheduleConnection");
+
+            // Register the DbContext with SQL Server.
+            builder.Services.AddDbContext<BitScheduleDbContext>(options =>
+                options.UseSqlServer(connectionString));
 
             var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //}
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
 
-
             app.MapGet("/", (HttpContext httpContext) =>
             {
                 return "BitScheduler Api is running...";
+            });
+
+
+            /// <summary>
+            /// POST https://localhost:44385/WriteScheduleDay
+            /// Accepts a BitDayRequest JSON object (with Date, StartTime, EndTime).
+            /// It creates a BitScheduleConfiguration using the request (with DateRange covering that single day,
+            /// and a TimeBlock from StartTime to EndTime), instantiates a BitSchedule,
+            /// calls WriteDay to update the day, and returns the updated BitDay.
+            /// </summary>
+            app.MapPost("/WriteScheduleDay", (BitDayRequest request) =>
+            {
+                // Build a BitScheduleConfiguration from the BitDayRequest.
+                var config = new BitScheduleConfiguration
+                {
+                    DateRange = new BitDateRange
+                    {
+                        StartDate = request.Date.Date,
+                        EndDate = request.Date.Date  // Single day
+                    },
+                    // For a single day operation, ActiveDays is not required.
+                    ActiveDays = null,
+                    TimeBlock = BitDay.CreateRangeFromTimes(request.StartTime, request.EndTime)
+                };
+
+                // Create a BitSchedule using this configuration.
+                BitSchedule schedule = new BitSchedule(config);
+
+                // Call WriteDay to update (reserve) the specified time block on the given day.
+                BitDay updatedDay = schedule.WriteDay(request);
+
+                return Results.Ok(updatedDay);
+            });
+
+            /// <summary>
+            /// POST https://localhost:44385/ReadScheduleDay
+            /// Accepts a BitDayRequest JSON object (with Date, StartTime, EndTime).
+            /// It creates a BitScheduleConfiguration using the request (with DateRange covering that single day,
+            /// and a TimeBlock from StartTime to EndTime), instantiates a BitSchedule,
+            /// calls ReadDay to retrieve the BitDay for the given date, and returns that BitDay.
+            /// If the day is not present in the internal data, a new free BitDay is returned.
+            /// </summary>
+            app.MapPost("/ReadScheduleDay", (BitDayRequest request) =>
+            {
+                var config = new BitScheduleConfiguration
+                {
+                    DateRange = new BitDateRange
+                    {
+                        StartDate = request.Date.Date,
+                        EndDate = request.Date.Date  // Single day
+                    },
+                    ActiveDays = null,
+                    TimeBlock = BitDay.CreateRangeFromBlocks(0, BitDay.TotalSlots)
+                };
+
+                BitSchedule schedule = new BitSchedule(config);
+                BitDay day = schedule.ReadDay(request.Date);
+                return Results.Ok(day);
             });
 
             /// <summary>
@@ -103,8 +165,29 @@ namespace BitScheduleApi
                 return Results.Ok(response);
             });
 
+            // POST endpoint to write/update a specific day's schedule.
+            // The endpoint accepts a BitDayRequest in the request body.
+            app.MapPost("/WriteDay", (BitDayRequest request, BitSchedule schedule) =>
+            {
+                // Call the WriteDay method on the BitSchedule instance.
+                BitDay updatedDay = schedule.WriteDay(request);
+                return Results.Ok(updatedDay);
+            });
+
+            // GET endpoint to read a specific day's schedule.
+            // The date is passed as a query parameter.
+            app.MapGet("/ReadDay", (DateTime date, BitSchedule schedule) =>
+            {
+                // Call the ReadDay method on the BitSchedule instance.
+                BitDay day = schedule.ReadDay(date);
+                return Results.Ok(day);
+            });
 
             app.Run();
         }
     }
 }
+
+
+
+
