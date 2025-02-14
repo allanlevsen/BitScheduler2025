@@ -16,10 +16,6 @@ namespace BitTimeScheduler
         /// </summary>
         public const int TotalSlots = 96;
 
-        /// <summary>
-        /// The date this BitDay represents.
-        /// </summary>
-        public DateTime Date { get; set; }
 
         // The complete 128–bit state is stored using two 64–bit unsigned integers.
         // _bitsLow holds bits 0–63.
@@ -54,6 +50,18 @@ namespace BitTimeScheduler
             // Mark day as free since no slots are reserved.
             SetMetadataFlag(BitTimeMetadataFlags.IsFree, true);
         }
+
+        #region Public Day Properties
+
+        /// <summary>
+        /// The date this BitDay represents.
+        /// </summary>
+        public DateTime Date { get; set; }
+
+        public ulong BitsHigh { get => _bitsHigh; }
+        public ulong BitsLow { get => _bitsLow; }
+
+        #endregion
 
         #region Day Slot Operations
 
@@ -278,6 +286,7 @@ namespace BitTimeScheduler
             get { return GetMetadataFlag(BitTimeMetadataFlags.IsFree); }
             set { SetMetadataFlag(BitTimeMetadataFlags.IsFree, value); }
         }
+
 
         #endregion
 

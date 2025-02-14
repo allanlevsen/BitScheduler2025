@@ -175,17 +175,16 @@ namespace BitTimeScheduler
         /// </summary>
         public BitScheduleResponse ReadSchedule(BitScheduleRequest request)
         {
-            List<BitDay> result = new List<BitDay>();
+            // Filter internal scheduleData based on the request's date range and active weekdays.
+            List<BitDay> filteredDays = new List<BitDay>();
             DateTime start = request.DateRange.StartDate.Date;
             DateTime end = request.DateRange.EndDate.Date;
 
             foreach (BitDay day in scheduleData)
             {
-                // Only consider days within the requested date range.
                 if (day.Date < start || day.Date > end)
                     continue;
 
-                // If active weekdays are specified, only include days that match one of them.
                 if (request.ActiveDays != null && request.ActiveDays.Length > 0)
                 {
                     bool match = false;
@@ -200,14 +199,69 @@ namespace BitTimeScheduler
                     if (!match)
                         continue;
                 }
-
-                // Optionally, you might check the time block availability here as well,
-                // but for this example we simply add the day.
-                result.Add(day);
+                filteredDays.Add(day);
             }
 
-            return new BitScheduleResponse { ScheduledDays = result };
+            // Group the filtered days by year and month.
+            var monthGroups = filteredDays
+                .GroupBy(d => new { d.Date.Year, d.Date.Month })
+                .OrderBy(g => g.Key.Year)
+                .ThenBy(g => g.Key.Month);
+
+            List<BitMonth> months = new List<BitMonth>();
+
+            // For each group, create a BitMonth using a helper method.
+            foreach (var group in monthGroups)
+            {
+                BitMonth month = BitMonth.CreateFromDays(group.ToList());
+                months.Add(month);
+            }
+
+            // Return the response with the original request and the grouped months.
+            return new BitScheduleResponse
+            {
+                Request = request,
+                ScheduledMonths = months
+            };
         }
+        //public BitScheduleResponse ReadSchedule(BitScheduleRequest request)
+        //{
+        //    List<BitDay> result = new List<BitDay>();
+        //    DateTime start = request.DateRange.StartDate.Date;
+        //    DateTime end = request.DateRange.EndDate.Date;
+
+        //    foreach (BitDay day in scheduleData)
+        //    {
+        //        // Only consider days within the requested date range.
+        //        if (day.Date < start || day.Date > end)
+        //            continue;
+
+        //        // If active weekdays are specified, only include days that match one of them.
+        //        if (request.ActiveDays != null && request.ActiveDays.Length > 0)
+        //        {
+        //            bool match = false;
+        //            foreach (DayOfWeek dow in request.ActiveDays)
+        //            {
+        //                if (day.Date.DayOfWeek == dow)
+        //                {
+        //                    match = true;
+        //                    break;
+        //                }
+        //            }
+        //            if (!match)
+        //                continue;
+        //        }
+
+        //        // Optionally, you might check the time block availability here as well,
+        //        // but for this example we simply add the day.
+        //        result.Add(day);
+        //    }
+
+        //    return new BitScheduleResponse {
+        //        Request = request,
+        //        ScheduledDays = result 
+        //    };
+        //}
 
         /// <summary>
         /// Writes the schedule to the internal data by reserving the specified time block on all days

@@ -1,6 +1,9 @@
-@BitScheduleApi_HostAddress = http://localhost:5115
+@BitScheduleApi_HostAddress = http://localhost:44385
 
-GET {{BitScheduleApi_HostAddress}}/weatherforecast/
+GET {{BitScheduleApi_HostAddress}}/testreadschedule/
 Accept: application/json
+
+
+https://localhost:44385/testreadschedule
 
 ###
