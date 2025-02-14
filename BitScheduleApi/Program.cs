@@ -78,8 +78,8 @@ namespace BitScheduleApi
                 {
                     DateRange = new BitDateRange
                     {
-                        StartDate = new DateTime(2025, 8, 1),
-                        EndDate = new DateTime(2025, 8, 31)
+                        StartDate = new DateTime(2025, 1, 1),
+                        EndDate = new DateTime(2025, 4, 30)
                     },
                     ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
                     // Create a time block from 09:00 to 10:00 using the BitDay utility method.

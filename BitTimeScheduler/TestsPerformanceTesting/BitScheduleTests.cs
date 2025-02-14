@@ -26,9 +26,9 @@
                 },
                 ActiveDays = new DayOfWeek[]
                 {
-                    DayOfWeek.Monday,
-                    DayOfWeek.Wednesday,
-                    DayOfWeek.Friday
+                DayOfWeek.Monday,
+                DayOfWeek.Wednesday,
+                DayOfWeek.Friday
                 },
                 TimeBlock = BitDay.CreateRangeFromTimes(
                     TimeSpan.FromHours(9),
@@ -54,10 +54,10 @@
 
             // Read the schedule using the request.
             BitScheduleResponse response = schedule.ReadSchedule(request);
-            Console.WriteLine(
-                "Functional Test: ReadSchedule returned {0} days",
-                response.ScheduledDays.Count
-            );
+
+            // Aggregate the total number of days across all returned months.
+            int totalDays = response.ScheduledMonths.Sum(m => m.Days.Count);
+            Console.WriteLine("Functional Test: ReadSchedule returned {0} days", totalDays);
 
             // Attempt to write the schedule (i.e. reserve the time block on all matching days).
             bool writeResult = schedule.WriteSchedule(request);
@@ -65,10 +65,8 @@
 
             // Re-read the schedule after writing.
             BitScheduleResponse responseAfter = schedule.ReadSchedule(request);
-            Console.WriteLine(
-                "Functional Test: After WriteSchedule, ReadSchedule returned {0} days", 
-                responseAfter.ScheduledDays.Count
-            );
+            int totalDaysAfter = responseAfter.ScheduledMonths.Sum(m => m.Days.Count);
+            Console.WriteLine("Functional Test: After WriteSchedule, ReadSchedule returned {0} days", totalDaysAfter);
 
             Console.WriteLine("=== End Functional Tests ===\n");
         }
