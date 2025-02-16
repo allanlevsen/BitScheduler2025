@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BitSchedulerCore.Migrations
 {
     [DbContext(typeof(BitScheduleDbContext))]
-    [Migration("20250214165056_InitialCreate")]
+    [Migration("20250216200811_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,8 +36,8 @@ namespace BitSchedulerCore.Migrations
                     b.Property<int?>("BitDayId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -88,8 +88,8 @@ namespace BitSchedulerCore.Migrations
                     b.Property<long>("BitsLow")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");

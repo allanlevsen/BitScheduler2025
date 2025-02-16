@@ -9,19 +9,21 @@ namespace BitSchedulerCore
 {
     public class BitReservation : AuditableEntity
     {
-        // Primary key
+        // Primary key for the reservation.
         public int BitReservationId { get; set; }
 
-        // Multi-tenant identifier.
-        public Guid ClientId { get; set; }
+        // Foreign key to BitClient.
+        public int BitClientId { get; set; }
+        public BitClient BitClient { get; set; }
+
+        // Foreign key to BitResource.
+        public int BitResourceId { get; set; }
+        public BitResource BitResource { get; set; }
 
         // The date for which this reservation applies.
         public DateTime Date { get; set; }
 
-        // The resource identifier (e.g., person, room, equipment).
-        public string ResourceId { get; set; }
-
-        // The reserved time block, expressed as a starting block index and a length (in number of 15-minute slots).
+        // The reserved time block, in terms of 15-minute intervals.
         public int StartBlock { get; set; }
         public int SlotLength { get; set; }
 

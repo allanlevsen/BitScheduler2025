@@ -4,6 +4,7 @@ using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BitSchedulerCore.Migrations
 {
     [DbContext(typeof(BitScheduleDbContext))]
-    partial class BitScheduleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250216202828_AddedResourceAndClient")]
+    partial class AddedResourceAndClient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,24 +24,6 @@ namespace BitSchedulerCore.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("BitSchedulerCore.BitClient", b =>
-                {
-                    b.Property<int>("BitClientId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitClientId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("BitClientId");
-
-                    b.ToTable("BitClients");
-                });
 
             modelBuilder.Entity("BitSchedulerCore.BitReservation", b =>
                 {
@@ -89,62 +74,6 @@ namespace BitSchedulerCore.Migrations
                     b.ToTable("BitReservations");
                 });
 
-            modelBuilder.Entity("BitSchedulerCore.BitResource", b =>
-                {
-                    b.Property<int>("BitResourceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitResourceId"));
-
-                    b.Property<int>("BitClientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BitResourceTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("BitResourceId");
-
-                    b.HasIndex("BitClientId");
-
-                    b.HasIndex("BitResourceTypeId");
-
-                    b.ToTable("BitResources");
-                });
-
-            modelBuilder.Entity("BitSchedulerCore.BitResourceType", b =>
-                {
-                    b.Property<int>("BitResourceTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitResourceTypeId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("BitResourceTypeId");
-
-                    b.ToTable("BitResourceTypes");
-                });
-
             modelBuilder.Entity("BitTimeScheduler.BitDay", b =>
                 {
                     b.Property<int>("BitDayId")
@@ -181,35 +110,6 @@ namespace BitSchedulerCore.Migrations
                     b.HasOne("BitTimeScheduler.BitDay", null)
                         .WithMany("Reservations")
                         .HasForeignKey("BitDayId");
-                });
-
-            modelBuilder.Entity("BitSchedulerCore.BitResource", b =>
-                {
-                    b.HasOne("BitSchedulerCore.BitClient", "BitClient")
-                        .WithMany("BitResources")
-                        .HasForeignKey("BitClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BitSchedulerCore.BitResourceType", "BitResourceType")
-                        .WithMany("BitResources")
-                        .HasForeignKey("BitResourceTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("BitClient");
-
-                    b.Navigation("BitResourceType");
-                });
-
-            modelBuilder.Entity("BitSchedulerCore.BitClient", b =>
-                {
-                    b.Navigation("BitResources");
-                });
-
-            modelBuilder.Entity("BitSchedulerCore.BitResourceType", b =>
-                {
-                    b.Navigation("BitResources");
                 });
 
             modelBuilder.Entity("BitTimeScheduler.BitDay", b =>

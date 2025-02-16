@@ -58,7 +58,7 @@ namespace BitTimeScheduler
         public int BitDayId { get; set; }
 
         // Multi-tenant: which client owns this BitDay.
-        public Guid ClientId { get; set; }
+        public int ClientId { get; set; }
 
         // The day this record represents.
         public DateTime Date { get; set; }

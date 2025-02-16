@@ -17,7 +17,7 @@ namespace BitSchedulerCore.Migrations
                 {
                     BitDayId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "date", nullable: false),
                     BitsLow = table.Column<long>(type: "bigint", nullable: false),
                     BitsHigh = table.Column<long>(type: "bigint", nullable: false),
@@ -34,7 +34,7 @@ namespace BitSchedulerCore.Migrations
                 {
                     BitReservationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "date", nullable: false),
                     ResourceId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     StartBlock = table.Column<int>(type: "int", nullable: false),
