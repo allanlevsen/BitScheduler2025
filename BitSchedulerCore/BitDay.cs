@@ -64,8 +64,17 @@ namespace BitTimeScheduler
         public DateTime Date { get; set; }
 
         // Bitmask fields representing schedule data.
-        public ulong BitsLow { get; set; }
-        public ulong BitsHigh { get; set; }
+        public ulong BitsLow
+        {
+            get { return _bitsLow; }
+            set { _bitsLow = value; }
+        }
+
+        public ulong BitsHigh
+        {
+            get { return _bitsHigh; }
+            set { _bitsHigh = value; }
+        }
 
         // Navigation property for associated reservations.
         public virtual ICollection<BitReservation> Reservations { get; set; } = new List<BitReservation>();

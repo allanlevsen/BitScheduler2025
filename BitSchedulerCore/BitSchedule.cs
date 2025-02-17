@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BitSchedulerCore.Models;
-using BitTimeScheduler.Data;
+using BitSchedulerCore.Services;
 using BitTimeScheduler.Models;
 
 namespace BitTimeScheduler
@@ -19,13 +19,12 @@ namespace BitTimeScheduler
     /// </summary>
     public class BitSchedule
     {
-        private MockData _mockData;
-
         // Internal schedule data—stored as a list of BitDay objects.
         private List<BitDay> scheduleData;
 
         // The current configuration.
         private BitScheduleConfiguration _configuration;
+        private BitScheduleDataService _data;
 
         public bool IsDirty { get; set; } = false;
         public DateTime LastRefreshed { get; set; }
@@ -143,7 +142,6 @@ namespace BitTimeScheduler
             scheduleData = new List<BitDay>();
             _configuration = new BitScheduleConfiguration();
             _configuration.PropertyChanged += OnConfigurationChanged;
-            _mockData = new MockData();
             LastRefreshed = DateTime.MinValue;
         }
 
@@ -151,19 +149,18 @@ namespace BitTimeScheduler
         {
             _configuration = configuration;
             _configuration.PropertyChanged += OnConfigurationChanged;
-            _mockData = new MockData();
-            RefreshScheduleData();
+            ReadScheduleDataFromDatabase();
         }
 
         /// <summary>
         /// Refreshes the internal schedule data using the current configuration.
         /// In a production system this would read data from a database.
         /// </summary>
-        public void RefreshScheduleData()
+        public void ReadScheduleDataFromDatabase()
         {
             if (_configuration != null)
             {
-                scheduleData = _mockData.LoadMockData(_configuration);
+                scheduleData = _data.LoadScheduleData(_configuration, 1);
                 LastRefreshed = DateTime.Now;
                 IsDirty = false;
             }
@@ -215,7 +212,7 @@ namespace BitTimeScheduler
         }
 
         /// <summary>
-        /// Reads the schedule from the internal data by filtering it based on the provided BitScheduleRequest.
+        /// Reads the schedule from the ***internal data*** by filtering it based on the provided BitScheduleRequest.
         /// The request defines the date range, active weekdays, and (optionally) the time block.
         /// Returns a BitScheduleResponse containing the BitDay objects that fall within the request’s parameters.
         /// </summary>

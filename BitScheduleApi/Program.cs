@@ -5,11 +5,7 @@
 //// Update-Database -Project BitSchedulerCore -StartupProject BitScheduleApi
 
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using BitTimeScheduler.Data;
 using BitTimeScheduler.Services;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitTimeScheduler.Models;
@@ -19,8 +15,7 @@ using BitSchedulerCore.Models; // Namespace for BitScheduleDbContext and Seeding
 var builder = WebApplication.CreateBuilder(args);
 
 // Read connection string from appsettings.json.
-string connectionString = builder.Configuration.GetConnectionString("BitScheduleConnection")
-    ?? "Server=(localdb)\\MSSQLLocalDB;Database=BitScheduleDb;Trusted_Connection=True;MultipleActiveResultSets=true";
+string connectionString = builder.Configuration.GetConnectionString("BitScheduleConnection");
 
 // Register the DbContext.
 builder.Services.AddDbContext<BitScheduleDbContext>(options =>
@@ -36,7 +31,9 @@ using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<SeedingService>();
     await seeder.SeedAsync();
+    await seeder.SeedScheduleDataAsync();
 }
+
 
 app.MapGet("/", () => "BitScheduleApi is running!");
 
