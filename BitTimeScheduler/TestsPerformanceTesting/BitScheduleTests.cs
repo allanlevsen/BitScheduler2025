@@ -237,7 +237,7 @@
                 TimeBlock = config.TimeBlock
             };
 
-            const int iterations = 100_000;
+            const int iterations = 1_000_000;
             Stopwatch sw = new Stopwatch();
 
             // Performance test for ReadSchedule.

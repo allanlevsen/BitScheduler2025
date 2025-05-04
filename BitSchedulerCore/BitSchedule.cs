@@ -20,11 +20,11 @@ namespace BitTimeScheduler
     public class BitSchedule
     {
         // Internal schedule data—stored as a list of BitDay objects.
-        private List<BitDay> scheduleData;
+        private List<BitDay> _scheduleData;
 
         // The current configuration.
         private BitScheduleConfiguration _configuration;
-        private BitScheduleDataService _data;
+        private BitScheduleDataService _dataService;
 
         public bool IsDirty { get; set; } = false;
         public DateTime LastRefreshed { get; set; }
@@ -139,7 +139,8 @@ namespace BitTimeScheduler
         /// </summary>
         public BitSchedule()
         {
-            scheduleData = new List<BitDay>();
+            _scheduleData = new List<BitDay>();
+            _dataService = null;
             _configuration = new BitScheduleConfiguration();
             _configuration.PropertyChanged += OnConfigurationChanged;
             LastRefreshed = DateTime.MinValue;
@@ -147,11 +148,20 @@ namespace BitTimeScheduler
 
         public BitSchedule(BitScheduleConfiguration configuration)
         {
+            _scheduleData = new List<BitDay>();
+            _dataService = null;
             _configuration = configuration;
             _configuration.PropertyChanged += OnConfigurationChanged;
             ReadScheduleDataFromDatabase();
         }
 
+        public BitSchedule(BitScheduleConfiguration configuration, BitScheduleDataService dataService)
+        {
+            _configuration = configuration;
+            _configuration.PropertyChanged += OnConfigurationChanged;
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
+            ReadScheduleDataFromDatabase();
+        }
         /// <summary>
         /// Refreshes the internal schedule data using the current configuration.
         /// In a production system this would read data from a database.
@@ -160,12 +170,32 @@ namespace BitTimeScheduler
         {
             if (_configuration != null)
             {
-                scheduleData = _data.LoadScheduleData(_configuration, 1);
+                if (_dataService!=null)
+                {
+                    var clientId = 1;
+                    _scheduleData = _dataService.LoadScheduleData(_configuration, clientId);
+                }
                 LastRefreshed = DateTime.Now;
                 IsDirty = false;
             }
         }
 
+        
+        // TODO: Should this method replace ReadScheduleDataFromDatabase() - do we need both
+        //
+        public void RefreshScheduleData()
+        {
+            if (_configuration != null)
+            {
+                if (_dataService != null)
+                {
+                    var clientId = 1;
+                    _scheduleData = _dataService.LoadScheduleData(_configuration, clientId);
+                }
+                LastRefreshed = DateTime.Now;
+                IsDirty = false;
+            }
+        }
 
         /// <summary>
         /// Writes (updates) a specific day's schedule.
@@ -177,12 +207,12 @@ namespace BitTimeScheduler
         public BitDay WriteDay(BitDayRequest request)
         {
             // Find an existing BitDay in the internal data for the requested date.
-            var day = scheduleData.FirstOrDefault(d => d.Date.Date == request.Date.Date);
+            var day = _scheduleData.FirstOrDefault(d => d.Date.Date == request.Date.Date);
             if (day == null)
             {
                 // If not found, create a new BitDay for the given date.
                 day = new BitDay(request.Date);
-                scheduleData.Add(day);
+                _scheduleData.Add(day);
             }
 
             // Convert the provided times into block indices.
@@ -202,7 +232,7 @@ namespace BitTimeScheduler
         /// </summary>
         public BitDay ReadDay(DateTime date)
         {
-            var day = scheduleData.FirstOrDefault(d => d.Date.Date == date.Date);
+            var day = _scheduleData.FirstOrDefault(d => d.Date.Date == date.Date);
             if (day == null)
             {
                 // Return a new, free BitDay for the given date.
@@ -218,12 +248,12 @@ namespace BitTimeScheduler
         /// </summary>
         public BitScheduleResponse ReadSchedule(BitScheduleRequest request)
         {
-            // Filter internal scheduleData based on the request's date range and active weekdays.
+            // Filter internal _scheduleData based on the request's date range and active weekdays.
             List<BitDay> filteredDays = new List<BitDay>();
             DateTime start = request.DateRange.StartDate.Date;
             DateTime end = request.DateRange.EndDate.Date;
 
-            foreach (BitDay day in scheduleData)
+            foreach (BitDay day in _scheduleData)
             {
                 if (day.Date < start || day.Date > end)
                     continue;
@@ -284,7 +314,7 @@ namespace BitTimeScheduler
             DateTime start = request.DateRange.StartDate.Date;
             DateTime end = request.DateRange.EndDate.Date;
 
-            foreach (BitDay day in scheduleData)
+            foreach (BitDay day in _scheduleData)
             {
                 // Only process days within the requested date range.
                 if (day.Date < start || day.Date > end)

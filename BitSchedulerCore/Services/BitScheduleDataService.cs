@@ -13,7 +13,7 @@ using BitTimeScheduler;
 
 namespace BitSchedulerCore.Services
 {
-   
+
     public class BitScheduleDataService
     {
         private readonly BitScheduleDbContext _dbContext;
@@ -36,4 +36,5 @@ namespace BitSchedulerCore.Services
 
 
     }
+}
 
