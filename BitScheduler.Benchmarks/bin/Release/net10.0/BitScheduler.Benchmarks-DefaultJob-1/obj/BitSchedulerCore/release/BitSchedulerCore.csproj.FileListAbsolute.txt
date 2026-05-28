@@ -1,0 +1,13 @@
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\bin\Release\net10.0\BitSchedulerCore.deps.json
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\bin\Release\net10.0\BitSchedulerCore.dll
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\bin\Release\net10.0\BitSchedulerCore.pdb
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\BitSchedulerCore.csproj.AssemblyReference.cache
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\BitSchedulerCore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\BitSchedulerCore.AssemblyInfoInputs.cache
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\BitSchedulerCore.AssemblyInfo.cs
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\BitSchedulerCore.csproj.CoreCompileInputs.cache
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\BitSchedulerCore.sourcelink.json
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\BitSchedulerCore.dll
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\refint\BitSchedulerCore.dll
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\BitSchedulerCore.pdb
+C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\bin\Release\net10.0\BitScheduler.Benchmarks-DefaultJob-1\obj\BitSchedulerCore\release\ref\BitSchedulerCore.dll
