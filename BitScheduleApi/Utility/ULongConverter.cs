@@ -10,6 +10,7 @@
         {
             // Implement reading if necessary (here we assume numbers are provided as strings)
             // You could also call reader.GetUInt64() if your JSON contains numeric values.
+            //
             string s = reader.GetString();
             return ulong.Parse(s);
         }
@@ -17,6 +18,8 @@
         public override void Write(Utf8JsonWriter writer, ulong value, JsonSerializerOptions options)
         {
             // Write the ulong as a full decimal string.
+            // This ensures that even very large ulong values are correctly represented in JSON without loss of precision.
+            //
             writer.WriteStringValue(value.ToString("D"));
         }
     }
