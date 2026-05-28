@@ -12,7 +12,9 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseExceptionHandler();
+app.UseExceptionHandler("/error");
+
+app.Map("/error", () => Results.Problem("An unhandled error occurred."));
 
 if (app.Environment.IsDevelopment())
 {

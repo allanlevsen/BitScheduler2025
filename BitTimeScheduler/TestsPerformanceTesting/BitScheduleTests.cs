@@ -118,7 +118,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 {
                     DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },
                     ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
                     AutoRefreshOnConfigurationChange = false
                 };
 
@@ -206,7 +206,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 {
                     DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },
                     ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
                     AutoRefreshOnConfigurationChange = false
                 };
                 var schedule = CreateTestScheduleInstance(testClientId, configA, out dbContext);
@@ -220,7 +220,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 {
                     DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },
                     ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
                     AutoRefreshOnConfigurationChange = false
                 };
                 schedule.Configuration = configB;
@@ -234,7 +234,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 {
                     DateRange = configA.DateRange,
                     ActiveDays = configA.ActiveDays,
-                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(10), TimeSpan.FromHours(11)), // Diff TimeBlock
+                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(10d), TimeSpan.FromHours(11d)), // Diff TimeBlock
                     AutoRefreshOnConfigurationChange = false
                 };
                 schedule.Configuration = configC;
@@ -286,7 +286,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
 
                 // --- Test 6: Modifying Current Config: TimeBlock (AutoRefresh=true) ---
                 Console.WriteLine("\n--- Test 6: Modifying Current Config Property: TimeBlock (AutoRefresh=true) ---");
-                schedule.Configuration.TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(14), TimeSpan.FromHours(15)); // Modify property
+                schedule.Configuration.TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(14d), TimeSpan.FromHours(15d)); // Modify property
                                                                                                                                 // PropertyChanged -> OnConfigurationChanged -> requiresReload=false -> LoadData NOT called
                                                                                                                                 // IsDirty should be true because a property changed. LastRefreshed should NOT change.
                 if (schedule.IsDirty && schedule.LastRefreshed == refreshTimeAfterActiveDays) Console.WriteLine("PASS: Modifying TimeBlock (AutoRefresh=true) -> IsDirty=true, Refreshed=false.");
@@ -315,7 +315,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             {
                 DateRange = new BitDateRange { StartDate = new DateTime(2025, 1, 1), EndDate = new DateTime(2025, 12, 31) }, // One year
                 ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday },
-                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
                 AutoRefreshOnConfigurationChange = false
             };
 

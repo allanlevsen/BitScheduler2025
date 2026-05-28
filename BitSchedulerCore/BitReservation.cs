@@ -28,7 +28,7 @@ namespace BitSchedulerCore
         public int SlotLength { get; set; }
 
         // Computed properties (optional)
-        public TimeSpan StartTime => TimeSpan.FromMinutes(StartBlock * 15);
-        public TimeSpan EndTime => TimeSpan.FromMinutes((StartBlock + SlotLength) * 15);
+        public TimeSpan StartTime => TimeSpan.FromMinutes(StartBlock * 15d);
+        public TimeSpan EndTime => TimeSpan.FromMinutes((StartBlock + SlotLength) * 15d);
     }
 }

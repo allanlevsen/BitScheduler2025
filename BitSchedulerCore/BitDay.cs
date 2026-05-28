@@ -182,7 +182,7 @@ namespace BitTimeScheduler
         /// </summary>
         public static TimeSpan BlockIndexToTime(int blockIndex)
         {
-            return TimeSpan.FromMinutes(blockIndex * 15);
+            return TimeSpan.FromMinutes(blockIndex * 15d);
         }
 
         /// <summary>

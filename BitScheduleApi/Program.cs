@@ -131,7 +131,7 @@ app.MapGet("/TestReadSchedule", (HttpContext httpContext) =>
             EndDate = new DateTime(2025, 6, 30)  // Adjusted test range
         },
         ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-        TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+        TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
         AutoRefreshOnConfigurationChange = false // Explicitly set if needed
     };
 
