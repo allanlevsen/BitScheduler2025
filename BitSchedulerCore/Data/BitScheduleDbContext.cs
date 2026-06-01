@@ -1,5 +1,6 @@
 ﻿namespace BitSchedulerCore.Data
 {
+    using Microsoft.EntityFrameworkCore.ChangeTracking;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using global::BitTimeScheduler;
@@ -8,9 +9,18 @@
     {
         public class BitScheduleDbContext : DbContext
         {
-            private static readonly ValueConverter<ulong, decimal> ULongToDecimalConverter = new(
-                value => Convert.ToDecimal(value),
-                value => Convert.ToUInt64(value));
+            private static readonly ValueConverter<UInt128, byte[]> UInt128ToBytesConverter = new(
+                value => ConvertUInt128ToBytes(value, 12),
+                value => ConvertBytesToUInt128(value));
+
+            private static readonly ValueComparer<UInt128> UInt128Comparer = new(
+                (left, right) => left == right,
+                value => value.GetHashCode(),
+                value => value);
+
+            private static readonly ValueConverter<uint, long> UInt32ToInt64Converter = new(
+                value => value,
+                value => checked((uint)value));
 
             public BitScheduleDbContext(DbContextOptions<BitScheduleDbContext> options)
                 : base(options)
@@ -127,6 +137,8 @@
                 modelBuilder.Entity<BitDay>(entity =>
                 {
                     entity.HasKey(e => e.BitDayId);
+                    entity.Ignore(e => e.Bits);
+                    entity.Ignore(e => e.IsFree);
 
                     // For BitDay, you might have a unique constraint for a given client and date.
                     entity.HasIndex(e => new { e.ClientId, e.Date }).IsUnique();
@@ -135,19 +147,17 @@
                           .HasColumnType("date")
                           .IsRequired();
 
-                    // For BitsLow and BitsHigh, you may need a value converter for ulong -> long.
-                    // (Assume you already have that set up in your current code.)
-                    entity.Property(e => e.BitsLow)
-                          .HasConversion(ULongToDecimalConverter)
-                          .HasColumnType("numeric(20,0)")
-                          .IsRequired();
-                    entity.Property(e => e.BitsHigh)
-                          .HasConversion(ULongToDecimalConverter)
-                          .HasColumnType("numeric(20,0)")
+                    entity.Property(e => e.DayData)
+                          .HasConversion(UInt128ToBytesConverter)
+                          .Metadata.SetValueComparer(UInt128Comparer);
+
+                    entity.Property(e => e.DayData)
+                          .HasColumnType("bytea")
                           .IsRequired();
 
-                    entity.Property(e => e.IsFree)
-                          .HasColumnType("boolean")
+                    entity.Property(e => e.Metadata)
+                          .HasConversion(UInt32ToInt64Converter)
+                          .HasColumnType("bigint")
                           .IsRequired();
                 });
 
@@ -187,6 +197,28 @@
                 });
 
                 base.OnModelCreating(modelBuilder);
+            }
+
+            private static byte[] ConvertUInt128ToBytes(UInt128 value, int byteCount)
+            {
+                var bytes = new byte[byteCount];
+                for (var index = 0; index < byteCount; index++)
+                {
+                    bytes[index] = (byte)(value >> (index * 8));
+                }
+
+                return bytes;
+            }
+
+            private static UInt128 ConvertBytesToUInt128(byte[] bytes)
+            {
+                UInt128 value = 0;
+                for (var index = 0; index < bytes.Length; index++)
+                {
+                    value |= (UInt128)bytes[index] << (index * 8);
+                }
+
+                return value;
             }
         }
     }

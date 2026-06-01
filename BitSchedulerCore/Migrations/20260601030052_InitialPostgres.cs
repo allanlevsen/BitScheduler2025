@@ -33,9 +33,8 @@ namespace BitSchedulerCore.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ClientId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "date", nullable: false),
-                    BitsLow = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    BitsHigh = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    IsFree = table.Column<bool>(type: "boolean", nullable: false)
+                    DayData = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Metadata = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {

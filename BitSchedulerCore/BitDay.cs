@@ -19,8 +19,8 @@ namespace BitTimeScheduler
         private UInt128 _bits;
 
         private const int MetadataShift = 96;
-        private static readonly UInt128 LowWordMask = ulong.MaxValue;
-        private static readonly UInt128 DaySlotMask = CreateMask128(TotalSlots);
+        private static readonly UInt128 DayDataMask = CreateMask128(TotalSlots);
+        private static readonly UInt128 MetadataMask = CreateMask128(128 - TotalSlots) << MetadataShift;
 
         /// <summary>
         /// Parameterless constructor.
@@ -59,17 +59,22 @@ namespace BitTimeScheduler
         // The day this record represents.
         public DateTime Date { get; set; }
 
-        // Bitmask fields representing schedule data.
-        public ulong BitsLow
+        public UInt128 Bits
         {
-            get { return (ulong)(_bits & LowWordMask); }
-            set { _bits = (_bits & ~LowWordMask) | value; }
+            get { return _bits; }
+            set { _bits = value; }
         }
 
-        public ulong BitsHigh
+        public UInt128 DayData
         {
-            get { return (ulong)(_bits >> 64); }
-            set { _bits = (_bits & LowWordMask) | ((UInt128)value << 64); }
+            get { return _bits & DayDataMask; }
+            set { _bits = (_bits & MetadataMask) | (value & DayDataMask); }
+        }
+
+        public uint Metadata
+        {
+            get { return (uint)((_bits & MetadataMask) >> MetadataShift); }
+            set { _bits = (_bits & DayDataMask) | ((UInt128)value << MetadataShift); }
         }
 
         // Navigation property for associated reservations.
@@ -122,7 +127,7 @@ namespace BitTimeScheduler
                 return true;
 
             UInt128 dayMask = GetDayMask(startSlot, length);
-            return (_bits & dayMask) == 0;
+            return (DayData & dayMask) == 0;
         }
 
         /// <summary>
@@ -138,7 +143,7 @@ namespace BitTimeScheduler
                 return false;
 
             UInt128 dayMask = GetDayMask(startSlot, length);
-            _bits |= dayMask;
+            DayData |= dayMask;
 
             // Since at least one slot is now reserved, mark the day as not free.
             SetMetadataFlag(BitTimeMetadataFlags.IsFree, false);
@@ -155,11 +160,11 @@ namespace BitTimeScheduler
             ValidateRange(startSlot, length);
 
             UInt128 dayMask = GetDayMask(startSlot, length);
-            _bits &= ~dayMask;
+            DayData &= ~dayMask;
 
             // If the entire day is free (i.e. all 96 slots are unreserved),
             // then mark the day as free for faster future checks.
-            if ((_bits & DaySlotMask) == 0)
+            if (DayData == 0)
             {
                 SetMetadataFlag(BitTimeMetadataFlags.IsFree, true);
             }
@@ -273,8 +278,8 @@ namespace BitTimeScheduler
         /// </summary>
         public bool GetMetadataFlag(BitTimeMetadataFlags flag)
         {
-            UInt128 flagMask = (UInt128)(ulong)flag << MetadataShift;
-            return (_bits & flagMask) != 0;
+            UInt128 flagMask = (UInt128)(uint)flag;
+            return ((UInt128)Metadata & flagMask) != 0;
         }
 
         /// <summary>
@@ -282,11 +287,11 @@ namespace BitTimeScheduler
         /// </summary>
         public void SetMetadataFlag(BitTimeMetadataFlags flag, bool value)
         {
-            UInt128 flagMask = (UInt128)(ulong)flag << MetadataShift;
+            uint flagMask = (uint)flag;
             if (value)
-                _bits |= flagMask;
+                Metadata |= flagMask;
             else
-                _bits &= ~flagMask;
+                Metadata &= ~flagMask;
         }
 
         /// <summary>
@@ -307,7 +312,7 @@ namespace BitTimeScheduler
         public override string ToString()
         {
             // For example: "4/12/2025 - [128-bit state in hex]"
-            return $"{Date.ToShortDateString()} - {BitsHigh:X16}{BitsLow:X16}";
+            return $"{Date.ToShortDateString()} - {Bits:X32}";
         }
     }
 

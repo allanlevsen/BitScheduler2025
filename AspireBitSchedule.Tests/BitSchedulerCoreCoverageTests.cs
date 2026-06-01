@@ -80,7 +80,8 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
         Assert.Equal(DateTime.Today, defaultDay.Date);
         Assert.Equal(explicitDate.Date, explicitDay.Date);
         Assert.True(explicitDay.IsFree);
-        Assert.Equal(0UL, explicitDay.BitsLow);
+        Assert.Equal((UInt128)0, explicitDay.DayData);
+        Assert.Equal((uint)BitTimeMetadataFlags.IsFree, explicitDay.Metadata);
         Assert.NotNull(explicitDay.Reservations);
         Assert.Empty(explicitDay.Reservations);
     }
@@ -94,11 +95,11 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
             ClientId = 7
         };
 
-        day.BitsLow = 0x0123456789ABCDEF;
-        day.BitsHigh = 0xFEDCBA9876543210;
+        day.DayData = ((UInt128)0x00000000FEDCBA98 << 64) | 0x0123456789ABCDEF;
+        day.Metadata = 0x76543210;
 
-        Assert.Equal(0x0123456789ABCDEFUL, day.BitsLow);
-        Assert.Equal(0xFEDCBA9876543210UL, day.BitsHigh);
+        Assert.Equal(((UInt128)0x00000000FEDCBA98 << 64) | 0x0123456789ABCDEF, day.DayData);
+        Assert.Equal(0x76543210U, day.Metadata);
 
         day.SetMetadataFlag(BitTimeMetadataFlags.IsFree, false);
         Assert.False(day.GetMetadataFlag(BitTimeMetadataFlags.IsFree));
@@ -107,7 +108,7 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
 
         Assert.Equal(42, day.BitDayId);
         Assert.Equal(7, day.ClientId);
-        Assert.Equal(0x0123456789ABCDEFUL, day.BitsLow);
+        Assert.Equal(((UInt128)0x00000000FEDCBA98 << 64) | 0x0123456789ABCDEF, day.DayData);
         Assert.True(day.GetMetadataFlag(BitTimeMetadataFlags.IsFree));
         Assert.Contains(day.Date.ToShortDateString(), day.ToString());
     }

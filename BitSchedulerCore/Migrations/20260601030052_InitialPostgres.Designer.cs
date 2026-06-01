@@ -206,11 +206,9 @@ namespace BitSchedulerCore.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BitDayId"));
 
-                    b.Property<decimal>("BitsHigh")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.Property<decimal>("BitsLow")
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<byte[]>("DayData")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<int>("ClientId")
                         .HasColumnType("integer");
@@ -218,8 +216,8 @@ namespace BitSchedulerCore.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
 
-                    b.Property<bool>("IsFree")
-                        .HasColumnType("boolean");
+                    b.Property<long>("Metadata")
+                        .HasColumnType("bigint");
 
                     b.HasKey("BitDayId");
 

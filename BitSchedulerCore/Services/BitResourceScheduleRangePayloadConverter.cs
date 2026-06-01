@@ -6,7 +6,9 @@ namespace BitSchedulerCore.Services
     public sealed class BitResourceScheduleRangePayloadConverter
     {
         private const int BitsPerDay = BitDay.TotalSlots;
-        private const int HeaderSize = sizeof(ulong) + sizeof(ulong) + sizeof(byte);
+        private const int DayDataSize = 12;
+        private const int MetadataSize = sizeof(uint);
+        private const int HeaderSize = DayDataSize + MetadataSize;
 
         public int GetPayloadLength(DateTime startDate, DateTime endDate)
         {
@@ -37,9 +39,8 @@ namespace BitSchedulerCore.Services
                 var offset = dayIndex * HeaderSize;
                 var dayDate = normalizedStart.AddDays(dayIndex);
                 var day = result[dayDate];
-                day.BitsLow = BitConverter.ToUInt64(payload, offset);
-                day.BitsHigh = BitConverter.ToUInt64(payload, offset + sizeof(ulong));
-                day.IsFree = payload[offset + sizeof(ulong) + sizeof(ulong)] != 0;
+                day.DayData = ReadUInt128(payload, offset, DayDataSize);
+                day.Metadata = BitConverter.ToUInt32(payload, offset + DayDataSize);
             }
 
             return result;
@@ -60,9 +61,8 @@ namespace BitSchedulerCore.Services
                 }
 
                 var offset = dayIndex * HeaderSize;
-                WriteUInt64(payload, offset, day.BitsLow);
-                WriteUInt64(payload, offset + sizeof(ulong), day.BitsHigh);
-                payload[offset + sizeof(ulong) + sizeof(ulong)] = day.IsFree ? (byte)1 : (byte)0;
+                WriteUInt128(payload, offset, day.DayData, DayDataSize);
+                WriteUInt32(payload, offset + DayDataSize, day.Metadata);
             }
 
             return payload;
@@ -115,7 +115,26 @@ namespace BitSchedulerCore.Services
             return (normalizedEnd - normalizedStart).Days + 1;
         }
 
-        private static void WriteUInt64(byte[] buffer, int offset, ulong value)
+        private static UInt128 ReadUInt128(byte[] buffer, int offset, int byteCount)
+        {
+            UInt128 value = 0;
+            for (var index = 0; index < byteCount; index++)
+            {
+                value |= (UInt128)buffer[offset + index] << (index * 8);
+            }
+
+            return value;
+        }
+
+        private static void WriteUInt128(byte[] buffer, int offset, UInt128 value, int byteCount)
+        {
+            for (var index = 0; index < byteCount; index++)
+            {
+                buffer[offset + index] = (byte)(value >> (index * 8));
+            }
+        }
+
+        private static void WriteUInt32(byte[] buffer, int offset, uint value)
         {
             var bytes = BitConverter.GetBytes(value);
             Buffer.BlockCopy(bytes, 0, buffer, offset, bytes.Length);

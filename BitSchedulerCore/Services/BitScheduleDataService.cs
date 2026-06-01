@@ -156,9 +156,8 @@ namespace BitSchedulerCore.Services
                 }
                 else
                 {
-                    existing.BitsLow = day.BitsLow;
-                    existing.BitsHigh = day.BitsHigh;
-                    existing.IsFree = day.IsFree;
+                    existing.DayData = day.DayData;
+                    existing.Metadata = day.Metadata;
                 }
             }
 
@@ -181,9 +180,8 @@ namespace BitSchedulerCore.Services
             return new BitDay(source.Date)
             {
                 ClientId = clientId,
-                BitsLow = source.BitsLow,
-                BitsHigh = source.BitsHigh,
-                IsFree = source.IsFree
+                DayData = source.DayData,
+                Metadata = source.Metadata
             };
         }
 
