@@ -59,6 +59,14 @@
             "BenchmarkDotNet": {
               "target": "Package",
               "version": "[0.15.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[10.0.8, )"
+            },
+            "Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers": {
+              "target": "Package",
+              "version": "[18.7.37220.1, )"
             }
           },
           "imports": [

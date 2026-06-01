@@ -13,6 +13,16 @@
     <SourceRoot Include="C:\Users\allanlevsen\.nuget\packages\" />
     <SourceRoot Include="C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(Language)' == 'C#' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Compile Include="$(NuGetPackageRoot)microsoft.visualstudio.diagnosticshub.benchmarkdotnetdiagnosers\18.7.37220.1\contentFiles\cs\any\BenchmarkProfilerAgentConfig.g.cs" Condition="Exists('$(NuGetPackageRoot)microsoft.visualstudio.diagnosticshub.benchmarkdotnetdiagnosers\18.7.37220.1\contentFiles\cs\any\BenchmarkProfilerAgentConfig.g.cs')">
+      <NuGetPackageId>Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers</NuGetPackageId>
+      <NuGetPackageVersion>18.7.37220.1</NuGetPackageVersion>
+      <NuGetItemType>Compile</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>BenchmarkProfilerAgentConfig.g.cs</Link>
+    </Compile>
+  </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)microsoft.entityframeworkcore\10.0.8\buildTransitive\net10.0\Microsoft.EntityFrameworkCore.props" Condition="Exists('$(NuGetPackageRoot)microsoft.entityframeworkcore\10.0.8\buildTransitive\net10.0\Microsoft.EntityFrameworkCore.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.diagnostics.tracing.traceevent\3.1.21\buildTransitive\Microsoft.Diagnostics.Tracing.TraceEvent.props" Condition="Exists('$(NuGetPackageRoot)microsoft.diagnostics.tracing.traceevent\3.1.21\buildTransitive\Microsoft.Diagnostics.Tracing.TraceEvent.props')" />
