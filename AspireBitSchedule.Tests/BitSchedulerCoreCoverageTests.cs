@@ -241,7 +241,7 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
     {
         var configuration = CreateConfiguration(new DateTime(2025, 4, 1), new DateTime(2025, 4, 30));
         var dbContext = CreateDbContext();
-        var dataService = new BitScheduleDataService(dbContext);
+        var dataService = new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter());
         var logger = NullLogger<BitSchedule>.Instance;
 
         Assert.Throws<ArgumentNullException>(() => new BitSchedule(1, configuration, dataService, dbContext, null!));
@@ -454,7 +454,7 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
     {
         await using var dbContext = CreateDbContext();
         var resource = await SeedClientAndResourceAsync(dbContext, clientId: 21, resourceId: 2101);
-        var dataService = new BitScheduleDataService(dbContext);
+        var dataService = new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter());
         var configuration = CreateConfiguration(new DateTime(2025, 1, 1), new DateTime(2025, 6, 30), resourceId: resource.BitResourceId);
 
         var januaryDay = new BitDay(new DateTime(2025, 1, 15)) { ClientId = 21 };
@@ -489,7 +489,7 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
     {
         await using var dbContext = CreateDbContext();
         var resource = await SeedClientAndResourceAsync(dbContext, clientId: 22, resourceId: 2201);
-        var dataService = new BitScheduleDataService(dbContext);
+        var dataService = new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter());
         var configuration = CreateConfiguration(new DateTime(2025, 1, 1), new DateTime(2025, 6, 30), resourceId: resource.BitResourceId);
 
         var firstDay = new BitDay(new DateTime(2025, 2, 10)) { ClientId = 22 };
@@ -530,7 +530,7 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
     {
         await using var dbContext = CreateDbContext();
         var resource = await SeedClientAndResourceAsync(dbContext, clientId: 23, resourceId: 2301);
-        var dataService = new BitScheduleDataService(dbContext);
+        var dataService = new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter());
         var configuration = CreateConfiguration(new DateTime(2025, 1, 1), new DateTime(2025, 12, 31), resourceId: resource.BitResourceId);
 
         var juneDay = new BitDay(new DateTime(2025, 6, 30)) { ClientId = 23 };
@@ -564,7 +564,7 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
     public async Task BitScheduleDataService_SaveAndLoadScheduleDataAsync_UsesLegacyBitDayFallbackWithoutResourceId()
     {
         await using var dbContext = CreateDbContext();
-        var dataService = new BitScheduleDataService(dbContext);
+        var dataService = new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter());
         var configuration = CreateConfiguration(new DateTime(2025, 2, 1), new DateTime(2025, 2, 28), resourceId: 0);
 
         var legacyDay = new BitDay(new DateTime(2025, 2, 10)) { ClientId = 31 };
@@ -686,7 +686,7 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
 
     private static BitSchedule CreateSchedule(BitScheduleDbContext dbContext, BitScheduleConfiguration configuration, int clientId)
     {
-        var dataService = new BitScheduleDataService(dbContext);
+        var dataService = new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter());
         return new BitSchedule(clientId, configuration, dataService, dbContext, NullLogger<BitSchedule>.Instance);
     }
 

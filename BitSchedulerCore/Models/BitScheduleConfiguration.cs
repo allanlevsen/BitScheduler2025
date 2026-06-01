@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 
 namespace BitTimeScheduler.Models
 {
@@ -11,7 +9,7 @@ namespace BitTimeScheduler.Models
     /// </summary>
     public class BitScheduleConfiguration : INotifyPropertyChanged
     {
-        private BitDateRange _dateRange;
+        private BitDateRange? _dateRange;
 
         private int _bitResourceId;
         /// <summary>
@@ -33,7 +31,7 @@ namespace BitTimeScheduler.Models
         /// <summary>
         /// Gets or sets the date range for the schedule.
         /// </summary>
-        public BitDateRange DateRange
+        public BitDateRange? DateRange
         {
             get => _dateRange;
             set
@@ -47,7 +45,7 @@ namespace BitTimeScheduler.Models
             }
         }
 
-        private DayOfWeek[] _activeDays;
+        private DayOfWeek[] _activeDays = Array.Empty<DayOfWeek>();
         /// <summary>
         /// Gets or sets the active days for the schedule.
         /// </summary>
@@ -56,22 +54,20 @@ namespace BitTimeScheduler.Models
             get => _activeDays;
             set
             {
-                // Compare lengths and then each element. (Order matters; adjust as needed.)
-                if ((_activeDays == null && value != null) ||
-                    (_activeDays != null && value == null) ||
-                    (_activeDays != null && value != null && !_activeDays.SequenceEqual(value)))
+                var normalizedValue = value ?? Array.Empty<DayOfWeek>();
+                if (!_activeDays.SequenceEqual(normalizedValue))
                 {
-                    _activeDays = value;
+                    _activeDays = normalizedValue;
                     OnPropertyChanged(nameof(ActiveDays));
                 }
             }
         }
 
-        private BitTimeRange _timeBlock;
+        private BitTimeRange? _timeBlock;
         /// <summary>
         /// Gets or sets the time block for the schedule.
         /// </summary>
-        public BitTimeRange TimeBlock
+        public BitTimeRange? TimeBlock
         {
             get => _timeBlock;
             set
@@ -102,7 +98,7 @@ namespace BitTimeScheduler.Models
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {

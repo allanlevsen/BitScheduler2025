@@ -8,7 +8,7 @@
 
     public class BitScheduleResponse
     {
-        public BitScheduleRequest Request { get; set; }
-        public List<BitMonth> ScheduledMonths { get; set; }
+        public BitScheduleRequest Request { get; set; } = new();
+        public List<BitMonth> ScheduledMonths { get; set; } = new();
     }
 }

@@ -1,4 +1,3 @@
-using BitSchedulerCore.Models;
 using BitTimeScheduler;
 
 namespace BitSchedulerCore.Services

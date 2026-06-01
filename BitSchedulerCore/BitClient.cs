@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BitSchedulerCore
+﻿namespace BitSchedulerCore
 {
     public class BitClient
     {
         public int BitClientId { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public ICollection<BitResource> BitResources { get; set; } = new List<BitResource>();
         public ICollection<BitReservation> BitReservations { get; set; } = new List<BitReservation>();
         public ICollection<BitResourceScheduleRange> BitResourceScheduleRanges { get; set; } = new List<BitResourceScheduleRange>();

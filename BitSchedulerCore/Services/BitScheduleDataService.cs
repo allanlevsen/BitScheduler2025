@@ -1,21 +1,13 @@
-﻿
-using BitSchedulerCore.Data.BitTimeScheduler.Data;
+﻿using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitTimeScheduler.Models;
 using BitTimeScheduler;
 using Microsoft.EntityFrameworkCore;
 
 namespace BitSchedulerCore.Services
 {
-    public class BitScheduleDataService
+    public class BitScheduleDataService(BitScheduleDbContext dbContext, BitResourceScheduleRangePayloadConverter payloadConverter)
     {
         private const int RangeMonths = 6;
-        private readonly BitScheduleDbContext _dbContext;
-        private readonly BitResourceScheduleRangePayloadConverter _payloadConverter = new();
-
-        public BitScheduleDataService(BitScheduleDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public List<BitDay> LoadScheduleData(BitScheduleConfiguration config, int clientId)
         {
@@ -34,7 +26,7 @@ namespace BitSchedulerCore.Services
 
             var days = CreateEmptyDays(requestedStart, requestedEnd, clientId);
 
-            var overlappingRanges = _dbContext.BitResourceScheduleRanges
+            var overlappingRanges = dbContext.BitResourceScheduleRanges
                 .Where(r => r.BitClientId == clientId &&
                             r.BitResourceId == config.BitResourceId &&
                             r.StartDate <= requestedEnd &&
@@ -44,7 +36,7 @@ namespace BitSchedulerCore.Services
 
             foreach (var range in overlappingRanges)
             {
-                var rangeDays = _payloadConverter.Deserialize(range.StartDate, range.EndDate, range.Payload, clientId);
+                var rangeDays = payloadConverter.Deserialize(range.StartDate, range.EndDate, range.Payload, clientId);
                 foreach (var day in rangeDays.Values)
                 {
                     if (day.Date < requestedStart || day.Date > requestedEnd)
@@ -82,7 +74,7 @@ namespace BitSchedulerCore.Services
                 DateTime rangeStart = group.Key;
                 DateTime rangeEnd = GetCanonicalRangeEnd(rangeStart);
 
-                var scheduleRange = await _dbContext.BitResourceScheduleRanges
+                var scheduleRange = await dbContext.BitResourceScheduleRanges
                     .SingleOrDefaultAsync(r => r.BitClientId == clientId &&
                                                r.BitResourceId == config.BitResourceId &&
                                                r.StartDate == rangeStart &&
@@ -90,14 +82,14 @@ namespace BitSchedulerCore.Services
 
                 var rangeDays = scheduleRange == null
                     ? CreateEmptyDays(rangeStart, rangeEnd, clientId)
-                    : _payloadConverter.Deserialize(rangeStart, rangeEnd, scheduleRange.Payload, clientId);
+                    : payloadConverter.Deserialize(rangeStart, rangeEnd, scheduleRange.Payload, clientId);
 
                 foreach (var day in group)
                 {
                     rangeDays[day.Date.Date] = CloneDay(day, clientId);
                 }
 
-                byte[] payload = _payloadConverter.Serialize(rangeStart, rangeEnd, rangeDays);
+                byte[] payload = payloadConverter.Serialize(rangeStart, rangeEnd, rangeDays);
 
                 if (scheduleRange == null)
                 {
@@ -114,7 +106,7 @@ namespace BitSchedulerCore.Services
                         UpdatedDate = DateTime.UtcNow
                     };
 
-                    _dbContext.BitResourceScheduleRanges.Add(scheduleRange);
+                    dbContext.BitResourceScheduleRanges.Add(scheduleRange);
                 }
                 else
                 {
@@ -124,7 +116,7 @@ namespace BitSchedulerCore.Services
                 }
             }
 
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public (DateTime StartDate, DateTime EndDate) GetCanonicalRange(DateTime date)
@@ -135,7 +127,12 @@ namespace BitSchedulerCore.Services
 
         private List<BitDay> LoadLegacyBitDays(BitScheduleConfiguration config, int clientId)
         {
-            return _dbContext.BitDays
+            if (config.DateRange == null)
+            {
+                return new List<BitDay>();
+            }
+
+            return dbContext.BitDays
                 .Where(d => d.Date >= config.DateRange.StartDate &&
                             d.Date <= config.DateRange.EndDate &&
                             d.ClientId == clientId)
@@ -148,11 +145,11 @@ namespace BitSchedulerCore.Services
             foreach (BitDay day in daysToSave.Values)
             {
                 DateTime date = day.Date.Date;
-                var existing = await _dbContext.BitDays.SingleOrDefaultAsync(d => d.ClientId == clientId && d.Date == date);
+                var existing = await dbContext.BitDays.SingleOrDefaultAsync(d => d.ClientId == clientId && d.Date == date);
                 if (existing == null)
                 {
                     var newDay = CloneDay(day, clientId);
-                    _dbContext.BitDays.Add(newDay);
+                    dbContext.BitDays.Add(newDay);
                 }
                 else
                 {
@@ -161,7 +158,7 @@ namespace BitSchedulerCore.Services
                 }
             }
 
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         private static Dictionary<DateTime, BitDay> CreateEmptyDays(DateTime startDate, DateTime endDate, int clientId)

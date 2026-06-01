@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BitTimeScheduler.Models
+﻿namespace BitTimeScheduler.Models
 {
     /// <summary>
     /// Metadata flags for a BitDay. For now, we only define IsFree.

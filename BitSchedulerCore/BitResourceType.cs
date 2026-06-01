@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BitSchedulerCore
+﻿namespace BitSchedulerCore
 {
     public class BitResourceType
     {
         public int BitResourceTypeId { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public ICollection<BitResource> BitResources { get; set; }
+        public ICollection<BitResource> BitResources { get; set; } = new List<BitResource>();
     }
 }

@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO; // Required for Path
-using System.Linq;
-using System.Threading.Tasks; // Required for async Task
+﻿using System.Diagnostics;
 using BitTimeScheduler.Models;
-using BitSchedulerCore.Models;
 using BitSchedulerCore.Data.BitTimeScheduler.Data; // Required for BitScheduleDbContext
 using BitSchedulerCore.Services; // Required for BitScheduleDataService
 using Microsoft.EntityFrameworkCore; // Required for DbContextOptionsBuilder, UseNpgsql
 using Microsoft.Extensions.Configuration; // Required for ConfigurationBuilder
-using Microsoft.Extensions.Logging; // Required for ILogger
 using Microsoft.Extensions.Logging.Abstractions; // Required for NullLogger
-
 
 namespace BitTimeScheduler.TestsPerformanceTesting
 {

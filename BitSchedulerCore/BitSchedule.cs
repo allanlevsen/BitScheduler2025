@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks; // Required for asynchronous operations (Task, async, await)
+﻿using System.ComponentModel;
 using BitSchedulerCore.Data.BitTimeScheduler.Data; // Required for the DbContext
 using BitSchedulerCore.Models; // Contains AuditableEntity, used by BitReservation (though not directly here)
 using BitSchedulerCore.Services; // Required for BitScheduleDataService
 using BitTimeScheduler.Models; // Contains supporting model classes like BitDateRange, BitTimeRange, etc.
-using Microsoft.EntityFrameworkCore; // Required for DbContext operations (SaveChangesAsync, Entry, EntityState)
+using Microsoft.EntityFrameworkCore; // Required for DbUpdateException
 using Microsoft.Extensions.Logging; // Required for ILogger
 
 namespace BitTimeScheduler
@@ -45,8 +41,6 @@ namespace BitTimeScheduler
         /// Entity Framework DbContext instance used for persisting changes (saving updates/inserts) to the database.
         /// Marked readonly as it's injected via the constructor.
         /// </summary>
-        private readonly BitScheduleDbContext _dbContext;
-
         /// <summary>
         /// Logger instance injected for logging messages throughout the class lifecycle and operations.
         /// Marked readonly as it's injected via the constructor.
@@ -155,7 +149,7 @@ namespace BitTimeScheduler
         /// <param name="oldConfig">The previous configuration object.</param>
         /// <param name="newConfig">The new configuration object.</param>
         /// <returns>True if DateRange or ActiveDays have changed, false otherwise.</returns>
-        private bool ConfigurationHasChanged(BitScheduleConfiguration oldConfig, BitScheduleConfiguration newConfig)
+        private bool ConfigurationHasChanged(BitScheduleConfiguration? oldConfig, BitScheduleConfiguration? newConfig)
         {
             // If both are null, no change.
             if (oldConfig == null && newConfig == null) return false;
@@ -194,7 +188,7 @@ namespace BitTimeScheduler
         /// </summary>
         /// <param name="sender">The configuration object that raised the event.</param>
         /// <param name="e">Event arguments containing the name of the changed property.</param>
-        protected void OnConfigurationChanged(object sender, PropertyChangedEventArgs e)
+        protected void OnConfigurationChanged(object? sender, PropertyChangedEventArgs e)
         {
             _logger.LogDebug("Configuration property changed: {PropertyName} for ClientId {ClientId}. Setting IsDirty=true.", e.PropertyName, ClientId);
             // Always mark the schedule as potentially dirty when any configuration property changes.
@@ -234,7 +228,7 @@ namespace BitTimeScheduler
             // Validate and store injected dependencies
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            ArgumentNullException.ThrowIfNull(dbContext);
             this._configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
             _logger.LogInformation("Initializing BitSchedule instance for ClientId {ClientId}...", clientId);
@@ -269,7 +263,7 @@ namespace BitTimeScheduler
             _logger.LogInformation("Attempting to load schedule data for ClientId {ClientId}.", ClientId);
 
             // Cannot load data without configuration or the data service.
-            if (_configuration == null || _dataService == null || _configuration.DateRange == null)
+            if (_configuration?.DateRange == null)
             {
                 _logger.LogWarning("Cannot load schedule data for ClientId {ClientId}: Configuration, DateRange, or DataService is null.", ClientId);
                 // Ensure data is cleared and state reflects inability to load
@@ -285,7 +279,7 @@ namespace BitTimeScheduler
             try
             {
                 // Call the data service to retrieve BitDay records
-                List<BitDay> loadedDays = _dataService.LoadScheduleData(_configuration, this.ClientId);
+                List<BitDay> loadedDays = _dataService.LoadScheduleData(_configuration, ClientId);
 
                 // Re-populate the internal dictionary using Date.Date as the key.
                 _scheduleData = loadedDays.ToDictionary(d => d.Date.Date);
@@ -323,16 +317,12 @@ namespace BitTimeScheduler
              _logger.LogInformation("Attempting WriteDayAsync for ClientId {ClientId}, ResourceId {BitResourceId}, Date {TargetDate}, Time {StartTime} - {EndTime}.",
                  ClientId, request.BitResourceId, targetDate.ToShortDateString(), request.StartTime, request.EndTime);
 
-            if (_configuration != null && request.BitResourceId > 0 && _configuration.BitResourceId != request.BitResourceId)
-            {
-                _logger.LogDebug("Updating configuration resource from {CurrentResourceId} to {RequestedResourceId} before WriteDayAsync.", _configuration.BitResourceId, request.BitResourceId);
-                _configuration.BitResourceId = request.BitResourceId;
-            }
+            SyncConfigurationResource(request.BitResourceId, nameof(WriteDayAsync));
 
-            if (!_scheduleData.TryGetValue(targetDate, out BitDay day))
+            if (!_scheduleData.TryGetValue(targetDate, out var day))
             {
                 _logger.LogDebug("BitDay for Date {TargetDate} not found in memory cache for ClientId {ClientId}. Creating new in-memory day.", targetDate.ToShortDateString(), ClientId);
-                day = new BitDay(targetDate) { ClientId = this.ClientId };
+                day = CreateDay(targetDate);
                 _scheduleData[targetDate] = day;
             }
             else
@@ -357,7 +347,7 @@ namespace BitTimeScheduler
                 try
                 {
                     _logger.LogInformation("Calling SaveScheduleDataAsync for BitDay {TargetDate}, ClientId {ClientId}, ResourceId {BitResourceId}.", targetDate.ToShortDateString(), ClientId, _configuration?.BitResourceId);
-                    await _dataService.SaveScheduleDataAsync(_configuration, this.ClientId, new Dictionary<DateTime, BitDay>
+                    await _dataService.SaveScheduleDataAsync(_configuration!, ClientId, new Dictionary<DateTime, BitDay>
                     {
                         [targetDate] = day
                     });
@@ -401,18 +391,14 @@ namespace BitTimeScheduler
              _logger.LogInformation("Attempting WriteScheduleAsync for ClientId {ClientId}, ResourceId {BitResourceId} from {StartDate} to {EndDate}, Time {StartTime} - {EndTime}.",
                  ClientId, request.BitResourceId, request.DateRange.StartDate.ToShortDateString(), request.DateRange.EndDate.ToShortDateString(), request.TimeBlock.StartTime, request.TimeBlock.EndTime);
 
-            if (_configuration != null && request.BitResourceId > 0 && _configuration.BitResourceId != request.BitResourceId)
-            {
-                _logger.LogDebug("Updating configuration resource from {CurrentResourceId} to {RequestedResourceId} before WriteScheduleAsync.", _configuration.BitResourceId, request.BitResourceId);
-                _configuration.BitResourceId = request.BitResourceId;
-            }
+            SyncConfigurationResource(request.BitResourceId, nameof(WriteScheduleAsync));
 
             bool allReservationsSucceeded = true; // Track if individual reservations work
             Dictionary<DateTime, BitDay> modifiedDaysForSave = new Dictionary<DateTime, BitDay>(); // Track days successfully modified
 
             // Use a HashSet for efficient O(1) average lookup of active weekdays.
-            HashSet<DayOfWeek> activeDaysSet = null;
-            if (request.ActiveDays != null && request.ActiveDays.Length > 0)
+            HashSet<DayOfWeek>? activeDaysSet = null;
+            if (request.ActiveDays is { Length: > 0 })
             {
                 activeDaysSet = new HashSet<DayOfWeek>(request.ActiveDays);
                 _logger.LogDebug("ActiveDays filter applied: {@ActiveDays}", request.ActiveDays);
@@ -475,7 +461,7 @@ namespace BitTimeScheduler
                 _logger.LogInformation("All reservations succeeded. Attempting to save {Count} modified BitDays for ClientId {ClientId}.", modifiedDaysForSave.Count, ClientId);
                 try
                 {
-                    await _dataService.SaveScheduleDataAsync(_configuration, this.ClientId, modifiedDaysForSave);
+                    await _dataService.SaveScheduleDataAsync(_configuration!, ClientId, modifiedDaysForSave);
                     _logger.LogInformation("SaveScheduleDataAsync completed successfully for bulk update for ClientId {ClientId}.", ClientId);
                     return true; // Operation succeeded fully
                 }
@@ -541,7 +527,7 @@ namespace BitTimeScheduler
                 _logger.LogDebug("BitDay not found in memory cache for Date {TargetDate}. Returning new default BitDay.", targetDate.ToShortDateString());
                 // The day was not found in the data loaded according to the current configuration.
                 // Return a new, default (free) BitDay object for that date.
-                return new BitDay(targetDate) { ClientId = this.ClientId };
+                return CreateDay(targetDate);
             }
         }
 
@@ -557,8 +543,8 @@ namespace BitTimeScheduler
              _logger.LogInformation("Attempting ReadSchedule for ClientId {ClientId}, ResourceId {BitResourceId} with Request: {@Request}", ClientId, request.BitResourceId, request);
 
             // Prepare a HashSet for efficient DayOfWeek lookups if criteria are provided.
-            HashSet<DayOfWeek> activeDaysSet = null;
-            if (request.ActiveDays != null && request.ActiveDays.Length > 0)
+            HashSet<DayOfWeek>? activeDaysSet = null;
+            if (request.ActiveDays is { Length: > 0 })
             {
                 activeDaysSet = new HashSet<DayOfWeek>(request.ActiveDays); // O(M) to create
                 _logger.LogDebug("Applying ActiveDays filter: {@ActiveDaysSet}", activeDaysSet);
@@ -615,6 +601,22 @@ namespace BitTimeScheduler
             };
             _logger.LogInformation("ReadSchedule completed for ClientId {ClientId}. Returning {MonthCount} months.", ClientId, response.ScheduledMonths.Count);
             return response;
+        }
+
+        private BitDay CreateDay(DateTime date)
+        {
+            return new BitDay(date) { ClientId = ClientId };
+        }
+
+        private void SyncConfigurationResource(int requestedResourceId, string operationName)
+        {
+            if (_configuration == null || requestedResourceId <= 0 || _configuration.BitResourceId == requestedResourceId)
+            {
+                return;
+            }
+
+            _logger.LogDebug("Updating configuration resource from {CurrentResourceId} to {RequestedResourceId} before {OperationName}.", _configuration.BitResourceId, requestedResourceId, operationName);
+            _configuration.BitResourceId = requestedResourceId;
         }
     }
 }
