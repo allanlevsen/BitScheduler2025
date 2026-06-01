@@ -47,8 +47,7 @@ using (var scope = app.Services.CreateScope())
         var seeder = services.GetRequiredService<SeedingService>();
         var dbContext = services.GetRequiredService<BitScheduleDbContext>(); // Get context for logging
         app.Logger.LogInformation("Applying migrations (if any)...");
-        // Apply migrations - uncomment if needed automatically on startup
-        // await dbContext.Database.MigrateAsync();
+        await dbContext.Database.MigrateAsync();
         app.Logger.LogInformation("Seeding initial ResourceTypes and Clients...");
         await seeder.SeedAsync(); // Seed ResourceTypes, Clients, Resources
         app.Logger.LogInformation("Seeding initial Schedule Data (BitDays)...");
@@ -81,6 +80,11 @@ app.MapPost("/ReadSchedule", (BitScheduleConfiguration config, HttpContext httpC
     // TODO: Determine the correct ClientId dynamically (e.g., from user claims, request headers, or config)
     int clientId = 1; // Using hardcoded ClientId 1 for now
 
+    if (config.BitResourceId <= 0)
+    {
+        return Results.BadRequest("A valid BitResourceId is required.");
+    }
+
     try
     {
         // Create a BitSchedule instance using the provided configuration and injected services
@@ -91,6 +95,7 @@ app.MapPost("/ReadSchedule", (BitScheduleConfiguration config, HttpContext httpC
         // Note: ReadSchedule filters the already loaded data based on this request.
         var request = new BitScheduleRequest
         {
+            BitResourceId = config.BitResourceId,
             DateRange = config.DateRange,
             ActiveDays = config.ActiveDays,
             TimeBlock = config.TimeBlock // TimeBlock might not be strictly needed for ReadSchedule filtering logic
@@ -125,6 +130,7 @@ app.MapGet("/TestReadSchedule", (HttpContext httpContext) =>
     // Create a test configuration
     var testConfig = new BitScheduleConfiguration
     {
+        BitResourceId = 1,
         DateRange = new BitDateRange
         {
             StartDate = new DateTime(2025, 4, 1), // Adjusted test range
@@ -143,6 +149,7 @@ app.MapGet("/TestReadSchedule", (HttpContext httpContext) =>
         // Build a BitScheduleRequest from the test configuration
         var request = new BitScheduleRequest
         {
+            BitResourceId = testConfig.BitResourceId,
             DateRange = testConfig.DateRange,
             ActiveDays = testConfig.ActiveDays,
             TimeBlock = testConfig.TimeBlock
@@ -175,12 +182,18 @@ app.MapPost("/WriteScheduleDay", async (BitDayRequest request, HttpContext httpC
     // TODO: Determine the correct ClientId
     int clientId = 1; // Using hardcoded ClientId 1 for now
 
+    if (request.BitResourceId <= 0)
+    {
+        return Results.BadRequest("A valid BitResourceId is required.");
+    }
+
     // Build a minimal configuration needed to instantiate BitSchedule
     // The DateRange should ideally cover the day being written to,
     // ensuring the relevant BitDay might be loaded by the constructor.
     // If BitSchedule is intended to load data on demand, this might change.
     var config = new BitScheduleConfiguration
     {
+        BitResourceId = request.BitResourceId,
         DateRange = new BitDateRange // Configuration needs a valid range
         {
             StartDate = request.Date.Date.AddDays(-1), // Example: Load a small range around the target date
@@ -209,6 +222,45 @@ app.MapPost("/WriteScheduleDay", async (BitDayRequest request, HttpContext httpC
 });
 
 /// <summary>
+/// Writes (reserves) a schedule for a resource across a date range.
+/// POST /WriteSchedule
+/// Body: BitScheduleRequest object
+/// </summary>
+app.MapPost("/WriteSchedule", async (BitScheduleRequest request, HttpContext httpContext) =>
+{
+    var logger = httpContext.RequestServices.GetRequiredService<ILogger<BitSchedule>>();
+    var dataService = httpContext.RequestServices.GetRequiredService<BitScheduleDataService>();
+    var dbContext = httpContext.RequestServices.GetRequiredService<BitScheduleDbContext>();
+
+    int clientId = 1;
+
+    if (request.BitResourceId <= 0)
+    {
+        return Results.BadRequest("A valid BitResourceId is required.");
+    }
+
+    var config = new BitScheduleConfiguration
+    {
+        BitResourceId = request.BitResourceId,
+        DateRange = request.DateRange,
+        ActiveDays = request.ActiveDays,
+        TimeBlock = request.TimeBlock
+    };
+
+    try
+    {
+        var schedule = new BitSchedule(clientId, config, dataService, dbContext, logger);
+        bool updated = await schedule.WriteScheduleAsync(request);
+        return Results.Ok(new { success = updated });
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error occurred in /WriteSchedule endpoint for ClientId {ClientId} with request {@Request}", clientId, request);
+        return Results.Problem("An error occurred while writing the schedule.", statusCode: 500);
+    }
+});
+
+/// <summary>
 /// Reads the schedule information for a specific day.
 /// POST /ReadScheduleDay
 /// Body: BitDayRequest object (only Date is strictly needed)
@@ -223,9 +275,15 @@ app.MapPost("/ReadScheduleDay", (BitDayRequest request, HttpContext httpContext)
     // TODO: Determine the correct ClientId
     int clientId = 1; // Using hardcoded ClientId 1 for now
 
+    if (request.BitResourceId <= 0)
+    {
+        return Results.BadRequest("A valid BitResourceId is required.");
+    }
+
     // Build a minimal configuration to load data around the requested date
     var config = new BitScheduleConfiguration
     {
+        BitResourceId = request.BitResourceId,
         DateRange = new BitDateRange
         {
             StartDate = request.Date.Date.AddDays(-1),
@@ -273,6 +331,7 @@ app.MapGet("/TestReadScheduleDay", (HttpContext httpContext) =>
     // Build a configuration to load data around the test date
     var config = new BitScheduleConfiguration
     {
+        BitResourceId = 1,
         DateRange = new BitDateRange
         {
             StartDate = testDate.Date.AddDays(-1),

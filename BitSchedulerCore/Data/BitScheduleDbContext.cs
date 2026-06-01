@@ -18,6 +18,7 @@
             public DbSet<BitResourceType> BitResourceTypes { get; set; }
             public DbSet<BitResource> BitResources { get; set; }
             public DbSet<BitClient> BitClients { get; set; }
+            public DbSet<BitResourceScheduleRange> BitResourceScheduleRanges { get; set; }
 
 
 
@@ -39,6 +40,11 @@
 
                     // One client has many reservations.
                     entity.HasMany(e => e.BitReservations)
+                          .WithOne(r => r.BitClient)
+                          .HasForeignKey(r => r.BitClientId)
+                          .OnDelete(DeleteBehavior.Cascade);
+
+                    entity.HasMany(e => e.BitResourceScheduleRanges)
                           .WithOne(r => r.BitClient)
                           .HasForeignKey(r => r.BitClientId)
                           .OnDelete(DeleteBehavior.Cascade);
@@ -72,6 +78,11 @@
                     entity.Property(e => e.EmailAddress)
                           .IsRequired()
                           .HasMaxLength(100);
+
+                    entity.HasMany(e => e.BitResourceScheduleRanges)
+                          .WithOne(r => r.BitResource)
+                          .HasForeignKey(r => r.BitResourceId)
+                          .OnDelete(DeleteBehavior.Cascade);
                 });
 
                 // Configure BitReservation.
@@ -132,6 +143,41 @@
                     entity.Property(e => e.IsFree)
                           .HasColumnType("bit")
                           .IsRequired();
+                });
+
+                modelBuilder.Entity<BitResourceScheduleRange>(entity =>
+                {
+                    entity.HasKey(e => e.BitResourceScheduleRangeId);
+
+                    entity.Property(e => e.BitClientId)
+                          .IsRequired();
+
+                    entity.Property(e => e.BitResourceId)
+                          .IsRequired();
+
+                    entity.Property(e => e.StartDate)
+                          .HasColumnType("date")
+                          .IsRequired();
+
+                    entity.Property(e => e.EndDate)
+                          .HasColumnType("date")
+                          .IsRequired();
+
+                    entity.Property(e => e.Payload)
+                          .HasColumnType("varbinary(max)")
+                          .IsRequired();
+
+                    entity.Property(e => e.CreatedBy)
+                          .IsRequired();
+
+                    entity.Property(e => e.CreatedDate)
+                          .IsRequired();
+
+                    entity.Property(e => e.UpdatedBy)
+                          .IsRequired();
+
+                    entity.HasIndex(e => new { e.BitResourceId, e.StartDate, e.EndDate });
+                    entity.HasIndex(e => new { e.BitClientId, e.BitResourceId, e.StartDate, e.EndDate }).IsUnique();
                 });
 
                 base.OnModelCreating(modelBuilder);

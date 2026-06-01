@@ -17,6 +17,7 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
+build_property.EntryPointFilePath = 
 build_property.RootNamespace = BitScheduler.Benchmarks
 build_property.ProjectDir = C:\Users\allanlevsen\source\repos\allanlevsen\BitScheduler2025\BitScheduler.Benchmarks\
 build_property.EnableComHosting = 

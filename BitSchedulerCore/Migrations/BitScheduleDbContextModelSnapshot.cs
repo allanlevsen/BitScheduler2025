@@ -17,7 +17,7 @@ namespace BitSchedulerCore.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.2")
+                .HasAnnotation("ProductVersion", "10.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -48,10 +48,13 @@ namespace BitSchedulerCore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitReservationId"));
 
+                    b.Property<int>("BitClientId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("BitDayId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClientId")
+                    b.Property<int>("BitResourceId")
                         .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
@@ -63,11 +66,6 @@ namespace BitSchedulerCore.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
-
-                    b.Property<string>("ResourceId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("SlotLength")
                         .HasColumnType("int");
@@ -84,7 +82,11 @@ namespace BitSchedulerCore.Migrations
 
                     b.HasKey("BitReservationId");
 
+                    b.HasIndex("BitClientId");
+
                     b.HasIndex("BitDayId");
+
+                    b.HasIndex("BitResourceId");
 
                     b.ToTable("BitReservations");
                 });
@@ -125,6 +127,54 @@ namespace BitSchedulerCore.Migrations
                     b.HasIndex("BitResourceTypeId");
 
                     b.ToTable("BitResources");
+                });
+
+            modelBuilder.Entity("BitSchedulerCore.BitResourceScheduleRange", b =>
+                {
+                    b.Property<int>("BitResourceScheduleRangeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitResourceScheduleRangeId"));
+
+                    b.Property<int>("BitClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BitResourceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<byte[]>("Payload")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("BitResourceScheduleRangeId");
+
+                    b.HasIndex("BitResourceId", "StartDate", "EndDate");
+
+                    b.HasIndex("BitClientId", "BitResourceId", "StartDate", "EndDate")
+                        .IsUnique();
+
+                    b.ToTable("BitResourceScheduleRanges");
                 });
 
             modelBuilder.Entity("BitSchedulerCore.BitResourceType", b =>
@@ -178,9 +228,25 @@ namespace BitSchedulerCore.Migrations
 
             modelBuilder.Entity("BitSchedulerCore.BitReservation", b =>
                 {
+                    b.HasOne("BitSchedulerCore.BitClient", "BitClient")
+                        .WithMany("BitReservations")
+                        .HasForeignKey("BitClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BitTimeScheduler.BitDay", null)
                         .WithMany("Reservations")
                         .HasForeignKey("BitDayId");
+
+                    b.HasOne("BitSchedulerCore.BitResource", "BitResource")
+                        .WithMany("BitReservations")
+                        .HasForeignKey("BitResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BitClient");
+
+                    b.Navigation("BitResource");
                 });
 
             modelBuilder.Entity("BitSchedulerCore.BitResource", b =>
@@ -202,9 +268,39 @@ namespace BitSchedulerCore.Migrations
                     b.Navigation("BitResourceType");
                 });
 
+            modelBuilder.Entity("BitSchedulerCore.BitResourceScheduleRange", b =>
+                {
+                    b.HasOne("BitSchedulerCore.BitClient", "BitClient")
+                        .WithMany("BitResourceScheduleRanges")
+                        .HasForeignKey("BitClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BitSchedulerCore.BitResource", "BitResource")
+                        .WithMany("BitResourceScheduleRanges")
+                        .HasForeignKey("BitResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BitClient");
+
+                    b.Navigation("BitResource");
+                });
+
             modelBuilder.Entity("BitSchedulerCore.BitClient", b =>
                 {
+                    b.Navigation("BitReservations");
+
+                    b.Navigation("BitResourceScheduleRanges");
+
                     b.Navigation("BitResources");
+                });
+
+            modelBuilder.Entity("BitSchedulerCore.BitResource", b =>
+                {
+                    b.Navigation("BitReservations");
+
+                    b.Navigation("BitResourceScheduleRanges");
                 });
 
             modelBuilder.Entity("BitSchedulerCore.BitResourceType", b =>

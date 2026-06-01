@@ -1,6 +1,7 @@
 ﻿using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore;
 using BitTimeScheduler.Models;
+using BitSchedulerCore.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BitTimeScheduler.Services
@@ -8,6 +9,7 @@ namespace BitTimeScheduler.Services
     public class SeedingService
     {
         private readonly BitScheduleDbContext _dbContext;
+        private readonly BitResourceScheduleRangePayloadConverter _payloadConverter = new();
 
         public SeedingService(BitScheduleDbContext dbContext)
         {
@@ -239,8 +241,61 @@ namespace BitTimeScheduler.Services
                     }
                     else
                         Console.WriteLine($"Data already exists for the month starting {sDate:yyyy-MM-dd}. Skipping seeding.");
+
+                    await SeedResourceScheduleRangesAsync(currentClientId, sDate, eDate);
                 }
             }
+        }
+
+        private async Task SeedResourceScheduleRangesAsync(int clientId, DateTime startDate, DateTime endDate)
+        {
+            var resources = await _dbContext.BitResources
+                .Where(r => r.BitClientId == clientId)
+                .ToListAsync();
+
+            foreach (var resource in resources)
+            {
+                bool rangeExists = await _dbContext.BitResourceScheduleRanges.AnyAsync(r =>
+                    r.BitClientId == clientId &&
+                    r.BitResourceId == resource.BitResourceId &&
+                    r.StartDate == startDate.Date &&
+                    r.EndDate == endDate.Date);
+
+                if (rangeExists)
+                {
+                    continue;
+                }
+
+                var config = new BitScheduleConfiguration
+                {
+                    BitResourceId = resource.BitResourceId,
+                    DateRange = new BitDateRange
+                    {
+                        StartDate = startDate.Date,
+                        EndDate = endDate.Date
+                    },
+                    ActiveDays = new[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday },
+                    TimeBlock = new BitTimeRange()
+                };
+
+                var mockDays = LoadMockData(config, clientId);
+                var payload = _payloadConverter.Serialize(startDate.Date, endDate.Date, mockDays.ToDictionary(d => d.Date.Date));
+
+                _dbContext.BitResourceScheduleRanges.Add(new BitResourceScheduleRange
+                {
+                    BitClientId = clientId,
+                    BitResourceId = resource.BitResourceId,
+                    StartDate = startDate.Date,
+                    EndDate = endDate.Date,
+                    Payload = payload,
+                    CreatedBy = "seed",
+                    CreatedDate = DateTime.UtcNow,
+                    UpdatedBy = "seed",
+                    UpdatedDate = DateTime.UtcNow
+                });
+            }
+
+            await _dbContext.SaveChangesAsync();
         }
 
 

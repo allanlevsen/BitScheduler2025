@@ -12,6 +12,7 @@ namespace BitSchedulerCore.Models
     /// </summary>
     public class BitDayRequest
     {
+        public int BitResourceId { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }

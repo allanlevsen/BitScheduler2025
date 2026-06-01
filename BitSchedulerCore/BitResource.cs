@@ -17,5 +17,6 @@ namespace BitSchedulerCore
         public int BitClientId { get; set; }
         public BitClient BitClient { get; set; }
         public ICollection<BitReservation> BitReservations { get; set; } = new List<BitReservation>();
+        public ICollection<BitResourceScheduleRange> BitResourceScheduleRanges { get; set; } = new List<BitResourceScheduleRange>();
     }
 }

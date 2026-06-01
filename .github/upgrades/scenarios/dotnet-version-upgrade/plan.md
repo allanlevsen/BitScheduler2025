@@ -2,8 +2,8 @@
 
 ## Overview
 
-**Target**: Upgrade all projects in the solution from .NET 9 to .NET 10
-**Scope**: 8 SDK-style projects, 22 NuGet packages, and a straightforward all-at-once upgrade with limited code fixes expected
+**Target**: Upgrade all projects in the solution from .NET 9 to .NET 10 and follow through on the requested post-upgrade schedule persistence redesign
+**Scope**: 8 SDK-style projects, package and compatibility updates already completed, plus a resource-oriented schedule storage redesign to reduce per-resource reads and writes
 
 ### Selected Strategy
 **All-At-Once** — All projects upgraded simultaneously in a single operation.
@@ -40,3 +40,27 @@ Apply the code and configuration changes required to handle the reported source 
 Run the full solution build and the relevant automated tests to confirm the .NET 10 upgrade is stable across the application, libraries, and test projects.
 
 **Done when**: The solution builds successfully, relevant tests pass, and no remaining upgrade-related validation blockers are found.
+
+---
+
+### 05-resource-range-storage: Introduce per-resource schedule range storage
+
+Replace the persistence model that stores schedule state one day at a time with a resource-oriented range model that can store a larger contiguous period per resource, including explicit `StartDate` and `EndDate` boundaries for efficient overlap searches. Preserve the current `BitDay` behavior as the in-memory representation while introducing a serialized range payload suitable for multi-month storage.
+
+**Done when**: The core data model and persistence layer support per-resource schedule range rows, including schema, serialization, load logic, and save logic for larger date ranges.
+
+---
+
+### 06-refactor-schedule-apis-and-seeding: Refactor schedule requests, API usage, and seeding for resource-based storage
+
+Update the schedule-facing models, API endpoints, and seed data flow so reads and writes target a specific resource and use the new range-based persistence model rather than daily client-wide rows.
+
+**Done when**: Schedule requests carry a resource identifier, API and service flows use resource-based loading and saving, and seeding populates the new resource schedule range storage.
+
+---
+
+### 07-validate-resource-range-redesign: Validate the resource-based schedule redesign
+
+Run a full solution build and the relevant automated tests to confirm the redesigned storage model compiles cleanly and that the updated schedule logic is covered by tests.
+
+**Done when**: The solution builds successfully, relevant tests pass, and the new resource-oriented schedule persistence flow is validated.

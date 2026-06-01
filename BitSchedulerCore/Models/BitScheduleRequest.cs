@@ -6,6 +6,7 @@
     /// </summary>
     public class BitScheduleRequest
     {
+        public int BitResourceId { get; set; }
         public BitDateRange DateRange { get; set; }
         public DayOfWeek[] ActiveDays { get; set; }
         public BitTimeRange TimeBlock { get; set; }

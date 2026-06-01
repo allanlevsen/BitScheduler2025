@@ -12,6 +12,24 @@ namespace BitTimeScheduler.Models
     public class BitScheduleConfiguration : INotifyPropertyChanged
     {
         private BitDateRange _dateRange;
+
+        private int _bitResourceId;
+        /// <summary>
+        /// Gets or sets the resource whose schedule should be loaded and updated.
+        /// </summary>
+        public int BitResourceId
+        {
+            get => _bitResourceId;
+            set
+            {
+                if (_bitResourceId != value)
+                {
+                    _bitResourceId = value;
+                    OnPropertyChanged(nameof(BitResourceId));
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets the date range for the schedule.
         /// </summary>
