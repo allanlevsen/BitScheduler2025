@@ -77,7 +77,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             sw.Start();
             for (int i = 0; i < iterations; i++)
             {
-                int b = BitDay.TimeToBlockIndex(TimeSpan.FromHours(9d));
+                _ = BitDay.TimeToBlockIndex(TimeSpan.FromHours(9d));
             }
             sw.Stop();
             Console.WriteLine($"TimeToBlockIndex: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms");
@@ -86,7 +86,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             sw.Restart();
             for (int i = 0; i < iterations; i++)
             {
-                TimeSpan t = BitDay.BlockIndexToTime(36);
+                _ = BitDay.BlockIndexToTime(36);
             }
             sw.Stop();
             Console.WriteLine($"BlockIndexToTime: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms");
@@ -95,7 +95,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             sw.Restart();
             for (int i = 0; i < iterations; i++)
             {
-                BitTimeRange r = BitDay.CreateRangeFromBlocks(36, 39);
+                _ = BitDay.CreateRangeFromBlocks(36, 39);
             }
             sw.Stop();
             Console.WriteLine($"CreateRangeFromBlocks: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms");
@@ -104,7 +104,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             sw.Restart();
             for (int i = 0; i < iterations; i++)
             {
-                BitTimeRange r = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d));
+                _ = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d));
             }
             sw.Stop();
             Console.WriteLine($"CreateRangeFromTimes: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms");
@@ -150,7 +150,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Test invalid case: startBlock > endBlock. For example, (5, 3) should throw an exception.
             try
             {
-                var invalidRange = BitDay.CreateRangeFromBlocks(5, 3);
+                _ = BitDay.CreateRangeFromBlocks(5, 3);
                 Console.WriteLine("FAIL: Expected exception for CreateRangeFromBlocks(5, 3), but no exception was thrown.");
             }
             catch (ArgumentException ex)
@@ -165,7 +165,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Test invalid case: startBlock > endBlock. For example, (-1, 3) should throw an exception.
             try
             {
-                var invalidRange = BitDay.CreateRangeFromBlocks(-1, 3);
+                _ = BitDay.CreateRangeFromBlocks(-1, 3);
                 Console.WriteLine("FAIL: Expected exception for CreateRangeFromBlocks(-1, 3), but no exception was thrown.");
             }
             catch (ArgumentException ex)
@@ -180,7 +180,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Test invalid case: startBlock > endBlock. For example, (5, 96) should throw an exception.
             try
             {
-                var invalidRange = BitDay.CreateRangeFromBlocks(5, 96);
+                _ = BitDay.CreateRangeFromBlocks(5, 96);
                 Console.WriteLine("FAIL: Expected exception for CreateRangeFromBlocks(5, 96), but no exception was thrown.");
             }
             catch (ArgumentException ex)

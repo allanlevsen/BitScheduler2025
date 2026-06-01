@@ -113,7 +113,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             {
                 StartTime = searchStart,
                 EndTime = searchEnd,
-                Days = new DayOfWeek[] { }  // Empty weekday list.
+                Days = Array.Empty<DayOfWeek>()
             };
 
             // Scenario A: No reservations made.
@@ -170,7 +170,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Find the first Tuesday in the month and reserve the search time block.
             int startSlot = (int)(searchStart.TotalMinutes / 15);
             int length = (int)((searchEnd - searchStart).TotalMinutes / 15);
-            BitDay reservedTuesday = null;
+            BitDay? reservedTuesday = null;
             foreach (int d in Enumerable.Range(1, DateTime.DaysInMonth(2025, 8)))
             {
                 if (bm[d].Date.DayOfWeek == DayOfWeek.Tuesday)
@@ -190,6 +190,12 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             }
 
             // Validate: The week that contains the reserved Tuesday should not appear in the results.
+            if (reservedTuesday == null)
+            {
+                Console.WriteLine("Error: No Tuesday was found to reserve.");
+                return;
+            }
+
             DateTime weekKey = reservedTuesday.Date.AddDays(-(int)reservedTuesday.Date.DayOfWeek);
             bool weekExists = availableAfter.Any(day => day.Date.AddDays(-(int)day.Date.DayOfWeek) == weekKey);
             if (weekExists)
@@ -215,13 +221,13 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             {
                 StartTime = new TimeSpan(10, 0, 0),
                 EndTime = new TimeSpan(11, 0, 0),
-                Days = new DayOfWeek[] { }  // Empty weekday list.
+                Days = Array.Empty<DayOfWeek>()
             };
 
             Stopwatch sw = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                var available = bm.GetAvailableDays(criteria);
+                _ = bm.GetAvailableDays(criteria);
             }
             sw.Stop();
             Console.WriteLine($"Empty Weekday Performance Test: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms\n");
@@ -248,7 +254,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             Stopwatch sw = Stopwatch.StartNew();
             for (int i = 0; i < iterations; i++)
             {
-                var available = bm.GetAvailableDays(criteria);
+                _ = bm.GetAvailableDays(criteria);
             }
             sw.Stop();
             Console.WriteLine($"Multiple Weekday Performance Test: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms\n");
