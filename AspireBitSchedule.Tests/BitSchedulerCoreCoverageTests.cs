@@ -5,12 +5,70 @@ using BitSchedulerCore.Services;
 using BitTimeScheduler;
 using BitTimeScheduler.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using Npgsql;
 
 namespace AspireBitSchedule.Tests;
 
-public class BitSchedulerCoreCoverageTests
+public class BitSchedulerCoreCoverageTests : IAsyncLifetime
 {
+    private readonly string _adminConnectionString;
+    private readonly string _testConnectionString;
+    private readonly string _testDatabaseName;
+
+    public BitSchedulerCoreCoverageTests()
+    {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.Test.json", optional: false)
+            .Build();
+
+        var baseConnectionString = configuration.GetConnectionString("BitScheduleTestConnection")
+            ?? throw new InvalidOperationException("Could not find 'BitScheduleTestConnection' in appsettings.Test.json.");
+
+        var baseConnectionBuilder = new NpgsqlConnectionStringBuilder(baseConnectionString)
+        {
+            Pooling = false
+        };
+
+        var baseDatabaseName = string.IsNullOrWhiteSpace(baseConnectionBuilder.Database)
+            ? "bitscheduler_test"
+            : baseConnectionBuilder.Database;
+
+        _testDatabaseName = $"{baseDatabaseName}_{Guid.NewGuid():N}";
+
+        if (_testDatabaseName.Length > 63)
+        {
+            _testDatabaseName = _testDatabaseName[..63];
+        }
+
+        baseConnectionBuilder.Database = _testDatabaseName;
+        _testConnectionString = baseConnectionBuilder.ConnectionString;
+
+        var adminConnectionBuilder = new NpgsqlConnectionStringBuilder(baseConnectionString)
+        {
+            Database = "postgres",
+            Pooling = false
+        };
+
+        _adminConnectionString = adminConnectionBuilder.ConnectionString;
+    }
+
+    public async Task InitializeAsync()
+    {
+        await CreateDatabaseAsync();
+
+        await using var dbContext = CreateDbContext();
+        await dbContext.Database.MigrateAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        NpgsqlConnection.ClearAllPools();
+        await DropDatabaseAsync();
+    }
+
     [Fact]
     public void BitDay_DefaultAndDateConstructors_InitializeExpectedState()
     {
@@ -643,22 +701,52 @@ public class BitSchedulerCoreCoverageTests
         };
     }
 
-    private static BitScheduleDbContext CreateDbContext()
+    private BitScheduleDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<BitScheduleDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .UseNpgsql(_testConnectionString)
             .Options;
 
         return new BitScheduleDbContext(options);
     }
 
-    private static ThrowingBitScheduleDbContext CreateThrowingDbContext(SaveFailureMode failureMode)
+    private ThrowingBitScheduleDbContext CreateThrowingDbContext(SaveFailureMode failureMode)
     {
         var options = new DbContextOptionsBuilder<BitScheduleDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .UseNpgsql(_testConnectionString)
             .Options;
 
         return new ThrowingBitScheduleDbContext(options, failureMode);
+    }
+
+    private async Task CreateDatabaseAsync()
+    {
+        await using var connection = new NpgsqlConnection(_adminConnectionString);
+        await connection.OpenAsync();
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = $"CREATE DATABASE \"{_testDatabaseName}\"";
+        await command.ExecuteNonQueryAsync();
+    }
+
+    private async Task DropDatabaseAsync()
+    {
+        await using var connection = new NpgsqlConnection(_adminConnectionString);
+        await connection.OpenAsync();
+
+        await using (var terminateCommand = connection.CreateCommand())
+        {
+            terminateCommand.CommandText = @"SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = @databaseName
+  AND pid <> pg_backend_pid();";
+            terminateCommand.Parameters.AddWithValue("databaseName", _testDatabaseName);
+            await terminateCommand.ExecuteNonQueryAsync();
+        }
+
+        await using var dropCommand = connection.CreateCommand();
+        dropCommand.CommandText = $"DROP DATABASE IF EXISTS \"{_testDatabaseName}\"";
+        await dropCommand.ExecuteNonQueryAsync();
     }
 
     private static BitDay SeedBitDay(BitScheduleDbContext dbContext, DateTime date, int clientId)
