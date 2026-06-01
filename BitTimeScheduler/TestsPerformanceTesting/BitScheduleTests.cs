@@ -8,7 +8,7 @@ using BitTimeScheduler.Models;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Data.BitTimeScheduler.Data; // Required for BitScheduleDbContext
 using BitSchedulerCore.Services; // Required for BitScheduleDataService
-using Microsoft.EntityFrameworkCore; // Required for DbContextOptionsBuilder, UseSqlServer
+using Microsoft.EntityFrameworkCore; // Required for DbContextOptionsBuilder, UseNpgsql
 using Microsoft.Extensions.Configuration; // Required for ConfigurationBuilder
 using Microsoft.Extensions.Logging; // Required for ILogger
 using Microsoft.Extensions.Logging.Abstractions; // Required for NullLogger
@@ -57,12 +57,12 @@ namespace BitTimeScheduler.TestsPerformanceTesting
         // --- Helper Methods for Test Setup ---
 
         /// <summary>
-        /// Creates DbContext options configured to use SQL Server with the loaded connection string.
+        /// Creates DbContext options configured to use PostgreSQL with the loaded connection string.
         /// </summary>
-        private DbContextOptions<BitScheduleDbContext> CreateSqlServerDbContextOptions()
+        private DbContextOptions<BitScheduleDbContext> CreatePostgreSqlDbContextOptions()
         {
             return new DbContextOptionsBuilder<BitScheduleDbContext>()
-                .UseSqlServer(_connectionString) // Use the actual SQL Server provider
+                .UseNpgsql(_connectionString)
                 .Options;
         }
 
@@ -76,7 +76,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
         /// <returns>A configured BitSchedule instance.</returns>
         private BitSchedule CreateTestScheduleInstance(int clientId, BitScheduleConfiguration config, out BitScheduleDbContext dbContext)
         {
-            var dbContextOptions = CreateSqlServerDbContextOptions();
+            var dbContextOptions = CreatePostgreSqlDbContextOptions();
             // Create a new DbContext instance for each test setup to ensure isolation
             dbContext = new BitScheduleDbContext(dbContextOptions);
             var logger = NullLogger<BitSchedule>.Instance; // Use NullLogger for tests

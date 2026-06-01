@@ -1,13 +1,17 @@
 ﻿namespace BitSchedulerCore.Data
 {
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.SqlServer;
+    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using global::BitTimeScheduler;
 
     namespace BitTimeScheduler.Data
     {
         public class BitScheduleDbContext : DbContext
         {
+            private static readonly ValueConverter<ulong, decimal> ULongToDecimalConverter = new(
+                value => Convert.ToDecimal(value),
+                value => Convert.ToUInt64(value));
+
             public BitScheduleDbContext(DbContextOptions<BitScheduleDbContext> options)
                 : base(options)
             {
@@ -134,14 +138,16 @@
                     // For BitsLow and BitsHigh, you may need a value converter for ulong -> long.
                     // (Assume you already have that set up in your current code.)
                     entity.Property(e => e.BitsLow)
-                          .HasColumnType("bigint")
+                          .HasConversion(ULongToDecimalConverter)
+                          .HasColumnType("numeric(20,0)")
                           .IsRequired();
                     entity.Property(e => e.BitsHigh)
-                          .HasColumnType("bigint")
+                          .HasConversion(ULongToDecimalConverter)
+                          .HasColumnType("numeric(20,0)")
                           .IsRequired();
 
                     entity.Property(e => e.IsFree)
-                          .HasColumnType("bit")
+                          .HasColumnType("boolean")
                           .IsRequired();
                 });
 
@@ -164,7 +170,7 @@
                           .IsRequired();
 
                     entity.Property(e => e.Payload)
-                          .HasColumnType("varbinary(max)")
+                          .HasColumnType("bytea")
                           .IsRequired();
 
                     entity.Property(e => e.CreatedBy)

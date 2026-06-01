@@ -20,7 +20,7 @@ builder.Services.AddSingleton(provider => connectionString); // Make connection 
 
 // Register the DbContext with the connection string. Scoped lifetime is default and appropriate.
 builder.Services.AddDbContext<BitScheduleDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 
 // Register the seeding service (usually Transient or Scoped).
 builder.Services.AddScoped<SeedingService>();
