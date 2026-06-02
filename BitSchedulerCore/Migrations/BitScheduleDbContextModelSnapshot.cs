@@ -3,8 +3,8 @@ using System;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -17,23 +17,23 @@ namespace BitSchedulerCore.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("BitSchedulerCore.BitClient", b =>
                 {
                     b.Property<int>("BitClientId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitClientId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BitClientId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.HasKey("BitClientId");
 
@@ -44,47 +44,49 @@ namespace BitSchedulerCore.Migrations
                 {
                     b.Property<int>("BitReservationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitReservationId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BitReservationId"));
+
+                    b.Property<int>("BitClientId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("BitDayId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                    b.Property<int>("BitResourceId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
 
-                    b.Property<string>("ResourceId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<int>("SlotLength")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("StartBlock")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("BitReservationId");
 
+                    b.HasIndex("BitClientId");
+
                     b.HasIndex("BitDayId");
+
+                    b.HasIndex("BitResourceId");
 
                     b.ToTable("BitReservations");
                 });
@@ -93,30 +95,30 @@ namespace BitSchedulerCore.Migrations
                 {
                     b.Property<int>("BitResourceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitResourceId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BitResourceId"));
 
                     b.Property<int>("BitClientId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("BitResourceTypeId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("BitResourceId");
 
@@ -127,18 +129,66 @@ namespace BitSchedulerCore.Migrations
                     b.ToTable("BitResources");
                 });
 
+            modelBuilder.Entity("BitSchedulerCore.BitResourceScheduleRange", b =>
+                {
+                    b.Property<int>("BitResourceScheduleRangeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BitResourceScheduleRangeId"));
+
+                    b.Property<int>("BitClientId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BitResourceId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<byte[]>("Payload")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("BitResourceScheduleRangeId");
+
+                    b.HasIndex("BitResourceId", "StartDate", "EndDate");
+
+                    b.HasIndex("BitClientId", "BitResourceId", "StartDate", "EndDate")
+                        .IsUnique();
+
+                    b.ToTable("BitResourceScheduleRanges");
+                });
+
             modelBuilder.Entity("BitSchedulerCore.BitResourceType", b =>
                 {
                     b.Property<int>("BitResourceTypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitResourceTypeId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BitResourceTypeId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("BitResourceTypeId");
 
@@ -149,24 +199,22 @@ namespace BitSchedulerCore.Migrations
                 {
                     b.Property<int>("BitDayId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BitDayId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BitDayId"));
 
-                    b.Property<long>("BitsHigh")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("BitsLow")
-                        .HasColumnType("bigint");
+                    b.Property<byte[]>("DayData")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
 
-                    b.Property<bool>("IsFree")
-                        .HasColumnType("bit");
+                    b.Property<long>("Metadata")
+                        .HasColumnType("bigint");
 
                     b.HasKey("BitDayId");
 
@@ -178,9 +226,25 @@ namespace BitSchedulerCore.Migrations
 
             modelBuilder.Entity("BitSchedulerCore.BitReservation", b =>
                 {
+                    b.HasOne("BitSchedulerCore.BitClient", "BitClient")
+                        .WithMany("BitReservations")
+                        .HasForeignKey("BitClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BitTimeScheduler.BitDay", null)
                         .WithMany("Reservations")
                         .HasForeignKey("BitDayId");
+
+                    b.HasOne("BitSchedulerCore.BitResource", "BitResource")
+                        .WithMany("BitReservations")
+                        .HasForeignKey("BitResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BitClient");
+
+                    b.Navigation("BitResource");
                 });
 
             modelBuilder.Entity("BitSchedulerCore.BitResource", b =>
@@ -202,9 +266,39 @@ namespace BitSchedulerCore.Migrations
                     b.Navigation("BitResourceType");
                 });
 
+            modelBuilder.Entity("BitSchedulerCore.BitResourceScheduleRange", b =>
+                {
+                    b.HasOne("BitSchedulerCore.BitClient", "BitClient")
+                        .WithMany("BitResourceScheduleRanges")
+                        .HasForeignKey("BitClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BitSchedulerCore.BitResource", "BitResource")
+                        .WithMany("BitResourceScheduleRanges")
+                        .HasForeignKey("BitResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BitClient");
+
+                    b.Navigation("BitResource");
+                });
+
             modelBuilder.Entity("BitSchedulerCore.BitClient", b =>
                 {
+                    b.Navigation("BitReservations");
+
+                    b.Navigation("BitResourceScheduleRanges");
+
                     b.Navigation("BitResources");
+                });
+
+            modelBuilder.Entity("BitSchedulerCore.BitResource", b =>
+                {
+                    b.Navigation("BitReservations");
+
+                    b.Navigation("BitResourceScheduleRanges");
                 });
 
             modelBuilder.Entity("BitSchedulerCore.BitResourceType", b =>

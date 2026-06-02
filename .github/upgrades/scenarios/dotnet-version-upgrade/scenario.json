@@ -1,0 +1,23 @@
+{
+  "scenarioId": "dotnet-version-upgrade",
+  "operationId": "e2a19277-3e60-411a-9027-e8daedeb308c",
+  "description": "Upgrade .NET projects to newer .NET versions",
+  "startTime": "2026-05-28T20:04:42.3761738Z",
+  "lastUpdateTime": "2026-05-31T17:29:05.8488907Z",
+  "stage": "Assessment",
+  "properties": {
+    "task:05-resource-range-storage:startedAt": "2026-05-31T16:39:46.4345297Z",
+    "currentTask": "07-validate-resource-range-redesign",
+    "task:02-upgrade-package-dependencies:startedAt": "2026-05-28T20:09:51.1713856Z",
+    "task:05.03-range-persistence-core:startedAt": "2026-05-31T17:06:33.7759001Z",
+    "task:06-refactor-schedule-apis-and-seeding:startedAt": "2026-05-31T17:27:04.1360920Z",
+    "UpgradeTargetFramework": "net10.0",
+    "task:05.01-range-entity-and-schema:startedAt": "2026-05-31T16:42:37.0298729Z",
+    "task:07-validate-resource-range-redesign:startedAt": "2026-05-31T17:29:05.8488907Z",
+    "task:05.02-range-payload-conversion:startedAt": "2026-05-31T17:02:49.8208959Z",
+    "task:03-resolve-compatibility-issues:startedAt": "2026-05-28T20:16:52.3644066Z",
+    "task:01-update-target-frameworks:startedAt": "2026-05-28T20:07:19.1573396Z",
+    "task:04-validate-solution:startedAt": "2026-05-28T22:21:02.1183993Z"
+  },
+  "folderPath": ""
+}

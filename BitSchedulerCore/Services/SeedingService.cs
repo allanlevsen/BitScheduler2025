@@ -1,23 +1,17 @@
 ﻿using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore;
 using BitTimeScheduler.Models;
+using BitSchedulerCore.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BitTimeScheduler.Services
 {
-    public class SeedingService
+    public class SeedingService(BitScheduleDbContext dbContext, BitResourceScheduleRangePayloadConverter payloadConverter)
     {
-        private readonly BitScheduleDbContext _dbContext;
-
-        public SeedingService(BitScheduleDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
         public async Task SeedAsync()
         {
             // 1. Seed BitResourceType
-            if (!await _dbContext.BitResourceTypes.AnyAsync())
+            if (!await dbContext.BitResourceTypes.AnyAsync())
             {
                 var resourceTypes = new List<BitResourceType>
                 {
@@ -26,12 +20,12 @@ namespace BitTimeScheduler.Services
                     new BitResourceType { Name = "Meeting Room" }
                 };
 
-                _dbContext.BitResourceTypes.AddRange(resourceTypes);
-                await _dbContext.SaveChangesAsync();
+                dbContext.BitResourceTypes.AddRange(resourceTypes);
+                await dbContext.SaveChangesAsync();
             }
 
             // 2. Seed BitClient with some sample companies.
-            if (!await _dbContext.BitClients.AnyAsync())
+            if (!await dbContext.BitClients.AnyAsync())
             {
                 var clients = new List<BitClient>
                 {
@@ -41,19 +35,24 @@ namespace BitTimeScheduler.Services
                     new BitClient { Name = "Umbrella Corp" }
                 };
 
-                _dbContext.BitClients.AddRange(clients);
-                await _dbContext.SaveChangesAsync();
+                dbContext.BitClients.AddRange(clients);
+                await dbContext.SaveChangesAsync();
             }
 
             // 3. Seed BitResource with 5 people and 5 equipment.
-            if (!await _dbContext.BitResources.AnyAsync())
+            if (!await dbContext.BitResources.AnyAsync())
             {
                 // Get the "Person" and "Equipment" resource types.
-                var personType = await _dbContext.BitResourceTypes.FirstOrDefaultAsync(rt => rt.Name == "Person");
-                var equipmentType = await _dbContext.BitResourceTypes.FirstOrDefaultAsync(rt => rt.Name == "Equipment");
+                var personType = await dbContext.BitResourceTypes.FirstOrDefaultAsync(rt => rt.Name == "Person");
+                var equipmentType = await dbContext.BitResourceTypes.FirstOrDefaultAsync(rt => rt.Name == "Equipment");
 
                 // For simplicity, choose the first client for assignment.
-                var client = await _dbContext.BitClients.FirstOrDefaultAsync();
+                var client = await dbContext.BitClients.FirstOrDefaultAsync();
+
+                if (personType == null || equipmentType == null || client == null)
+                {
+                    return;
+                }
 
                 var resources = new List<BitResource>();
 
@@ -141,8 +140,8 @@ namespace BitTimeScheduler.Services
                     BitClientId = client.BitClientId
                 });
 
-                _dbContext.BitResources.AddRange(resources);
-                await _dbContext.SaveChangesAsync();
+                dbContext.BitResources.AddRange(resources);
+                await dbContext.SaveChangesAsync();
             }
         }
 
@@ -174,7 +173,7 @@ namespace BitTimeScheduler.Services
             else
             {
                 // Otherwise, read from the BitClients table and return all BitClientId values.
-                return await _dbContext.BitClients
+                return await dbContext.BitClients
                     .Select(c => c.BitClientId)
                     .ToListAsync();
             }
@@ -221,7 +220,7 @@ namespace BitTimeScheduler.Services
                         throw new ArgumentNullException(nameof(config));
 
                     // Check if any BitDay records exist for this month.
-                    bool dataExists = await _dbContext.BitDays
+                    bool dataExists = await dbContext.BitDays
                         .AnyAsync(d => d.Date >= sDate && d.Date <= eDate && d.ClientId == currentClientId);
 
                     if (!dataExists)
@@ -232,15 +231,68 @@ namespace BitTimeScheduler.Services
                         List<BitDay> mockDays = LoadMockData(config, currentClientId);
 
                         // Add the generated BitDay records to the database.
-                        await _dbContext.BitDays.AddRangeAsync(mockDays);
-                        await _dbContext.SaveChangesAsync();
+                        await dbContext.BitDays.AddRangeAsync(mockDays);
+                        await dbContext.SaveChangesAsync();
 
                         Console.WriteLine($"Seeded {mockDays.Count} BitDay records for the month starting {sDate:yyyy-MM-dd}.");
                     }
                     else
                         Console.WriteLine($"Data already exists for the month starting {sDate:yyyy-MM-dd}. Skipping seeding.");
+
+                    await SeedResourceScheduleRangesAsync(currentClientId, sDate, eDate);
                 }
             }
+        }
+
+        private async Task SeedResourceScheduleRangesAsync(int clientId, DateTime startDate, DateTime endDate)
+        {
+            var resources = await dbContext.BitResources
+                .Where(r => r.BitClientId == clientId)
+                .ToListAsync();
+
+            foreach (var resource in resources)
+            {
+                bool rangeExists = await dbContext.BitResourceScheduleRanges.AnyAsync(r =>
+                    r.BitClientId == clientId &&
+                    r.BitResourceId == resource.BitResourceId &&
+                    r.StartDate == startDate.Date &&
+                    r.EndDate == endDate.Date);
+
+                if (rangeExists)
+                {
+                    continue;
+                }
+
+                var config = new BitScheduleConfiguration
+                {
+                    BitResourceId = resource.BitResourceId,
+                    DateRange = new BitDateRange
+                    {
+                        StartDate = startDate.Date,
+                        EndDate = endDate.Date
+                    },
+                    ActiveDays = new[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday },
+                    TimeBlock = new BitTimeRange()
+                };
+
+                var mockDays = LoadMockData(config, clientId);
+                var payload = payloadConverter.Serialize(startDate.Date, endDate.Date, mockDays.ToDictionary(d => d.Date.Date));
+
+                dbContext.BitResourceScheduleRanges.Add(new BitResourceScheduleRange
+                {
+                    BitClientId = clientId,
+                    BitResourceId = resource.BitResourceId,
+                    StartDate = startDate.Date,
+                    EndDate = endDate.Date,
+                    Payload = payload,
+                    CreatedBy = "seed",
+                    CreatedDate = DateTime.UtcNow,
+                    UpdatedBy = "seed",
+                    UpdatedDate = DateTime.UtcNow
+                });
+            }
+
+            await dbContext.SaveChangesAsync();
         }
 
 
@@ -251,37 +303,31 @@ namespace BitTimeScheduler.Services
         /// </summary>
         private List<BitDay> LoadMockData(BitScheduleConfiguration config, int clientId)
         {
+            if (config.DateRange == null)
+            {
+                return new List<BitDay>();
+            }
+
             List<BitDay> data = new List<BitDay>();
             Random rand = new Random();
             DateTime startDate = config.DateRange.StartDate.Date;
             DateTime endDate = config.DateRange.EndDate.Date;
+            var activeDays = config.ActiveDays?.ToHashSet();
             for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
             {
-                BitDay day = new BitDay(date);
-                day.ClientId = clientId;
-
-                if (config.ActiveDays != null && config.ActiveDays.Length > 0)
+                BitDay day = new BitDay(date)
                 {
-                    bool isActive = false;
-                    foreach (DayOfWeek dow in config.ActiveDays)
-                    {
-                        if (date.DayOfWeek == dow)
-                        {
-                            isActive = true;
-                            break;
-                        }
-                    }
-                    if (isActive)
-                    {
-                        // Create between 1 and 3 random reservations.
-                        int reservations = rand.Next(1, 4);
-                        for (int i = 0; i < reservations; i++)
-                        {
-                            int startBlock = rand.Next(0, BitDay.TotalSlots - 4);
-                            int length = rand.Next(1, 5);
-                            day.ReserveRange(startBlock, length);
+                    ClientId = clientId
+                };
 
-                        }
+                if (activeDays?.Contains(date.DayOfWeek) == true)
+                {
+                    int reservations = rand.Next(1, 4);
+                    for (int i = 0; i < reservations; i++)
+                    {
+                        int startBlock = rand.Next(0, BitDay.TotalSlots - 4);
+                        int length = rand.Next(1, 5);
+                        day.ReserveRange(startBlock, length);
                     }
                 }
                 data.Add(day);

@@ -6,8 +6,9 @@
     /// </summary>
     public class BitScheduleRequest
     {
-        public BitDateRange DateRange { get; set; }
-        public DayOfWeek[] ActiveDays { get; set; }
-        public BitTimeRange TimeBlock { get; set; }
+        public int BitResourceId { get; set; }
+        public BitDateRange DateRange { get; set; } = new();
+        public DayOfWeek[] ActiveDays { get; set; } = Array.Empty<DayOfWeek>();
+        public BitTimeRange TimeBlock { get; set; } = new();
     }
 }

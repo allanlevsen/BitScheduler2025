@@ -19,7 +19,7 @@
         /// <summary>
         /// The days of the week to include in the search.
         /// </summary>
-        public DayOfWeek[] Days { get; set; }
+        public DayOfWeek[] Days { get; set; } = Array.Empty<DayOfWeek>();
     }
 
 }

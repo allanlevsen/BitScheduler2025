@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO; // Required for Path
-using System.Linq;
-using System.Threading.Tasks; // Required for async Task
+﻿using System.Diagnostics;
 using BitTimeScheduler.Models;
-using BitSchedulerCore.Models;
 using BitSchedulerCore.Data.BitTimeScheduler.Data; // Required for BitScheduleDbContext
 using BitSchedulerCore.Services; // Required for BitScheduleDataService
-using Microsoft.EntityFrameworkCore; // Required for DbContextOptionsBuilder, UseSqlServer
+using Microsoft.EntityFrameworkCore; // Required for DbContextOptionsBuilder, UseNpgsql
 using Microsoft.Extensions.Configuration; // Required for ConfigurationBuilder
-using Microsoft.Extensions.Logging; // Required for ILogger
 using Microsoft.Extensions.Logging.Abstractions; // Required for NullLogger
-
 
 namespace BitTimeScheduler.TestsPerformanceTesting
 {
@@ -43,12 +35,9 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 .Build();
 
             // Read the connection string
-            _connectionString = _configurationRoot.GetConnectionString("BitScheduleConnection");
+            _connectionString = _configurationRoot.GetConnectionString("BitScheduleConnection")
+                ?? throw new InvalidOperationException("Could not find 'BitScheduleConnection' in configuration. Ensure appsettings.json exists in the test output directory and contains the connection string.");
 
-            if (string.IsNullOrEmpty(_connectionString))
-            {
-                throw new InvalidOperationException("Could not find 'BitScheduleConnection' in configuration. Ensure appsettings.json exists in the test output directory and contains the connection string.");
-            }
             Console.WriteLine("--- Using Connection String (ensure this is your TEST database!) ---");
             // Avoid logging the full connection string in real scenarios due to secrets
             Console.WriteLine($"--- Connection String Hint: Starts with '{_connectionString.Split(';').FirstOrDefault()}' ---");
@@ -57,12 +46,12 @@ namespace BitTimeScheduler.TestsPerformanceTesting
         // --- Helper Methods for Test Setup ---
 
         /// <summary>
-        /// Creates DbContext options configured to use SQL Server with the loaded connection string.
+        /// Creates DbContext options configured to use PostgreSQL with the loaded connection string.
         /// </summary>
-        private DbContextOptions<BitScheduleDbContext> CreateSqlServerDbContextOptions()
+        private DbContextOptions<BitScheduleDbContext> CreatePostgreSqlDbContextOptions()
         {
             return new DbContextOptionsBuilder<BitScheduleDbContext>()
-                .UseSqlServer(_connectionString) // Use the actual SQL Server provider
+                .UseNpgsql(_connectionString)
                 .Options;
         }
 
@@ -76,11 +65,11 @@ namespace BitTimeScheduler.TestsPerformanceTesting
         /// <returns>A configured BitSchedule instance.</returns>
         private BitSchedule CreateTestScheduleInstance(int clientId, BitScheduleConfiguration config, out BitScheduleDbContext dbContext)
         {
-            var dbContextOptions = CreateSqlServerDbContextOptions();
+            var dbContextOptions = CreatePostgreSqlDbContextOptions();
             // Create a new DbContext instance for each test setup to ensure isolation
             dbContext = new BitScheduleDbContext(dbContextOptions);
             var logger = NullLogger<BitSchedule>.Instance; // Use NullLogger for tests
-            var dataService = new BitScheduleDataService(dbContext); // Use the REAL DataService
+            var dataService = new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter()); // Use the REAL DataService
 
             // Ensure configuration is valid before creating BitSchedule
             if (config == null)
@@ -97,6 +86,17 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             return schedule;
         }
 
+        private static BitScheduleRequest CreateRequest(BitScheduleConfiguration config)
+        {
+            return new BitScheduleRequest
+            {
+                BitResourceId = config.BitResourceId,
+                DateRange = config.DateRange ?? new BitDateRange { StartDate = DateTime.Today, EndDate = DateTime.Today },
+                ActiveDays = config.ActiveDays,
+                TimeBlock = config.TimeBlock ?? BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d))
+            };
+        }
+
         // --- Test Methods ---
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             Console.WriteLine("=== BitSchedule Functional Tests (Integration) ===");
 
             int testClientId = 1; // Ensure this client exists in your test DB
-            BitScheduleDbContext dbContext = null; // To capture the context used
+            BitScheduleDbContext? dbContext = null; // To capture the context used
 
             try
             {
@@ -118,7 +118,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 {
                     DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },
                     ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
                     AutoRefreshOnConfigurationChange = false
                 };
 
@@ -129,12 +129,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
 
 
                 // Create a request to read and write schedule data.
-                var request = new BitScheduleRequest
-                {
-                    DateRange = config.DateRange,
-                    ActiveDays = config.ActiveDays,
-                    TimeBlock = config.TimeBlock
-                };
+                var request = CreateRequest(config);
 
                 // Read the schedule using the request (reads from in-memory cache after constructor load).
                 Console.WriteLine("Reading schedule before write...");
@@ -197,7 +192,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
         {
             Console.WriteLine("=== Test Configuration Change Refresh (Integration Setup) ===");
             int testClientId = 2;
-            BitScheduleDbContext dbContext = null;
+            BitScheduleDbContext? dbContext = null;
 
             try
             {
@@ -206,7 +201,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 {
                     DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },
                     ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
                     AutoRefreshOnConfigurationChange = false
                 };
                 var schedule = CreateTestScheduleInstance(testClientId, configA, out dbContext);
@@ -220,7 +215,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 {
                     DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },
                     ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },
-                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
                     AutoRefreshOnConfigurationChange = false
                 };
                 schedule.Configuration = configB;
@@ -234,7 +229,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
                 {
                     DateRange = configA.DateRange,
                     ActiveDays = configA.ActiveDays,
-                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(10), TimeSpan.FromHours(11)), // Diff TimeBlock
+                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(10d), TimeSpan.FromHours(11d)), // Diff TimeBlock
                     AutoRefreshOnConfigurationChange = false
                 };
                 schedule.Configuration = configC;
@@ -286,7 +281,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
 
                 // --- Test 6: Modifying Current Config: TimeBlock (AutoRefresh=true) ---
                 Console.WriteLine("\n--- Test 6: Modifying Current Config Property: TimeBlock (AutoRefresh=true) ---");
-                schedule.Configuration.TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(14), TimeSpan.FromHours(15)); // Modify property
+                schedule.Configuration.TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(14d), TimeSpan.FromHours(15d)); // Modify property
                                                                                                                                 // PropertyChanged -> OnConfigurationChanged -> requiresReload=false -> LoadData NOT called
                                                                                                                                 // IsDirty should be true because a property changed. LastRefreshed should NOT change.
                 if (schedule.IsDirty && schedule.LastRefreshed == refreshTimeAfterActiveDays) Console.WriteLine("PASS: Modifying TimeBlock (AutoRefresh=true) -> IsDirty=true, Refreshed=false.");
@@ -308,14 +303,14 @@ namespace BitTimeScheduler.TestsPerformanceTesting
         {
             Console.WriteLine("=== BitSchedule Performance Tests (Integration) ===");
             int testClientId = 3; // Ensure this client exists
-            BitScheduleDbContext dbContext = null;
+            BitScheduleDbContext? dbContext = null;
 
             // Test setup - load a decent amount of data
             var config = new BitScheduleConfiguration
             {
                 DateRange = new BitDateRange { StartDate = new DateTime(2025, 1, 1), EndDate = new DateTime(2025, 12, 31) }, // One year
                 ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday },
-                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),
+                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d)),
                 AutoRefreshOnConfigurationChange = false
             };
 
@@ -325,17 +320,12 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             var schedule = CreateTestScheduleInstance(testClientId, config, out dbContext);
             Console.WriteLine("Data loaded for performance test.");
 
-            var request = new BitScheduleRequest
-            {
-                DateRange = config.DateRange,
-                ActiveDays = config.ActiveDays,
-                TimeBlock = config.TimeBlock
-            };
+            var request = CreateRequest(config);
 
             const int iterationsRead = 50_000; // Adjust iterations based on expected performance
             const int iterationsWrite = 500;   // Write operations hitting DB are much slower
             Stopwatch sw = new Stopwatch();
-            BitScheduleResponse lastResp = null;
+            BitScheduleResponse? lastResp = null;
             bool lastWriteResult = false;
 
             Console.WriteLine($"--- Running {iterationsRead:N0} Read iterations ---");

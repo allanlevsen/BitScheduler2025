@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BitTimeScheduler.Models;
+﻿using BitTimeScheduler.Models;
 
 namespace BitTimeScheduler
 {
@@ -15,7 +12,7 @@ namespace BitTimeScheduler
         public int Month { get; private set; }
 
         // Expose the days as a public property for serialization and external access.
-        public List<BitDay> Days { get; set; }
+        public List<BitDay> Days { get; set; } = new();
 
         public BitMonth()
         {

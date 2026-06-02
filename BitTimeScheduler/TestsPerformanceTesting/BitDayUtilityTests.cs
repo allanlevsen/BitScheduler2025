@@ -15,7 +15,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             Console.WriteLine("Running Utility Methods Tests...");
 
             // Test 1: TimeToBlockIndex
-            TimeSpan t9 = TimeSpan.FromHours(9); // 9:00 AM
+            TimeSpan t9 = TimeSpan.FromHours(9d); // 9:00 AM
             int blockFor9 = BitDay.TimeToBlockIndex(t9);  // Expected: 9 * 60 / 15 = 36
             if (blockFor9 != 36)
                 Console.WriteLine($"Error: TimeToBlockIndex(9:00) returned {blockFor9}, expected 36");
@@ -24,7 +24,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
 
             // Test 2: BlockIndexToTime
             TimeSpan timeFromBlock36 = BitDay.BlockIndexToTime(36);
-            if (timeFromBlock36 != TimeSpan.FromHours(9))
+            if (timeFromBlock36 != TimeSpan.FromHours(9d))
                 Console.WriteLine($"Error: BlockIndexToTime(36) returned {timeFromBlock36}, expected 09:00:00");
             else
                 Console.WriteLine("BlockIndexToTime(36) passed.");
@@ -32,8 +32,8 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Test 3: CreateRangeFromBlocks
             // For blocks 36 to 39, we expect a range from 9:00 to 10:00.
             BitTimeRange rangeFromBlocks = BitDay.CreateRangeFromBlocks(36, 39);
-            if (rangeFromBlocks.StartTime != TimeSpan.FromHours(9) ||
-                rangeFromBlocks.EndTime != TimeSpan.FromHours(10))
+            if (rangeFromBlocks.StartTime != TimeSpan.FromHours(9d) ||
+                rangeFromBlocks.EndTime != TimeSpan.FromHours(10d))
             {
                 Console.WriteLine($"Error: CreateRangeFromBlocks(36,39) returned {rangeFromBlocks}, expected 09:00 to 10:00");
             }
@@ -42,7 +42,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
 
             // Test 4: CreateRangeFromTimes for an exact 15-minute-boundary range.
             // For times 9:00 to 10:00, we expect startBlock 36 and endBlock 39.
-            BitTimeRange rangeFromTimes1 = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));
+            BitTimeRange rangeFromTimes1 = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d));
             if (rangeFromTimes1.StartBlock != 36 || rangeFromTimes1.EndBlock != 39)
             {
                 Console.WriteLine($"Error: CreateRangeFromTimes(09:00,10:00) returned {rangeFromTimes1}, expected blocks 36 to 39");
@@ -53,7 +53,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Test 5: CreateRangeFromTimes for a non-zero start offset.
             // For times 9:15 to 10:15, we expect startBlock = 37 (since 9:15 -> 555 minutes / 15 = 37) 
             // and endBlock = 40 (because 10:15 -> 615/15 = 41, minus one equals 40).
-            BitTimeRange rangeFromTimes2 = BitDay.CreateRangeFromTimes(TimeSpan.FromMinutes(555), TimeSpan.FromMinutes(615));
+            BitTimeRange rangeFromTimes2 = BitDay.CreateRangeFromTimes(TimeSpan.FromMinutes(555d), TimeSpan.FromMinutes(615d));
             if (rangeFromTimes2.StartBlock != 37 || rangeFromTimes2.EndBlock != 40)
             {
                 Console.WriteLine($"Error: CreateRangeFromTimes(9:15,10:15) returned {rangeFromTimes2}, expected blocks 37 to 40");
@@ -77,7 +77,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             sw.Start();
             for (int i = 0; i < iterations; i++)
             {
-                int b = BitDay.TimeToBlockIndex(TimeSpan.FromHours(9));
+                _ = BitDay.TimeToBlockIndex(TimeSpan.FromHours(9d));
             }
             sw.Stop();
             Console.WriteLine($"TimeToBlockIndex: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms");
@@ -86,7 +86,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             sw.Restart();
             for (int i = 0; i < iterations; i++)
             {
-                TimeSpan t = BitDay.BlockIndexToTime(36);
+                _ = BitDay.BlockIndexToTime(36);
             }
             sw.Stop();
             Console.WriteLine($"BlockIndexToTime: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms");
@@ -95,7 +95,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             sw.Restart();
             for (int i = 0; i < iterations; i++)
             {
-                BitTimeRange r = BitDay.CreateRangeFromBlocks(36, 39);
+                _ = BitDay.CreateRangeFromBlocks(36, 39);
             }
             sw.Stop();
             Console.WriteLine($"CreateRangeFromBlocks: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms");
@@ -104,7 +104,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             sw.Restart();
             for (int i = 0; i < iterations; i++)
             {
-                BitTimeRange r = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));
+                _ = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9d), TimeSpan.FromHours(10d));
             }
             sw.Stop();
             Console.WriteLine($"CreateRangeFromTimes: {iterations:N0} iterations took {sw.ElapsedMilliseconds} ms");
@@ -121,10 +121,10 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Note: BlockIndexToTime(blockIndex) returns TimeSpan.FromMinutes(blockIndex * 15)
             var testCases = new[]
             {
-        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),
-        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),
-        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),
-        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))
+        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0d), expectedEnd: TimeSpan.FromMinutes(15d)),
+        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0d), expectedEnd: TimeSpan.FromMinutes(30d)),
+        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15d), expectedEnd: TimeSpan.FromMinutes(11 * 15d)),
+        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15d), expectedEnd: TimeSpan.FromMinutes(96 * 15d))
     };
 
             foreach (var test in testCases)
@@ -150,7 +150,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Test invalid case: startBlock > endBlock. For example, (5, 3) should throw an exception.
             try
             {
-                var invalidRange = BitDay.CreateRangeFromBlocks(5, 3);
+                _ = BitDay.CreateRangeFromBlocks(5, 3);
                 Console.WriteLine("FAIL: Expected exception for CreateRangeFromBlocks(5, 3), but no exception was thrown.");
             }
             catch (ArgumentException ex)
@@ -165,7 +165,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Test invalid case: startBlock > endBlock. For example, (-1, 3) should throw an exception.
             try
             {
-                var invalidRange = BitDay.CreateRangeFromBlocks(-1, 3);
+                _ = BitDay.CreateRangeFromBlocks(-1, 3);
                 Console.WriteLine("FAIL: Expected exception for CreateRangeFromBlocks(-1, 3), but no exception was thrown.");
             }
             catch (ArgumentException ex)
@@ -180,7 +180,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             // Test invalid case: startBlock > endBlock. For example, (5, 96) should throw an exception.
             try
             {
-                var invalidRange = BitDay.CreateRangeFromBlocks(5, 96);
+                _ = BitDay.CreateRangeFromBlocks(5, 96);
                 Console.WriteLine("FAIL: Expected exception for CreateRangeFromBlocks(5, 96), but no exception was thrown.");
             }
             catch (ArgumentException ex)

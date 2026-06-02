@@ -1,0 +1,2226 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-05-28T20:05:24.4962201Z",
+  "analysisEndTime": "2026-05-28T20:05:27.1928117Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 8,
+      "issues": 6,
+      "incidents": 75,
+      "effort": 75
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 8,
+        "Optional": 5,
+        "Potential": 62,
+        "Information": 0
+      },
+      "category": {
+        "NuGet": 25,
+        "Project": 8,
+        "Api": 42
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "AspireBitSchedule.ApiService\\AspireBitSchedule.ApiService.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 3,
+      "properties": {
+        "appName": "AspireBitSchedule.ApiService",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 3,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 62,
+        "linesOfCode": 45,
+        "totalApiScanned": 101,
+        "minLinesOfCodeToChange": 1,
+        "maxLinesOfCodeToChange": 1
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "668d820e-0961-4815-ab72-3e9b6eaa91ba",
+          "ruleId": "NuGet.0002",
+          "projectPath": "AspireBitSchedule.ApiService\\AspireBitSchedule.ApiService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.OpenApi, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.8",
+              "protected": "Microsoft.AspNetCore.OpenApi, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.8"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ApiService\\AspireBitSchedule.ApiService.csproj",
+            "snippet": "Microsoft.AspNetCore.OpenApi, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.8",
+            "protectedSnippet": "Microsoft.AspNetCore.OpenApi, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.8",
+            "label": "Microsoft.AspNetCore.OpenApi 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.OpenApi",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "ac27b57e-dd44-4b85-8c34-94ead61bf778",
+          "ruleId": "Project.0002",
+          "projectPath": "AspireBitSchedule.ApiService\\AspireBitSchedule.ApiService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ApiService\\AspireBitSchedule.ApiService.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "d77682e8-4290-4f82-993c-4ac8b0ee5c14",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: Exception diagnostics are suppressed when IExceptionHandler.TryHandleAsync returns true ",
+          "projectPath": "AspireBitSchedule.ApiService\\AspireBitSchedule.ApiService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseExceptionHandler();",
+              "protected": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder)"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ApiService\\Program.cs",
+            "snippet": "app.UseExceptionHandler();",
+            "protectedSnippet": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder)",
+            "label": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/aspnet-core/10/exception-handler-diagnostics-suppressed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 14,
+            "column": 0
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "AspireBitSchedule.AppHost\\AspireBitSchedule.AppHost.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 3,
+      "properties": {
+        "appName": "AspireBitSchedule.AppHost",
+        "projectKind": "DotNetCoreApp",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 1,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 11,
+        "linesOfCode": 11,
+        "totalApiScanned": 46,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "72a45f61-eef3-4a9d-a5b2-7568edfa12b0",
+          "ruleId": "NuGet.0002",
+          "projectPath": "AspireBitSchedule.AppHost\\AspireBitSchedule.AppHost.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Aspire.Hosting.AppHost, 9.0.0\n\nRecommendation:\n\nRemove Aspire.Hosting.AppHost, and replace with new package Aspire.Hosting.AppHost 13.3.5",
+              "protected": "Aspire.Hosting.AppHost, 9.0.0\n\nRecommendation:\n\nRemove Aspire.Hosting.AppHost, and replace with new package Aspire.Hosting.AppHost 13.3.5"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.AppHost\\AspireBitSchedule.AppHost.csproj",
+            "snippet": "Aspire.Hosting.AppHost, 9.0.0\n\nRecommendation:\n\nRemove Aspire.Hosting.AppHost, and replace with new package Aspire.Hosting.AppHost 13.3.5",
+            "protectedSnippet": "Aspire.Hosting.AppHost, 9.0.0\n\nRecommendation:\n\nRemove Aspire.Hosting.AppHost, and replace with new package Aspire.Hosting.AppHost 13.3.5",
+            "label": "Aspire.Hosting.AppHost 9.0.0",
+            "properties": {
+              "PackageId": "Aspire.Hosting.AppHost",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "13.3.5",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "bb6269a8-1c9d-49e3-a2a5-f29af4338f84",
+          "ruleId": "NuGet.0005",
+          "projectPath": "AspireBitSchedule.AppHost\\AspireBitSchedule.AppHost.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Aspire.Hosting.AppHost, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Aspire.Hosting.AppHost, and replace with new package Aspire.Hosting.AppHost, 13.3.5",
+              "protected": "Aspire.Hosting.AppHost, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Aspire.Hosting.AppHost, and replace with new package Aspire.Hosting.AppHost, 13.3.5"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.AppHost\\AspireBitSchedule.AppHost.csproj",
+            "snippet": "Aspire.Hosting.AppHost, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Aspire.Hosting.AppHost, and replace with new package Aspire.Hosting.AppHost, 13.3.5",
+            "protectedSnippet": "Aspire.Hosting.AppHost, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Aspire.Hosting.AppHost, and replace with new package Aspire.Hosting.AppHost, 13.3.5",
+            "label": "Aspire.Hosting.AppHost 9.0.0",
+            "properties": {
+              "PackageId": "Aspire.Hosting.AppHost",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "40a1f5f6-609d-4cf7-bf09-e9393da3d2e4",
+          "ruleId": "Project.0002",
+          "projectPath": "AspireBitSchedule.AppHost\\AspireBitSchedule.AppHost.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.AppHost\\AspireBitSchedule.AppHost.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+      "startingProject": true,
+      "issues": 4,
+      "storyPoints": 7,
+      "properties": {
+        "appName": "AspireBitSchedule.ServiceDefaults",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 1,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 119,
+        "linesOfCode": 119,
+        "totalApiScanned": 102,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "b8cdf475-7eae-4aad-a9d4-a27aebe0495d",
+          "ruleId": "NuGet.0002",
+          "projectPath": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Http.Resilience, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Http.Resilience, and replace with new package Microsoft.Extensions.Http.Resilience 10.6.0",
+              "protected": "Microsoft.Extensions.Http.Resilience, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Http.Resilience, and replace with new package Microsoft.Extensions.Http.Resilience 10.6.0"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+            "snippet": "Microsoft.Extensions.Http.Resilience, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Http.Resilience, and replace with new package Microsoft.Extensions.Http.Resilience 10.6.0",
+            "protectedSnippet": "Microsoft.Extensions.Http.Resilience, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Http.Resilience, and replace with new package Microsoft.Extensions.Http.Resilience 10.6.0",
+            "label": "Microsoft.Extensions.Http.Resilience 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Http.Resilience",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.6.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "ace37e3e-594c-4b33-b468-c7336c48c3f1",
+          "ruleId": "NuGet.0002",
+          "projectPath": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.ServiceDiscovery, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.ServiceDiscovery, and replace with new package Microsoft.Extensions.ServiceDiscovery 10.6.0",
+              "protected": "Microsoft.Extensions.ServiceDiscovery, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.ServiceDiscovery, and replace with new package Microsoft.Extensions.ServiceDiscovery 10.6.0"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+            "snippet": "Microsoft.Extensions.ServiceDiscovery, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.ServiceDiscovery, and replace with new package Microsoft.Extensions.ServiceDiscovery 10.6.0",
+            "protectedSnippet": "Microsoft.Extensions.ServiceDiscovery, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.ServiceDiscovery, and replace with new package Microsoft.Extensions.ServiceDiscovery 10.6.0",
+            "label": "Microsoft.Extensions.ServiceDiscovery 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.ServiceDiscovery",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.6.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "5ca9e4d9-c242-474f-87eb-fc545f311dd6",
+          "ruleId": "NuGet.0002",
+          "projectPath": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "OpenTelemetry.Instrumentation.AspNetCore, 1.9.0\n\nRecommendation:\n\nRemove OpenTelemetry.Instrumentation.AspNetCore, and replace with new package OpenTelemetry.Instrumentation.AspNetCore 1.15.2",
+              "protected": "OpenTelemetry.Instrumentation.AspNetCore, 1.9.0\n\nRecommendation:\n\nRemove OpenTelemetry.Instrumentation.AspNetCore, and replace with new package OpenTelemetry.Instrumentation.AspNetCore 1.15.2"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+            "snippet": "OpenTelemetry.Instrumentation.AspNetCore, 1.9.0\n\nRecommendation:\n\nRemove OpenTelemetry.Instrumentation.AspNetCore, and replace with new package OpenTelemetry.Instrumentation.AspNetCore 1.15.2",
+            "protectedSnippet": "OpenTelemetry.Instrumentation.AspNetCore, 1.9.0\n\nRecommendation:\n\nRemove OpenTelemetry.Instrumentation.AspNetCore, and replace with new package OpenTelemetry.Instrumentation.AspNetCore 1.15.2",
+            "label": "OpenTelemetry.Instrumentation.AspNetCore 1.9.0",
+            "properties": {
+              "PackageId": "OpenTelemetry.Instrumentation.AspNetCore",
+              "PackageVersion": "1.9.0",
+              "PackageNewVersion": "1.15.2",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "6bdcd2e4-9988-416d-9bb5-a607e3c1ab7f",
+          "ruleId": "NuGet.0002",
+          "projectPath": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "OpenTelemetry.Instrumentation.Http, 1.9.0\n\nRecommendation:\n\nRemove OpenTelemetry.Instrumentation.Http, and replace with new package OpenTelemetry.Instrumentation.Http 1.15.1",
+              "protected": "OpenTelemetry.Instrumentation.Http, 1.9.0\n\nRecommendation:\n\nRemove OpenTelemetry.Instrumentation.Http, and replace with new package OpenTelemetry.Instrumentation.Http 1.15.1"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+            "snippet": "OpenTelemetry.Instrumentation.Http, 1.9.0\n\nRecommendation:\n\nRemove OpenTelemetry.Instrumentation.Http, and replace with new package OpenTelemetry.Instrumentation.Http 1.15.1",
+            "protectedSnippet": "OpenTelemetry.Instrumentation.Http, 1.9.0\n\nRecommendation:\n\nRemove OpenTelemetry.Instrumentation.Http, and replace with new package OpenTelemetry.Instrumentation.Http 1.15.1",
+            "label": "OpenTelemetry.Instrumentation.Http 1.9.0",
+            "properties": {
+              "PackageId": "OpenTelemetry.Instrumentation.Http",
+              "PackageVersion": "1.9.0",
+              "PackageNewVersion": "1.15.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "ee0a9c04-eebe-478c-9496-c767c2b895e2",
+          "ruleId": "NuGet.0005",
+          "projectPath": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.ServiceDiscovery, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Microsoft.Extensions.ServiceDiscovery, and replace with new package Microsoft.Extensions.ServiceDiscovery, 10.6.0",
+              "protected": "Microsoft.Extensions.ServiceDiscovery, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Microsoft.Extensions.ServiceDiscovery, and replace with new package Microsoft.Extensions.ServiceDiscovery, 10.6.0"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+            "snippet": "Microsoft.Extensions.ServiceDiscovery, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Microsoft.Extensions.ServiceDiscovery, and replace with new package Microsoft.Extensions.ServiceDiscovery, 10.6.0",
+            "protectedSnippet": "Microsoft.Extensions.ServiceDiscovery, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Microsoft.Extensions.ServiceDiscovery, and replace with new package Microsoft.Extensions.ServiceDiscovery, 10.6.0",
+            "label": "Microsoft.Extensions.ServiceDiscovery 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.ServiceDiscovery",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "56e85e78-2b73-4114-831b-ecb8a4ff1dd9",
+          "ruleId": "NuGet.0004",
+          "projectPath": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "OpenTelemetry.Exporter.OpenTelemetryProtocol, 1.9.0\n\nRecommendation:\n\nOpenTelemetry.Exporter.OpenTelemetryProtocol, 1.15.3",
+              "protected": "OpenTelemetry.Exporter.OpenTelemetryProtocol, 1.9.0\n\nRecommendation:\n\nOpenTelemetry.Exporter.OpenTelemetryProtocol, 1.15.3"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+            "snippet": "OpenTelemetry.Exporter.OpenTelemetryProtocol, 1.9.0\n\nRecommendation:\n\nOpenTelemetry.Exporter.OpenTelemetryProtocol, 1.15.3",
+            "protectedSnippet": "OpenTelemetry.Exporter.OpenTelemetryProtocol, 1.9.0\n\nRecommendation:\n\nOpenTelemetry.Exporter.OpenTelemetryProtocol, 1.15.3",
+            "label": "OpenTelemetry.Exporter.OpenTelemetryProtocol 1.9.0",
+            "properties": {
+              "PackageId": "OpenTelemetry.Exporter.OpenTelemetryProtocol",
+              "PackageVersion": "1.9.0",
+              "PackageNewVersion": "1.15.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "470d5eab-a0b8-483f-9f45-529fa1b983b3",
+          "ruleId": "Project.0002",
+          "projectPath": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.ServiceDefaults\\AspireBitSchedule.ServiceDefaults.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+      "startingProject": true,
+      "issues": 4,
+      "storyPoints": 5,
+      "properties": {
+        "appName": "AspireBitSchedule.Tests",
+        "projectKind": "DotNetCoreApp",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 3,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 1813,
+        "linesOfCode": 28,
+        "totalApiScanned": 47,
+        "minLinesOfCodeToChange": 1,
+        "maxLinesOfCodeToChange": 1
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "774a0765-bcca-444f-a06b-b7311abdf6aa",
+          "ruleId": "NuGet.0002",
+          "projectPath": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Aspire.Hosting.Testing, 9.0.0\n\nRecommendation:\n\nRemove Aspire.Hosting.Testing, and replace with new package Aspire.Hosting.Testing 13.3.5",
+              "protected": "Aspire.Hosting.Testing, 9.0.0\n\nRecommendation:\n\nRemove Aspire.Hosting.Testing, and replace with new package Aspire.Hosting.Testing 13.3.5"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+            "snippet": "Aspire.Hosting.Testing, 9.0.0\n\nRecommendation:\n\nRemove Aspire.Hosting.Testing, and replace with new package Aspire.Hosting.Testing 13.3.5",
+            "protectedSnippet": "Aspire.Hosting.Testing, 9.0.0\n\nRecommendation:\n\nRemove Aspire.Hosting.Testing, and replace with new package Aspire.Hosting.Testing 13.3.5",
+            "label": "Aspire.Hosting.Testing 9.0.0",
+            "properties": {
+              "PackageId": "Aspire.Hosting.Testing",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "13.3.5",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "1e042410-ed7f-450d-9f5b-ea169b06a5c6",
+          "ruleId": "NuGet.0005",
+          "projectPath": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Aspire.Hosting.Testing, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Aspire.Hosting.Testing, and replace with new package Aspire.Hosting.Testing, 13.3.5",
+              "protected": "Aspire.Hosting.Testing, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Aspire.Hosting.Testing, and replace with new package Aspire.Hosting.Testing, 13.3.5"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+            "snippet": "Aspire.Hosting.Testing, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Aspire.Hosting.Testing, and replace with new package Aspire.Hosting.Testing, 13.3.5",
+            "protectedSnippet": "Aspire.Hosting.Testing, 9.0.0\n\nRecommendation:\n\nThis version is out of support and is no longer maintained. Please upgrade to the latest version. See our support policy for details: https://aka.ms/dotent/aspire/support\nRemove Aspire.Hosting.Testing, and replace with new package Aspire.Hosting.Testing, 13.3.5",
+            "label": "Aspire.Hosting.Testing 9.0.0",
+            "properties": {
+              "PackageId": "Aspire.Hosting.Testing",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "f506f1ea-0e52-44e7-8823-0d1484e9b66e",
+          "ruleId": "NuGet.0005",
+          "projectPath": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "xunit, 2.9.0\n\nRecommendation:\n\nThis package will only be updated for security issues. All future feature work has moved onto v3.\n\nGuide for migrating from xUnit.net v2 to v3: https://xunit.net/docs/getting-started/v3/migration\nRemove xunit, and replace with new package xunit, 2.9.3",
+              "protected": "xunit, 2.9.0\n\nRecommendation:\n\nThis package will only be updated for security issues. All future feature work has moved onto v3.\n\nGuide for migrating from xUnit.net v2 to v3: https://xunit.net/docs/getting-started/v3/migration\nRemove xunit, and replace with new package xunit, 2.9.3"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+            "snippet": "xunit, 2.9.0\n\nRecommendation:\n\nThis package will only be updated for security issues. All future feature work has moved onto v3.\n\nGuide for migrating from xUnit.net v2 to v3: https://xunit.net/docs/getting-started/v3/migration\nRemove xunit, and replace with new package xunit, 2.9.3",
+            "protectedSnippet": "xunit, 2.9.0\n\nRecommendation:\n\nThis package will only be updated for security issues. All future feature work has moved onto v3.\n\nGuide for migrating from xUnit.net v2 to v3: https://xunit.net/docs/getting-started/v3/migration\nRemove xunit, and replace with new package xunit, 2.9.3",
+            "label": "xunit 2.9.0",
+            "properties": {
+              "PackageId": "xunit",
+              "PackageVersion": "2.9.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "eb60bff9-f938-47e8-85b1-44d7a1968c1f",
+          "ruleId": "Project.0002",
+          "projectPath": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "efee6639-792d-4dd0-968a-df99b0f2a1a7",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "AspireBitSchedule.Tests\\AspireBitSchedule.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "await resourceNotificationService.WaitForResourceAsync(\u0022webfrontend\u0022, KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));",
+              "protected": "M:System.TimeSpan.FromSeconds(System.Int64)"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Tests\\WebTests.cs",
+            "snippet": "await resourceNotificationService.WaitForResourceAsync(\u0022webfrontend\u0022, KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));",
+            "protectedSnippet": "M:System.TimeSpan.FromSeconds(System.Int64)",
+            "label": "M:System.TimeSpan.FromSeconds(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 21,
+            "column": 8
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "AspireBitSchedule.Web\\AspireBitSchedule.Web.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 5,
+      "properties": {
+        "appName": "AspireBitSchedule.Web",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 15,
+        "numberOfCodeFiles": 2,
+        "linesTotal": 366,
+        "linesOfCode": 73,
+        "totalApiScanned": 600,
+        "minLinesOfCodeToChange": 4,
+        "maxLinesOfCodeToChange": 4
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "ad0632c0-d562-472f-86c9-8a2b9247cf3d",
+          "ruleId": "Project.0002",
+          "projectPath": "AspireBitSchedule.Web\\AspireBitSchedule.Web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Web\\AspireBitSchedule.Web.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "c94f7f42-b4d3-453f-8ab4-585a262ac8c1",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: Exception diagnostics are suppressed when IExceptionHandler.TryHandleAsync returns true ",
+          "projectPath": "AspireBitSchedule.Web\\AspireBitSchedule.Web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseExceptionHandler(\u0022/Error\u0022, createScopeForErrors: true);",
+              "protected": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String,System.Boolean)"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Web\\Program.cs",
+            "snippet": "app.UseExceptionHandler(\u0022/Error\u0022, createScopeForErrors: true);",
+            "protectedSnippet": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String,System.Boolean)",
+            "label": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String,System.Boolean)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/aspnet-core/10/exception-handler-diagnostics-suppressed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 25,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "478317f8-7d8c-4b78-9bae-4b7f9d81d45c",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "AspireBitSchedule.Web\\AspireBitSchedule.Web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "client.BaseAddress = new(\u0022https\u002Bhttp://apiservice\u0022);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Web\\Program.cs",
+            "snippet": "client.BaseAddress = new(\u0022https\u002Bhttp://apiservice\u0022);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 18,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "5920e973-c6f7-405c-9dd1-ae75ec3d253b",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "AspireBitSchedule.Web\\AspireBitSchedule.Web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "client.BaseAddress = new(\u0022https\u002Bhttp://apiservice\u0022);",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Web\\Program.cs",
+            "snippet": "client.BaseAddress = new(\u0022https\u002Bhttp://apiservice\u0022);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 18,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "683bfe8f-83e3-4d5f-a775-fc7e2c02025f",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "AspireBitSchedule.Web\\AspireBitSchedule.Web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "client.BaseAddress = new(\u0022https\u002Bhttp://apiservice\u0022);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "AspireBitSchedule.Web\\Program.cs",
+            "snippet": "client.BaseAddress = new(\u0022https\u002Bhttp://apiservice\u0022);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 18,
+            "column": 8
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "BitScheduleApi\\BitScheduleApi.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 9,
+      "properties": {
+        "appName": "BitScheduleApi",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 4,
+        "numberOfCodeFiles": 2,
+        "linesTotal": 558,
+        "linesOfCode": 538,
+        "totalApiScanned": 288,
+        "minLinesOfCodeToChange": 2,
+        "maxLinesOfCodeToChange": 2
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "12f33820-8cfa-4837-ac5d-611c6630f5bc",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.OpenApi, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.8",
+              "protected": "Microsoft.AspNetCore.OpenApi, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\BitScheduleApi.csproj",
+            "snippet": "Microsoft.AspNetCore.OpenApi, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.8",
+            "protectedSnippet": "Microsoft.AspNetCore.OpenApi, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.OpenApi, and replace with new package Microsoft.AspNetCore.OpenApi 10.0.8",
+            "label": "Microsoft.AspNetCore.OpenApi 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.OpenApi",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "295ff2b9-d488-4342-a5a8-e991aad8a316",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+              "protected": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\BitScheduleApi.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+            "label": "Microsoft.EntityFrameworkCore 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "89e9a85e-f6a8-4b2a-9265-442d3228d386",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+              "protected": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\BitScheduleApi.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+            "label": "Microsoft.EntityFrameworkCore.SqlServer 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.SqlServer",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "adc984ca-15f5-4d85-b28f-9ba0a7792fe3",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Tools, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.8",
+              "protected": "Microsoft.EntityFrameworkCore.Tools, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\BitScheduleApi.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Tools, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.8",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Tools, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.8",
+            "label": "Microsoft.EntityFrameworkCore.Tools 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Tools",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "de0257e6-31e7-41d6-bff7-d9f6701ea559",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Configuration.FileExtensions, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.FileExtensions, and replace with new package Microsoft.Extensions.Configuration.FileExtensions 10.0.8",
+              "protected": "Microsoft.Extensions.Configuration.FileExtensions, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.FileExtensions, and replace with new package Microsoft.Extensions.Configuration.FileExtensions 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\BitScheduleApi.csproj",
+            "snippet": "Microsoft.Extensions.Configuration.FileExtensions, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.FileExtensions, and replace with new package Microsoft.Extensions.Configuration.FileExtensions 10.0.8",
+            "protectedSnippet": "Microsoft.Extensions.Configuration.FileExtensions, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.FileExtensions, and replace with new package Microsoft.Extensions.Configuration.FileExtensions 10.0.8",
+            "label": "Microsoft.Extensions.Configuration.FileExtensions 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Configuration.FileExtensions",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "9d142341-dc82-4f73-a6ca-b3a90e2aa1db",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Configuration.Json, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Json, and replace with new package Microsoft.Extensions.Configuration.Json 10.0.8",
+              "protected": "Microsoft.Extensions.Configuration.Json, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Json, and replace with new package Microsoft.Extensions.Configuration.Json 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\BitScheduleApi.csproj",
+            "snippet": "Microsoft.Extensions.Configuration.Json, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Json, and replace with new package Microsoft.Extensions.Configuration.Json 10.0.8",
+            "protectedSnippet": "Microsoft.Extensions.Configuration.Json, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Json, and replace with new package Microsoft.Extensions.Configuration.Json 10.0.8",
+            "label": "Microsoft.Extensions.Configuration.Json 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Configuration.Json",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "f7bb2906-7dfa-49a8-81cb-ac3a512fdb42",
+          "ruleId": "Project.0002",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\BitScheduleApi.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "73d82c0b-8422-46a5-a453-1e154c7b66a6",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testConfig = new BitScheduleConfiguration\r\n    {\r\n        DateRange = new BitDateRange\r\n        {\r\n            StartDate = new DateTime(2025, 4, 1), // Adjusted test range\r\n            EndDate = new DateTime(2025, 6, 30)  // Adjusted test range\r\n        },\r\n        ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n        TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n        AutoRefreshOnConfigurationChange = false // Explicitly set if needed\r\n    };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\Program.cs",
+            "snippet": "var testConfig = new BitScheduleConfiguration\r\n    {\r\n        DateRange = new BitDateRange\r\n        {\r\n            StartDate = new DateTime(2025, 4, 1), // Adjusted test range\r\n            EndDate = new DateTime(2025, 6, 30)  // Adjusted test range\r\n        },\r\n        ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n        TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n        AutoRefreshOnConfigurationChange = false // Explicitly set if needed\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 125,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "0c318df0-2b60-4e55-b94a-6d08bf48d4db",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitScheduleApi\\BitScheduleApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testConfig = new BitScheduleConfiguration\r\n    {\r\n        DateRange = new BitDateRange\r\n        {\r\n            StartDate = new DateTime(2025, 4, 1), // Adjusted test range\r\n            EndDate = new DateTime(2025, 6, 30)  // Adjusted test range\r\n        },\r\n        ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n        TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n        AutoRefreshOnConfigurationChange = false // Explicitly set if needed\r\n    };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitScheduleApi\\Program.cs",
+            "snippet": "var testConfig = new BitScheduleConfiguration\r\n    {\r\n        DateRange = new BitDateRange\r\n        {\r\n            StartDate = new DateTime(2025, 4, 1), // Adjusted test range\r\n            EndDate = new DateTime(2025, 6, 30)  // Adjusted test range\r\n        },\r\n        ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n        TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n        AutoRefreshOnConfigurationChange = false // Explicitly set if needed\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 125,
+            "column": 4
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "BitSchedulerCore\\BitSchedulerCore.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 6,
+      "properties": {
+        "appName": "BitSchedulerCore",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 26,
+        "numberOfCodeFiles": 26,
+        "linesTotal": 3015,
+        "linesOfCode": 3015,
+        "totalApiScanned": 2807,
+        "minLinesOfCodeToChange": 3,
+        "maxLinesOfCodeToChange": 3
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "afdd7f73-c6be-48c2-beb0-642cfd19b636",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitSchedulerCore\\BitSchedulerCore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+              "protected": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitSchedulerCore\\BitSchedulerCore.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+            "label": "Microsoft.EntityFrameworkCore 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "f7be2088-f2cc-41b6-ac54-80e7dc5a8711",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitSchedulerCore\\BitSchedulerCore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+              "protected": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitSchedulerCore\\BitSchedulerCore.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+            "label": "Microsoft.EntityFrameworkCore.SqlServer 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.SqlServer",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "e9179161-28c4-4498-86c5-3e6cf14030e3",
+          "ruleId": "Project.0002",
+          "projectPath": "BitSchedulerCore\\BitSchedulerCore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "BitSchedulerCore\\BitSchedulerCore.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "95f946e6-eff9-4020-94d0-38f95e3f9ecf",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitSchedulerCore\\BitSchedulerCore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "TimeSpan.FromMinutes((StartBlock \u002B SlotLength) * 15)",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitSchedulerCore\\BitReservation.cs",
+            "snippet": "TimeSpan.FromMinutes((StartBlock \u002B SlotLength) * 15)",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 31,
+            "column": 35
+          }
+        },
+        {
+          "incidentId": "6eee89a1-dfd3-4f31-a270-18372fe35e07",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitSchedulerCore\\BitSchedulerCore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "TimeSpan.FromMinutes(StartBlock * 15)",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitSchedulerCore\\BitReservation.cs",
+            "snippet": "TimeSpan.FromMinutes(StartBlock * 15)",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 30,
+            "column": 37
+          }
+        },
+        {
+          "incidentId": "68ad6908-6a78-42e4-9536-11ddc3800837",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitSchedulerCore\\BitSchedulerCore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return TimeSpan.FromMinutes(blockIndex * 15);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitSchedulerCore\\BitDay.cs",
+            "snippet": "return TimeSpan.FromMinutes(blockIndex * 15);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 184,
+            "column": 12
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "BitTimeScheduler\\BitTimeScheduler.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 37,
+      "properties": {
+        "appName": "BitTimeScheduler",
+        "projectKind": "DotNetCoreApp",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 6,
+        "numberOfCodeFiles": 4,
+        "linesTotal": 1169,
+        "linesOfCode": 1149,
+        "totalApiScanned": 991,
+        "minLinesOfCodeToChange": 31,
+        "maxLinesOfCodeToChange": 31
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "2827506c-8d93-4172-84d3-7ab80959cc6b",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+              "protected": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\BitTimeScheduler.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.8",
+            "label": "Microsoft.EntityFrameworkCore 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "5e1c383a-bc29-4d3f-82b1-489b888ee6ab",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+              "protected": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\BitTimeScheduler.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.SqlServer, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.8",
+            "label": "Microsoft.EntityFrameworkCore.SqlServer 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.SqlServer",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "85abcd5d-ad57-409e-b3da-40e921489894",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Configuration, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration, and replace with new package Microsoft.Extensions.Configuration 10.0.8",
+              "protected": "Microsoft.Extensions.Configuration, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration, and replace with new package Microsoft.Extensions.Configuration 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\BitTimeScheduler.csproj",
+            "snippet": "Microsoft.Extensions.Configuration, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration, and replace with new package Microsoft.Extensions.Configuration 10.0.8",
+            "protectedSnippet": "Microsoft.Extensions.Configuration, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration, and replace with new package Microsoft.Extensions.Configuration 10.0.8",
+            "label": "Microsoft.Extensions.Configuration 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Configuration",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "4d370e96-894c-4896-9969-c6ea0b06fa29",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Configuration.FileExtensions, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.FileExtensions, and replace with new package Microsoft.Extensions.Configuration.FileExtensions 10.0.8",
+              "protected": "Microsoft.Extensions.Configuration.FileExtensions, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.FileExtensions, and replace with new package Microsoft.Extensions.Configuration.FileExtensions 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\BitTimeScheduler.csproj",
+            "snippet": "Microsoft.Extensions.Configuration.FileExtensions, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.FileExtensions, and replace with new package Microsoft.Extensions.Configuration.FileExtensions 10.0.8",
+            "protectedSnippet": "Microsoft.Extensions.Configuration.FileExtensions, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.FileExtensions, and replace with new package Microsoft.Extensions.Configuration.FileExtensions 10.0.8",
+            "label": "Microsoft.Extensions.Configuration.FileExtensions 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Configuration.FileExtensions",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "80e75432-c57d-45d0-a641-17e8c7b9a8cf",
+          "ruleId": "NuGet.0002",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Configuration.Json, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Json, and replace with new package Microsoft.Extensions.Configuration.Json 10.0.8",
+              "protected": "Microsoft.Extensions.Configuration.Json, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Json, and replace with new package Microsoft.Extensions.Configuration.Json 10.0.8"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\BitTimeScheduler.csproj",
+            "snippet": "Microsoft.Extensions.Configuration.Json, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Json, and replace with new package Microsoft.Extensions.Configuration.Json 10.0.8",
+            "protectedSnippet": "Microsoft.Extensions.Configuration.Json, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Json, and replace with new package Microsoft.Extensions.Configuration.Json 10.0.8",
+            "label": "Microsoft.Extensions.Configuration.Json 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Configuration.Json",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.8",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "86e53b3a-1d4f-4b4a-8121-7d0c41018995",
+          "ruleId": "Project.0002",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\BitTimeScheduler.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "9c006a0d-4afb-4c0e-b808-1750e505e8fb",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var config = new BitScheduleConfiguration\r\n            {\r\n                DateRange = new BitDateRange { StartDate = new DateTime(2025, 1, 1), EndDate = new DateTime(2025, 12, 31) }, // One year\r\n                ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday },\r\n                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                AutoRefreshOnConfigurationChange = false\r\n            };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var config = new BitScheduleConfiguration\r\n            {\r\n                DateRange = new BitDateRange { StartDate = new DateTime(2025, 1, 1), EndDate = new DateTime(2025, 12, 31) }, // One year\r\n                ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday },\r\n                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                AutoRefreshOnConfigurationChange = false\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 313,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a32e7b89-6beb-4d63-aa73-51fe2dfad9b5",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var config = new BitScheduleConfiguration\r\n            {\r\n                DateRange = new BitDateRange { StartDate = new DateTime(2025, 1, 1), EndDate = new DateTime(2025, 12, 31) }, // One year\r\n                ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday },\r\n                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                AutoRefreshOnConfigurationChange = false\r\n            };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var config = new BitScheduleConfiguration\r\n            {\r\n                DateRange = new BitDateRange { StartDate = new DateTime(2025, 1, 1), EndDate = new DateTime(2025, 12, 31) }, // One year\r\n                ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday },\r\n                TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                AutoRefreshOnConfigurationChange = false\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 313,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "9cc6c723-c89a-4474-8ecf-aa0f40202cda",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "schedule.Configuration.TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(14), TimeSpan.FromHours(15));",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "schedule.Configuration.TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(14), TimeSpan.FromHours(15));",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 288,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "ae79f1f3-0d9d-417d-885c-543ff4fba3e0",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "schedule.Configuration.TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(14), TimeSpan.FromHours(15));",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "schedule.Configuration.TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(14), TimeSpan.FromHours(15));",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 288,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "b6f77098-a4bf-4845-9fc7-9eff7df3f9a0",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var configC = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = configA.DateRange,\r\n                    ActiveDays = configA.ActiveDays,\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(10), TimeSpan.FromHours(11)), // Diff TimeBlock\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var configC = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = configA.DateRange,\r\n                    ActiveDays = configA.ActiveDays,\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(10), TimeSpan.FromHours(11)), // Diff TimeBlock\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 232,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "9fc4429f-9785-4549-901e-f8ef7f76b343",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var configC = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = configA.DateRange,\r\n                    ActiveDays = configA.ActiveDays,\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(10), TimeSpan.FromHours(11)), // Diff TimeBlock\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var configC = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = configA.DateRange,\r\n                    ActiveDays = configA.ActiveDays,\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(10), TimeSpan.FromHours(11)), // Diff TimeBlock\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 232,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "c9ef51f0-49aa-49c9-ba87-1443b0353580",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var configB = new BitScheduleConfiguration // Identical\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var configB = new BitScheduleConfiguration // Identical\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 218,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "9251e7a9-0ae3-4da2-b393-1925317a7ec0",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var configB = new BitScheduleConfiguration // Identical\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var configB = new BitScheduleConfiguration // Identical\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 218,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "8209d951-dd78-4b0d-a249-45dd248ae163",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var configA = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var configA = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 204,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "30a8fd2c-6a76-4e88-bfff-153febd160bf",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var configA = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var configA = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 204,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "89e0ca3e-df28-4738-8ccb-cc0df024bc7b",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var config = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var config = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 116,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "29232b33-7ad9-4fa5-8128-f44397c80138",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var config = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitScheduleTests.cs",
+            "snippet": "var config = new BitScheduleConfiguration\r\n                {\r\n                    DateRange = new BitDateRange { StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 31) },\r\n                    ActiveDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday },\r\n                    TimeBlock = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10)),\r\n                    AutoRefreshOnConfigurationChange = false\r\n                };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 116,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "417e2a91-0693-4d3e-8402-4269468dbde9",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 121,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d224f2c3-1157-43a2-b464-a0c89a968e75",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 121,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "ef2106ce-fbf0-4688-85b4-36d6131621f3",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 121,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "fb67ca6a-ffd1-4470-88ba-66de205142fe",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 121,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "eacb4489-02dc-421e-9e1f-afa13ea06745",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 121,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "caaaf082-eb49-4057-9b41-693cda5bcae7",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 121,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "2622d3e9-d84e-4389-a2bb-563e2e959867",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 121,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "00209931-8fbf-4085-a7e4-eb1031d2c605",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "var testCases = new[]\r\n            {\r\n        (startBlock: 0, endBlock: 0, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(15)),\r\n        (startBlock: 0, endBlock: 1, expectedStart: TimeSpan.FromMinutes(0), expectedEnd: TimeSpan.FromMinutes(30)),\r\n        (startBlock: 10, endBlock: 10, expectedStart: TimeSpan.FromMinutes(10 * 15), expectedEnd: TimeSpan.FromMinutes(11 * 15)),\r\n        (startBlock: 95, endBlock: 95, expectedStart: TimeSpan.FromMinutes(95 * 15), expectedEnd: TimeSpan.FromMinutes(96 * 15))\r\n    };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 121,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b71f36dc-3ed7-4a0b-b1b5-95d4412fcfb0",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "BitTimeRange r = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "BitTimeRange r = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 106,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "417fc431-b098-49dd-85b0-7098d7b5b24a",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "BitTimeRange r = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "BitTimeRange r = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 106,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "192f6827-b770-4d47-9677-f0008eeb7f7a",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "int b = BitDay.TimeToBlockIndex(TimeSpan.FromHours(9));",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "int b = BitDay.TimeToBlockIndex(TimeSpan.FromHours(9));",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 79,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "5a68db88-3c0e-41f9-bc4b-8c23ea9f1c9a",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "BitTimeRange rangeFromTimes2 = BitDay.CreateRangeFromTimes(TimeSpan.FromMinutes(555), TimeSpan.FromMinutes(615));",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "BitTimeRange rangeFromTimes2 = BitDay.CreateRangeFromTimes(TimeSpan.FromMinutes(555), TimeSpan.FromMinutes(615));",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 55,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4b457fd5-fd61-4cc0-a622-b0aae1d3b7af",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "BitTimeRange rangeFromTimes2 = BitDay.CreateRangeFromTimes(TimeSpan.FromMinutes(555), TimeSpan.FromMinutes(615));",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Int64)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "BitTimeRange rangeFromTimes2 = BitDay.CreateRangeFromTimes(TimeSpan.FromMinutes(555), TimeSpan.FromMinutes(615));",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Int64)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 55,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "0ecc6964-6f51-484b-a861-1763a01e394c",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "BitTimeRange rangeFromTimes1 = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "BitTimeRange rangeFromTimes1 = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 44,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "1440549d-489e-44e4-8f14-287ed8bc24d2",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "BitTimeRange rangeFromTimes1 = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "BitTimeRange rangeFromTimes1 = BitDay.CreateRangeFromTimes(TimeSpan.FromHours(9), TimeSpan.FromHours(10));",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 44,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "f4d7b5b1-144b-43f2-aa73-b554ffcd9590",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (rangeFromBlocks.StartTime != TimeSpan.FromHours(9) ||\r\n                rangeFromBlocks.EndTime != TimeSpan.FromHours(10))\r\n            {\r\n                Console.WriteLine($\u0022Error: CreateRangeFromBlocks(36,39) returned {rangeFromBlocks}, expected 09:00 to 10:00\u0022);\r\n            }\r\n            else\r\n                Console.WriteLine(\u0022CreateRangeFromBlocks(36,39) passed.\u0022);",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "if (rangeFromBlocks.StartTime != TimeSpan.FromHours(9) ||\r\n                rangeFromBlocks.EndTime != TimeSpan.FromHours(10))\r\n            {\r\n                Console.WriteLine($\u0022Error: CreateRangeFromBlocks(36,39) returned {rangeFromBlocks}, expected 09:00 to 10:00\u0022);\r\n            }\r\n            else\r\n                Console.WriteLine(\u0022CreateRangeFromBlocks(36,39) passed.\u0022);",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 34,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "0535d2ec-63fa-4517-ae66-410f803f60b9",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (rangeFromBlocks.StartTime != TimeSpan.FromHours(9) ||\r\n                rangeFromBlocks.EndTime != TimeSpan.FromHours(10))\r\n            {\r\n                Console.WriteLine($\u0022Error: CreateRangeFromBlocks(36,39) returned {rangeFromBlocks}, expected 09:00 to 10:00\u0022);\r\n            }\r\n            else\r\n                Console.WriteLine(\u0022CreateRangeFromBlocks(36,39) passed.\u0022);",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "if (rangeFromBlocks.StartTime != TimeSpan.FromHours(9) ||\r\n                rangeFromBlocks.EndTime != TimeSpan.FromHours(10))\r\n            {\r\n                Console.WriteLine($\u0022Error: CreateRangeFromBlocks(36,39) returned {rangeFromBlocks}, expected 09:00 to 10:00\u0022);\r\n            }\r\n            else\r\n                Console.WriteLine(\u0022CreateRangeFromBlocks(36,39) passed.\u0022);",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 34,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "eea8f527-ccf1-492b-918c-93b86f1b5bab",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (timeFromBlock36 != TimeSpan.FromHours(9))\r\n                Console.WriteLine($\u0022Error: BlockIndexToTime(36) returned {timeFromBlock36}, expected 09:00:00\u0022);\r\n            else\r\n                Console.WriteLine(\u0022BlockIndexToTime(36) passed.\u0022);",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "if (timeFromBlock36 != TimeSpan.FromHours(9))\r\n                Console.WriteLine($\u0022Error: BlockIndexToTime(36) returned {timeFromBlock36}, expected 09:00:00\u0022);\r\n            else\r\n                Console.WriteLine(\u0022BlockIndexToTime(36) passed.\u0022);",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 26,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "20c73bba-6724-4544-b656-99efafe14d30",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "BitTimeScheduler\\BitTimeScheduler.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "TimeSpan t9 = TimeSpan.FromHours(9);",
+              "protected": "M:System.TimeSpan.FromHours(System.Int32)"
+            },
+            "kind": "File",
+            "path": "BitTimeScheduler\\TestsPerformanceTesting\\BitDayUtilityTests.cs",
+            "snippet": "TimeSpan t9 = TimeSpan.FromHours(9);",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Int32)",
+            "label": "M:System.TimeSpan.FromHours(System.Int32)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 17,
+            "column": 12
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "NuGet.0002": {
+      "id": "NuGet.0002",
+      "isFeature": false,
+      "description": "NuGet package upgrade is recommended for selected target framework.\n\nStandard .NET packages are recommended to have versions matching version of .NET that project targets.\n\nSome other packages also are known to work better for selected target frameworks.",
+      "label": "NuGet package upgrade is recommended",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262530",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0005": {
+      "id": "NuGet.0005",
+      "isFeature": false,
+      "description": "NuGet package is deprecated.\n\nGo to its documentation and if there is a guidance for replacement of functionality provided by this package.",
+      "label": "NuGet package is deprecated",
+      "severity": "Optional",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262531",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0004": {
+      "id": "NuGet.0004",
+      "isFeature": false,
+      "description": "NuGet package contains security vulnerabilities.\n\nPackage needs to be upgraded to a newer version that addresses known security vulnerabilities.",
+      "label": "NuGet package contains security vulnerability",
+      "severity": "Optional",
+      "effort": 1
+    },
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0003": {
+      "id": "Api.0003",
+      "isFeature": false,
+      "description": "API has a behavioral change in selected .NET version: code and binaries may behave differently at runtime without needing recompilation, but the new behavior might be undesirable and require updates.",
+      "label": "Behavioral change in selected .NET version",
+      "severity": "Potential",
+      "effort": 1
+    },
+    "Api.0002": {
+      "id": "Api.0002",
+      "isFeature": false,
+      "description": "API is source incompatible for selected .NET version: requires code changes to compile successfully when targeting a new version, such as removing obsolete APIs or changing method signatures.",
+      "label": "Source incompatible for selected .NET version",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
