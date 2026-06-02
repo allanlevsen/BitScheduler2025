@@ -1,23 +1,25 @@
-using AspireBitSchedule.Web;
-using AspireBitSchedule.Web.Components;
+using AspireBitSchedule.Web.Configuration;
+using Microsoft.Extensions.Options;
+
+const string AngularDevServerCorsPolicy = "AngularDevServer";
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.Configure<GoogleMappingOptions>(
+    builder.Configuration.GetSection(GoogleMappingOptions.SectionName));
 
-builder.Services.AddOutputCache();
-
-builder.Services.AddHttpClient<WeatherApiClient>(client =>
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(AngularDevServerCorsPolicy, policy =>
     {
-        // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-        // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-        client.BaseAddress = new("https+http://apiservice");
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
+});
 
 var app = builder.Build();
 
@@ -30,14 +32,31 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAntiforgery();
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(AngularDevServerCorsPolicy);
+}
 
-app.UseOutputCache();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
-app.MapStaticAssets();
+app.MapGet("/api/config/google-mapping", (IOptions<GoogleMappingOptions> options) =>
+{
+    var googleMapping = options.Value;
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    return Results.Ok(new GoogleMappingClientConfiguration(
+        googleMapping.ApiKey,
+        googleMapping.MapId,
+        googleMapping.Region,
+        googleMapping.Language,
+        googleMapping.Libraries,
+        new GoogleMapCenterConfiguration(
+            googleMapping.DefaultCenter.Latitude,
+            googleMapping.DefaultCenter.Longitude),
+        googleMapping.DefaultZoom));
+});
+
+app.MapFallbackToFile("index.html");
 
 app.MapDefaultEndpoints();
 
