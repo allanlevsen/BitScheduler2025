@@ -1,7 +1,8 @@
+using AspireBitSchedule.ServiceDefaults;
 using AspireBitSchedule.Web.Configuration;
 using Microsoft.Extensions.Options;
 
-const string AngularDevServerCorsPolicy = "AngularDevServer";
+const string angularDevServerCorsPolicy = "AngularDevServer";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Services.Configure<GoogleMappingOptions>(
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(AngularDevServerCorsPolicy, policy =>
+    options.AddPolicy(angularDevServerCorsPolicy, policy =>
     {
         policy.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
@@ -34,7 +35,7 @@ app.UseHttpsRedirection();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors(AngularDevServerCorsPolicy);
+    app.UseCors(angularDevServerCorsPolicy);
 }
 
 app.UseDefaultFiles();

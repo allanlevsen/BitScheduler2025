@@ -1,5 +1,3 @@
-using BitTimeScheduler;
-
 namespace BitSchedulerCore.Services
 {
     public sealed class BitResourceScheduleRangePayloadConverter

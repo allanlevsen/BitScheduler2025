@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using BitSchedulerCore.Models;
 
 namespace BitTimeScheduler.Models
 {

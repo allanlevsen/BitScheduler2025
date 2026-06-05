@@ -1,6 +1,6 @@
+using BitSchedulerCore;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Services;
-using BitTimeScheduler;
 using BitTimeScheduler.Models;
 
 namespace BitScheduleApi.Services;

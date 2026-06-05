@@ -1,4 +1,4 @@
-﻿namespace BitTimeScheduler.Models
+﻿namespace BitSchedulerCore.Models
 {
 
     /// <summary>

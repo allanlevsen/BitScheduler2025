@@ -1,7 +1,7 @@
-﻿using BitSchedulerCore;
+﻿using BitSchedulerCore.Models;
 using BitTimeScheduler.Models;
 
-namespace BitTimeScheduler
+namespace BitSchedulerCore
 {
 
     /// <summary>
@@ -10,7 +10,7 @@ namespace BitTimeScheduler
     /// while the upper 32 bits are reserved for metadata.
     /// A <see cref="Date"/> property holds the actual date of the BitDay.
     /// </summary>
-    public class BitDay
+    public sealed class BitDay
     {
 
         // The complete 128–bit state is stored in a single unsigned integer.
@@ -78,7 +78,7 @@ namespace BitTimeScheduler
         }
 
         // Navigation property for associated reservations.
-        public virtual ICollection<BitReservation> Reservations { get; set; } = new List<BitReservation>();
+        public ICollection<BitReservation> Reservations { get; set; } = new List<BitReservation>();
 
         #endregion
 
@@ -278,8 +278,8 @@ namespace BitTimeScheduler
         /// </summary>
         public bool GetMetadataFlag(BitTimeMetadataFlags flag)
         {
-            UInt128 flagMask = (UInt128)(uint)flag;
-            return ((UInt128)Metadata & flagMask) != 0;
+            UInt128 flagMask = (uint)flag;
+            return (Metadata & flagMask) != 0;
         }
 
         /// <summary>

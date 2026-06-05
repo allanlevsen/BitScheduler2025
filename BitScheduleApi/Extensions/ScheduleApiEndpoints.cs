@@ -1,6 +1,6 @@
 using BitScheduleApi.Services;
+using BitSchedulerCore;
 using BitSchedulerCore.Models;
-using BitTimeScheduler;
 using BitTimeScheduler.Models;
 
 namespace BitScheduleApi.Extensions;
@@ -173,7 +173,7 @@ internal static class ScheduleApiEndpoints
         {
             BitResourceId = config.BitResourceId,
             DateRange = config.DateRange,
-            ActiveDays = config.ActiveDays,
+            ActiveDays = config.ActiveDays!,
             TimeBlock = config.TimeBlock
         };
     }

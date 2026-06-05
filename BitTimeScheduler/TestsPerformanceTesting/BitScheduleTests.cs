@@ -4,7 +4,9 @@ using BitSchedulerCore.Data.BitTimeScheduler.Data; // Required for BitScheduleDb
 using BitSchedulerCore.Services; // Required for BitScheduleDataService
 using Microsoft.EntityFrameworkCore; // Required for DbContextOptionsBuilder, UseNpgsql
 using Microsoft.Extensions.Configuration; // Required for ConfigurationBuilder
-using Microsoft.Extensions.Logging.Abstractions; // Required for NullLogger
+using Microsoft.Extensions.Logging.Abstractions;
+using BitSchedulerCore;
+using BitSchedulerCore.Models; // Required for NullLogger
 
 namespace BitTimeScheduler.TestsPerformanceTesting
 {

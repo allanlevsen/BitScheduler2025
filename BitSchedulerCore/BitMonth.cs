@@ -1,6 +1,6 @@
-﻿using BitTimeScheduler.Models;
+﻿using BitSchedulerCore.Models;
 
-namespace BitTimeScheduler
+namespace BitSchedulerCore
 {
     /// <summary>
     /// Represents a month (for a given year and month number) containing a set of BitDay objects.
@@ -57,7 +57,7 @@ namespace BitTimeScheduler
         /// </summary>
         public List<BitDay> GetAvailableDays(BitSearchCriteria criteria)
         {
-            if (criteria.Days == null || criteria.Days.Length == 0)
+            if (criteria.Days.Length == 0)
                 return GetAvailableDaysForTimeBlock(criteria);
             else if (criteria.Days.Length == 1)
                 return GetAvailableDaysForSingleDay(criteria);

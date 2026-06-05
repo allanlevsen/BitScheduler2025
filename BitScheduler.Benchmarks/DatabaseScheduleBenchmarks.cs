@@ -3,7 +3,6 @@ using BenchmarkDotNet.Order;
 using BitSchedulerCore;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Services;
-using BitTimeScheduler;
 using BitTimeScheduler.Models;
 using Microsoft.EntityFrameworkCore;
 

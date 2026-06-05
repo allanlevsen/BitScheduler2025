@@ -1,5 +1,6 @@
 ﻿using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore;
+using BitSchedulerCore.Models;
 using BitTimeScheduler.Models;
 using BitSchedulerCore.Services;
 using Microsoft.EntityFrameworkCore;
