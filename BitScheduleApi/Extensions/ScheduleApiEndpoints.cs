@@ -1,7 +1,6 @@
 using BitScheduleApi.Services;
+using BitSchedulerCore;
 using BitSchedulerCore.Models;
-using BitTimeScheduler;
-using BitTimeScheduler.Models;
 
 namespace BitScheduleApi.Extensions;
 

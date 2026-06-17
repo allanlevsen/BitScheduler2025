@@ -1,0 +1,18 @@
+<section class="map-card">
+  <header class="map-card__header">
+    <div>
+      <h2>Google Map Preview</h2>
+      <p>A first Angular-hosted Google Map using the runtime configuration from ASP.NET Core.</p>
+    </div>
+    <p class="map-card__status">{{ mapStatus() }}</p>
+  </header>
+
+  @if (mapError(); as errorMessage) {
+    <div class="map-card__placeholder map-card__placeholder--error">
+      <p>{{ errorMessage }}</p>
+      <p>Update <code>GoogleMapping:ApiKey</code> in appsettings to enable the live map.</p>
+    </div>
+  } @else {
+    <div #mapHost class="map-card__canvas" aria-label="Google map preview"></div>
+  }
+</section>

@@ -1,0 +1,71 @@
+<main class="shell">
+  <section class="hero">
+    <p class="eyebrow">Aspire Bit Schedule</p>
+    <h1>Angular frontend ready for Google Maps integration</h1>
+    <p class="lead">
+      The Blazor UI has been replaced with an Angular SPA hosted by ASP.NET Core.
+      Google Maps settings are loaded at runtime from the backend configuration endpoint.
+    </p>
+  </section>
+
+  @if (loading()) {
+    <section class="card state-card">
+      <h2>Loading configuration</h2>
+      <p>Fetching the Google mapping settings from the server.</p>
+    </section>
+  } @else if (error(); as errorMessage) {
+    <section class="card state-card error-card">
+      <h2>Configuration unavailable</h2>
+      <p>{{ errorMessage }}</p>
+    </section>
+  } @else if (googleMapping(); as config) {
+    <section class="grid">
+      <article class="card">
+        <h2>GoogleMapping</h2>
+        <dl>
+          <div>
+            <dt>ApiKey</dt>
+            <dd>{{ config.apiKey ? 'Configured' : 'Not set yet' }}</dd>
+          </div>
+          <div>
+            <dt>MapId</dt>
+            <dd>{{ config.mapId || 'Not set yet' }}</dd>
+          </div>
+          <div>
+            <dt>Region</dt>
+            <dd>{{ config.region || 'Not set yet' }}</dd>
+          </div>
+          <div>
+            <dt>Language</dt>
+            <dd>{{ config.language || 'Not set yet' }}</dd>
+          </div>
+          <div>
+            <dt>Default Center</dt>
+            <dd>{{ config.defaultCenter.latitude }}, {{ config.defaultCenter.longitude }}</dd>
+          </div>
+          <div>
+            <dt>Default Zoom</dt>
+            <dd>{{ config.defaultZoom }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h2>Requested libraries</h2>
+        @if (config.libraries.length > 0) {
+          <ul>
+            @for (library of config.libraries; track library) {
+              <li>{{ library }}</li>
+            }
+          </ul>
+        } @else {
+          <p>No Google Maps libraries are configured yet.</p>
+        }
+      </article>
+    </section>
+
+    <section class="map-section">
+      <app-google-map [configuration]="config" />
+    </section>
+  }
+</main>

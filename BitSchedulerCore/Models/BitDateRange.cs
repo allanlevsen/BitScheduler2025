@@ -1,4 +1,4 @@
-﻿namespace BitTimeScheduler.Models
+﻿namespace BitSchedulerCore.Models
 {
     /// <summary>
     /// Represents a date range with a start and end date.

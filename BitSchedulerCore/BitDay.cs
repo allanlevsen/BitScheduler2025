@@ -1,7 +1,6 @@
-﻿using BitSchedulerCore;
-using BitTimeScheduler.Models;
+﻿using BitSchedulerCore.Models;
 
-namespace BitTimeScheduler
+namespace BitSchedulerCore
 {
 
     /// <summary>
@@ -10,13 +9,12 @@ namespace BitTimeScheduler
     /// while the upper 32 bits are reserved for metadata.
     /// A <see cref="Date"/> property holds the actual date of the BitDay.
     /// </summary>
-    public class BitDay
+    public sealed class BitDay
     {
 
         // The complete 128–bit state is stored in a single unsigned integer.
         // Bits 0–95 are used for day slots.
         // Bits 96–127 are reserved for metadata.
-        private UInt128 _bits;
 
         private const int MetadataShift = 96;
         private static readonly UInt128 DayDataMask = CreateMask128(TotalSlots);
@@ -37,7 +35,7 @@ namespace BitTimeScheduler
         public BitDay(DateTime date)
         {
             Date = date.Date;
-            _bits = 0;
+            Bits = 0;
 
             // Mark day as free since no slots are reserved.
             SetMetadataFlag(BitTimeMetadataFlags.IsFree, true);
@@ -51,34 +49,30 @@ namespace BitTimeScheduler
         public const int TotalSlots = 96;
 
         // Surrogate key as primary key.
-        public int BitDayId { get; set; }
+        public int BitDayId { get; init; }
 
         // Multi-tenant: which client owns this BitDay.
         public int ClientId { get; set; }
 
         // The day this record represents.
-        public DateTime Date { get; set; }
+        public DateTime Date { get; init; }
 
-        public UInt128 Bits
-        {
-            get { return _bits; }
-            set { _bits = value; }
-        }
+        public UInt128 Bits { get; set; }
 
         public UInt128 DayData
         {
-            get { return _bits & DayDataMask; }
-            set { _bits = (_bits & MetadataMask) | (value & DayDataMask); }
+            get => Bits & DayDataMask;
+            set => Bits = (Bits & MetadataMask) | (value & DayDataMask);
         }
 
         public uint Metadata
         {
-            get { return (uint)((_bits & MetadataMask) >> MetadataShift); }
-            set { _bits = (_bits & DayDataMask) | ((UInt128)value << MetadataShift); }
+            get => (uint)((Bits & MetadataMask) >> MetadataShift);
+            set => Bits = (Bits & DayDataMask) | ((UInt128)value << MetadataShift);
         }
 
         // Navigation property for associated reservations.
-        public virtual ICollection<BitReservation> Reservations { get; set; } = new List<BitReservation>();
+        public ICollection<BitReservation> Reservations { get; set; } = new List<BitReservation>();
 
         #endregion
 
@@ -278,8 +272,8 @@ namespace BitTimeScheduler
         /// </summary>
         public bool GetMetadataFlag(BitTimeMetadataFlags flag)
         {
-            UInt128 flagMask = (UInt128)(uint)flag;
-            return ((UInt128)Metadata & flagMask) != 0;
+            UInt128 flagMask = (uint)flag;
+            return (Metadata & flagMask) != 0;
         }
 
         /// <summary>

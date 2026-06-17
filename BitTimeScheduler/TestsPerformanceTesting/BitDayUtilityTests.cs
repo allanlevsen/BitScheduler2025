@@ -1,5 +1,6 @@
-﻿using BitTimeScheduler.Models;
+﻿using BitSchedulerCore;
 using System.Diagnostics;
+using BitSchedulerCore.Models;
 
 namespace BitTimeScheduler.TestsPerformanceTesting
 {

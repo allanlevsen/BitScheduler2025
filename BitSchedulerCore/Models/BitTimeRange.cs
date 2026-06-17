@@ -1,4 +1,4 @@
-﻿namespace BitTimeScheduler.Models
+﻿namespace BitSchedulerCore.Models
 {
     /// Represents a time range both in TimeSpan form and in 15-minute block indices.
     /// The StartBlock and EndBlock represent an inclusive range.

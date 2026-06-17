@@ -1,6 +1,5 @@
 using BitScheduleApi.Services;
 using BitSchedulerCore.Services;
-using BitTimeScheduler.Services;
 
 namespace BitScheduleApi.Extensions;
 

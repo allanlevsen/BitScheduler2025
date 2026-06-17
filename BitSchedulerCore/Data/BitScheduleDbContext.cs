@@ -3,7 +3,7 @@
     using Microsoft.EntityFrameworkCore.ChangeTracking;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-    using global::BitTimeScheduler;
+    using BitSchedulerCore;
 
     namespace BitTimeScheduler.Data
     {

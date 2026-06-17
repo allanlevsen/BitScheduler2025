@@ -2,9 +2,8 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
 using BitSchedulerCore;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
+using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
-using BitTimeScheduler;
-using BitTimeScheduler.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BitScheduler.Benchmarks;

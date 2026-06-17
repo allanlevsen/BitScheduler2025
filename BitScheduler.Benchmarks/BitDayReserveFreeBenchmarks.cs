@@ -1,6 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
-using BitTimeScheduler;
+using BitSchedulerCore;
 
 namespace BitScheduler.Benchmarks;
 

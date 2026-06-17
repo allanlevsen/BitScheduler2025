@@ -4,10 +4,22 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <SpaDistRoot>wwwroot\</SpaDistRoot>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AspireBitSchedule.ServiceDefaults\AspireBitSchedule.ServiceDefaults.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="$(SpaRoot)**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <Target Name="PublishAngularApp" BeforeTargets="ComputeFilesToPublish">
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+  </Target>
 
 </Project>

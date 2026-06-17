@@ -1,4 +1,4 @@
-﻿namespace BitTimeScheduler.Models
+﻿namespace BitSchedulerCore.Models
 {
     /// <summary>
     /// Represents the response from a schedule read operation.

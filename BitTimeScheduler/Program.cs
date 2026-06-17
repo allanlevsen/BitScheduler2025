@@ -1,13 +1,12 @@
 ﻿using BitTimeScheduler.Services;
 
-namespace BitTimeTestApp
+namespace BitTimeScheduler;
+
+internal static class Program
 {
-    internal static class Program
+    static async Task Main()
     {
-        static async Task Main()
-        {
-            var runner = new PerformanceTestRunner();
-            await runner.RunAsync();
-        }
+        var runner = new PerformanceTestRunner();
+        await runner.RunAsync();
     }
 }

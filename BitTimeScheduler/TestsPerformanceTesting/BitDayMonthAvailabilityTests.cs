@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
-using BitTimeScheduler.Models;
+using BitSchedulerCore;
+using BitSchedulerCore.Models;
 
 namespace BitTimeScheduler.TestsPerformanceTesting
 {
@@ -155,7 +156,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             {
                 StartTime = searchStart,
                 EndTime = searchEnd,
-                Days = new DayOfWeek[] { DayOfWeek.Tuesday, DayOfWeek.Thursday }
+                Days = [DayOfWeek.Tuesday, DayOfWeek.Thursday]
             };
 
             // Initially, with no reservations, list available days.
@@ -248,7 +249,7 @@ namespace BitTimeScheduler.TestsPerformanceTesting
             {
                 StartTime = new TimeSpan(9, 0, 0),
                 EndTime = new TimeSpan(11, 0, 0),
-                Days = new DayOfWeek[] { DayOfWeek.Tuesday, DayOfWeek.Thursday }
+                Days = [DayOfWeek.Tuesday, DayOfWeek.Thursday]
             };
 
             Stopwatch sw = Stopwatch.StartNew();
