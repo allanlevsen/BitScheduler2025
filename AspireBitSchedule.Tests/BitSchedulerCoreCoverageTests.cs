@@ -229,7 +229,7 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
         {
             StartTime = TimeSpan.FromHours(9),
             EndTime = TimeSpan.FromHours(10),
-            Days = null!
+            Days = []
         };
         Assert.Equal(allAvailable.Count, month.GetAvailableDays(nullDaysCriteria).Count);
     }

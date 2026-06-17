@@ -80,7 +80,7 @@ namespace BitSchedulerCore
         /// </summary>
         public BitScheduleConfiguration Configuration
         {
-            get { return _configuration; }
+            get => _configuration;
             set
             {
                 // Avoid unnecessary work if the same instance is assigned
