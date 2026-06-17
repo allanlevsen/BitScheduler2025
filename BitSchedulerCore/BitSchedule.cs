@@ -33,7 +33,7 @@ namespace BitSchedulerCore
 
         /// <summary>
         /// Service responsible for loading schedule data from the persistent store.
-        /// Marked readonly as it's injected via the constructor and shouldn't change afterwards.
+        /// Marked readonly as it's injected via the constructor and shouldn't change afterward.
         /// </summary>
         private readonly BitScheduleDataService _dataService;
 
@@ -59,13 +59,13 @@ namespace BitSchedulerCore
         /// <summary>
         /// Timestamp indicating when the internal `_scheduleData` was last successfully loaded or refreshed.
         /// </summary>
-        public DateTime LastRefreshed { get; set; }
+        public DateTime LastRefreshed { get; private set; }
 
         /// <summary>
         /// The specific Client ID for which this schedule instance is managing data.
         /// Used when loading data and creating new BitDay entries.
         /// </summary>
-        public int ClientId { get; set; }
+        private int ClientId { get; set; }
 
         /// <summary>
         /// Gets or sets the schedule configuration.
@@ -90,7 +90,7 @@ namespace BitSchedulerCore
                     return;
                 }
 
-                _logger.LogInformation("BitScheduleConfiguration is being changed for ClientId {ClientId}.", ClientId);
+                _logger.LogInformation($"BitScheduleConfiguration is being changed for ClientId.");
 
                 // Store the old configuration for comparison later
                 var oldConfiguration = _configuration;
@@ -118,16 +118,17 @@ namespace BitSchedulerCore
                 _configuration.PropertyChanged += OnConfigurationChanged;
                 _logger.LogTrace("Subscribed to PropertyChanged event of the new configuration.");
 
-                // Automatically refresh data if the flag is set AND a relevant change occurred
-                if (configActuallyChanged && _configuration.AutoRefreshOnConfigurationChange)
+                switch (configActuallyChanged)
                 {
-                    _logger.LogInformation("AutoRefresh is enabled and configuration changed. Triggering LoadScheduleData for ClientId {ClientId}.", ClientId);
-                    // Load data synchronously here. Be cautious if loading can be time-consuming.
-                    LoadScheduleData();
-                }
-                else if (configActuallyChanged)
-                {
-                    _logger.LogDebug("Configuration changed, but AutoRefresh is disabled or not applicable. Data reload not triggered automatically for ClientId {ClientId}.", ClientId);
+                    // Automatically refresh data if the flag is set AND a relevant change occurred
+                    case true when _configuration.AutoRefreshOnConfigurationChange:
+                        _logger.LogInformation("AutoRefresh is enabled and configuration changed. Triggering LoadScheduleData for ClientId {ClientId}.", ClientId);
+                        // Load data synchronously here. Be cautious if loading can be time-consuming.
+                        LoadScheduleData();
+                        break;
+                    case true:
+                        _logger.LogDebug("Configuration changed, but AutoRefresh is disabled or not applicable. Data reload not triggered automatically for ClientId {ClientId}.", ClientId);
+                        break;
                 }
             }
         }
@@ -214,10 +215,10 @@ namespace BitSchedulerCore
         public BitSchedule(int clientId, BitScheduleConfiguration configuration, BitScheduleDataService dataService, BitScheduleDbContext dbContext, ILogger<BitSchedule> logger)
         {
             // Validate and store injected dependencies
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
             ArgumentNullException.ThrowIfNull(dbContext);
             this._configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _logger.LogInformation("Initializing BitSchedule instance for ClientId {ClientId}...", clientId);
 
@@ -303,30 +304,30 @@ namespace BitSchedulerCore
         {
             DateTime targetDate = request.Date.Date;
              _logger.LogInformation("Attempting WriteDayAsync for ClientId {ClientId}, ResourceId {BitResourceId}, Date {TargetDate}, Time {StartTime} - {EndTime}.",
-                 ClientId, request.BitResourceId, targetDate.ToShortDateString(), request.StartTime, request.EndTime);
+                 ClientId, request.BitResourceId, targetDate, request.StartTime, request.EndTime);
 
             SyncConfigurationResource(request.BitResourceId, nameof(WriteDayAsync));
 
             if (!_scheduleData.TryGetValue(targetDate, out var day))
             {
-                _logger.LogDebug("BitDay for Date {TargetDate} not found in memory cache for ClientId {ClientId}. Creating new in-memory day.", targetDate.ToShortDateString(), ClientId);
+                _logger.LogDebug("BitDay for Date {TargetDate} not found in memory cache for ClientId {ClientId}. Creating new in-memory day.", targetDate, ClientId);
                 day = CreateDay(targetDate);
                 _scheduleData[targetDate] = day;
             }
             else
             {
-                _logger.LogTrace("BitDay for Date {TargetDate} found in memory cache for ClientId {ClientId}.", targetDate.ToShortDateString(), ClientId);
+                _logger.LogTrace("BitDay for Date {TargetDate} found in memory cache for ClientId {ClientId}.", targetDate, ClientId);
             }
 
             // 2. Apply the Reservation
             // Convert request times to internal block representation
             int startBlock = BitDay.TimeToBlockIndex(request.StartTime);
             int length = (int)((request.EndTime - request.StartTime).TotalMinutes / 15); // Calculate slot length
-            _logger.LogDebug("Attempting to reserve range: StartBlock {StartBlock}, Length {Length} on BitDay {TargetDate}.", startBlock, length, targetDate.ToShortDateString());
+            _logger.LogDebug("Attempting to reserve range: StartBlock {StartBlock}, Length {Length} on BitDay {TargetDate}.", startBlock, length, targetDate);
 
             // Attempt to reserve the time range on the BitDay object.
             bool reserved = day.ReserveRange(startBlock, length);
-            _logger.LogInformation("ReserveRange result for Date {TargetDate}, Block {StartBlock}, Length {Length}: {Reserved}", targetDate.ToShortDateString(), startBlock, length, reserved);
+            _logger.LogInformation("ReserveRange result for Date {TargetDate}, Block {StartBlock}, Length {Length}: {Reserved}", targetDate, startBlock, length, reserved);
 
 
             // 3. Persist Changes
@@ -334,24 +335,24 @@ namespace BitSchedulerCore
             {
                 try
                 {
-                    _logger.LogInformation("Calling SaveScheduleDataAsync for BitDay {TargetDate}, ClientId {ClientId}, ResourceId {BitResourceId}.", targetDate.ToShortDateString(), ClientId, _configuration.BitResourceId);
+                    _logger.LogInformation("Calling SaveScheduleDataAsync for BitDay {TargetDate}, ClientId {ClientId}, ResourceId {BitResourceId}.", targetDate, ClientId, _configuration.BitResourceId);
                     await _dataService.SaveScheduleDataAsync(_configuration, ClientId, new Dictionary<DateTime, BitDay>
                     {
                         [targetDate] = day
                     });
-                    _logger.LogInformation("SaveScheduleDataAsync completed for BitDay {TargetDate}.", targetDate.ToShortDateString());
+                    _logger.LogInformation("SaveScheduleDataAsync completed for BitDay {TargetDate}.", targetDate);
                 }
                 catch (DbUpdateException ex)
                 {
                     // Log the error with details
                     _logger.LogError(ex, "Error saving BitDay via DbUpdateException for Date {TargetDate}, ClientId {ClientId}. Inner: {InnerMessage}",
-                        targetDate.ToShortDateString(), ClientId, ex.InnerException?.Message);
+                        targetDate, ClientId, ex.InnerException?.Message);
                     // Consider application-specific error handling (e.g., reverting in-memory changes)
                     throw; // Re-throw the exception so the caller is aware of the failure.
                 }
                 catch (Exception ex) // Catch other potential exceptions during save
                 {
-                    _logger.LogError(ex, "Unexpected error saving BitDay for Date {TargetDate}, ClientId {ClientId}.", targetDate.ToShortDateString(), ClientId);
+                    _logger.LogError(ex, "Unexpected error saving BitDay for Date {TargetDate}, ClientId {ClientId}.", targetDate, ClientId);
                     throw;
                 }
             }
@@ -359,7 +360,7 @@ namespace BitSchedulerCore
             {
                 // Log the case where reservation failed and thus no save was attempted.
                 _logger.LogWarning("Reservation failed for Date {TargetDate}, StartBlock {StartBlock}, Length {Length}. No changes will be saved for this request.",
-                    targetDate.ToShortDateString(), startBlock, length);
+                    targetDate, startBlock, length);
             }
 
             // Return the (potentially modified or new) BitDay object.
@@ -377,7 +378,7 @@ namespace BitSchedulerCore
         public async Task<bool> WriteScheduleAsync(BitScheduleRequest request)
         {
              _logger.LogInformation("Attempting WriteScheduleAsync for ClientId {ClientId}, ResourceId {BitResourceId} from {StartDate} to {EndDate}, Time {StartTime} - {EndTime}.",
-                 ClientId, request.BitResourceId, request.DateRange?.StartDate.ToShortDateString(), request.DateRange?.EndDate.ToShortDateString(), request.TimeBlock!.StartTime, request.TimeBlock!.EndTime);
+                 ClientId, request.BitResourceId, request.DateRange?.StartDate, request.DateRange?.EndDate, request.TimeBlock!.StartTime, request.TimeBlock!.EndTime);
 
             SyncConfigurationResource(request.BitResourceId, nameof(WriteScheduleAsync));
 
@@ -419,12 +420,12 @@ namespace BitSchedulerCore
                 }
 
                 consideredDays++;
-                _logger.LogTrace("Considering BitDay {TargetDate} for reservation.", day.Date.ToShortDateString());
+                _logger.LogTrace("Considering BitDay {TargetDate} for reservation.", day.Date);
 
                 // Attempt to reserve the time block on the current day.
                 if (day.ReserveRange(startBlock, length))
                 {
-                    _logger.LogTrace("Reservation successful for BitDay {TargetDate}. Marking as modified.", day.Date.ToShortDateString());
+                    _logger.LogTrace("Reservation successful for BitDay {TargetDate}. Marking as modified.", day.Date);
                     modifiedDaysForSave[day.Date.Date] = day;
                     successfulReservations++;
                 }
@@ -435,7 +436,7 @@ namespace BitSchedulerCore
                     allReservationsSucceeded = false;
                     failedReservations++;
                     _logger.LogWarning("Reservation failed for BitDay {TargetDate}, StartBlock {StartBlock}, Length {Length}. Operation will not save if any reservation fails.",
-                        day.Date.ToShortDateString(), startBlock, length);
+                        day.Date, startBlock, length);
                     // Depending on requirements, could break here: // break;
                 }
             }
@@ -501,18 +502,18 @@ namespace BitSchedulerCore
         public BitDay ReadDay(DateTime date)
         {
             DateTime targetDate = date.Date;
-            _logger.LogDebug("Attempting ReadDay for ClientId {ClientId}, Date {TargetDate}.", ClientId, targetDate.ToShortDateString());
+            _logger.LogDebug("Attempting ReadDay for ClientId {ClientId}, Date {TargetDate}.", ClientId, targetDate);
 
             // Use the dictionary's TryGetValue for efficient O(1) average time lookup.
             if (_scheduleData.TryGetValue(targetDate, out var day))
             {
-                _logger.LogTrace("BitDay found in memory cache for Date {TargetDate}.", targetDate.ToShortDateString());
+                _logger.LogTrace("BitDay found in memory cache for Date {TargetDate}.", targetDate);
                 // Found the day in our in-memory data
                 return day;
             }
             else
             {
-                _logger.LogDebug("BitDay not found in memory cache for Date {TargetDate}. Returning new default BitDay.", targetDate.ToShortDateString());
+                _logger.LogDebug("BitDay not found in memory cache for Date {TargetDate}. Returning new default BitDay.", targetDate);
                 // The day was not found in the data loaded according to the current configuration.
                 // Return a new, default (free) BitDay object for that date.
                 return CreateDay(targetDate);
