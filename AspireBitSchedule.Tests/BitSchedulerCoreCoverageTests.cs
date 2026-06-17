@@ -2,8 +2,6 @@ using BitSchedulerCore;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
-using BitTimeScheduler;
-using BitTimeScheduler.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -301,7 +299,6 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
         Assert.True(schedule.LastRefreshed <= DateTime.Now);
         Assert.True(schedule.ReadDay(new DateTime(2025, 4, 2)).IsFree);
 
-        dbContext.Dispose();
         schedule.Configuration = CreateConfiguration(new DateTime(2025, 4, 1), new DateTime(2025, 5, 31));
         schedule.LoadScheduleData();
         Assert.True(schedule.IsDirty);
@@ -766,7 +763,6 @@ WHERE datname = @databaseName
 
     private enum SaveFailureMode
     {
-        None,
         DbUpdate,
         General
     }

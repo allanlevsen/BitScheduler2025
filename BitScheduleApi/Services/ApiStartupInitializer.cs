@@ -1,5 +1,5 @@
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
-using BitTimeScheduler.Services;
+using BitSchedulerCore.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BitScheduleApi.Services;

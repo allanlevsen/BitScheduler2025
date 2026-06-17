@@ -2,7 +2,7 @@
 using BitSchedulerCore.Data.BitTimeScheduler.Data; // Required for the DbContext
 using BitSchedulerCore.Models; // Contains AuditableEntity, used by BitReservation (though not directly here)
 using BitSchedulerCore.Services;
-using BitTimeScheduler.Models; // Required for BitScheduleDataService
+// Required for BitScheduleDataService
 using Microsoft.EntityFrameworkCore; // Required for DbUpdateException
 using Microsoft.Extensions.Logging; // Required for ILogger
 
@@ -165,7 +165,7 @@ namespace BitSchedulerCore
             var newDaysNull = newConfig.ActiveDays == null || newConfig.ActiveDays.Length == 0;
 
             if (oldDaysNull != newDaysNull) return true; // Change if one is null/empty and other isn't
-            return !oldDaysNull && !newConfig.ActiveDays.SequenceEqual(oldConfig.ActiveDays); // Change if content/order differs
+            return !oldDaysNull && !newDaysNull && !newConfig.ActiveDays.SequenceEqual(oldConfig.ActiveDays); // Change if content/order differs
         }
 
         // --- Event Handlers ---
@@ -176,16 +176,16 @@ namespace BitSchedulerCore
         /// </summary>
         /// <param name="sender">The configuration object that raised the event.</param>
         /// <param name="e">Event arguments containing the name of the changed property.</param>
-        protected void OnConfigurationChanged(object? sender, PropertyChangedEventArgs e)
+        private void OnConfigurationChanged(object? sender, PropertyChangedEventArgs e)
         {
             _logger.LogDebug("Configuration property changed: {PropertyName} for ClientId {ClientId}. Setting IsDirty=true.", e.PropertyName, ClientId);
             // Always mark the schedule as potentially dirty when any configuration property changes.
             IsDirty = true;
 
             // Determine if the specific property change necessitates reloading the data
-            bool requiresReload = e.PropertyName == nameof(BitScheduleConfiguration.BitResourceId) ||
-                                  e.PropertyName == nameof(BitScheduleConfiguration.DateRange) ||
-                                  e.PropertyName == nameof(BitScheduleConfiguration.ActiveDays);
+            var requiresReload = e.PropertyName == nameof(BitScheduleConfiguration.BitResourceId) ||
+                                 e.PropertyName == nameof(BitScheduleConfiguration.DateRange) ||
+                                 e.PropertyName == nameof(BitScheduleConfiguration.ActiveDays);
 
             // Reload data only if auto-refresh is enabled AND the change affects the data scope.
             if (requiresReload && _configuration.AutoRefreshOnConfigurationChange)
