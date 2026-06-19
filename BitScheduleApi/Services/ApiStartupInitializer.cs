@@ -4,7 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BitScheduleApi.Services;
 
-internal sealed class ApiStartupInitializer(SeedingService seedingService, BitScheduleDbContext dbContext, ILogger<ApiStartupInitializer> logger)
+internal sealed class ApiStartupInitializer(
+    SeedingService seedingService,
+    BitScheduleDbContext dbContext,
+    IHexGridLookupProvider hexGridLookupProvider,
+    ILogger<ApiStartupInitializer> logger)
 {
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
@@ -20,5 +24,9 @@ internal sealed class ApiStartupInitializer(SeedingService seedingService, BitSc
         await seedingService.SeedScheduleDataAsync();
 
         logger.LogInformation("Database seeding completed successfully.");
+
+        logger.LogInformation("Loading active hex grid lookup...");
+        await hexGridLookupProvider.ReloadAsync(cancellationToken);
+        logger.LogInformation("Hex grid lookup loading completed.");
     }
 }

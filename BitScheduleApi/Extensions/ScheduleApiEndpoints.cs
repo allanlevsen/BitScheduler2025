@@ -1,6 +1,8 @@
 using BitScheduleApi.Services;
 using BitSchedulerCore;
+using BitSchedulerCore.HexGrid;
 using BitSchedulerCore.Models;
+using BitSchedulerCore.Services;
 
 namespace BitScheduleApi.Extensions;
 
@@ -16,8 +18,95 @@ internal static class ScheduleApiEndpoints
         endpoints.MapPost("/WriteSchedule", WriteScheduleAsync);
         endpoints.MapPost("/ReadScheduleDay", ReadScheduleDay);
         endpoints.MapGet("/TestReadScheduleDay", ReadTestScheduleDay);
+        endpoints.MapPost("/HexGrid/GenerateEdmontonMetro", GenerateEdmontonMetroHexGridAsync);
+        endpoints.MapPost("/HexGrid/{versionId:int}/BuildTables", BuildHexGridTablesAsync);
+        endpoints.MapPost("/HexGrid/Reload", ReloadHexGridLookupAsync);
+        endpoints.MapGet("/HexGrid/Cell", GetHexGridCell);
+        endpoints.MapGet("/HexGrid/{gridId:int}/Neighbors", GetHexGridNeighbors);
+        endpoints.MapGet("/HexGrid/{gridId:int}/Ring/{maxRingDistance:int}", GetHexGridRing);
 
         return endpoints;
+    }
+
+    private static async Task<IResult> GenerateEdmontonMetroHexGridAsync(
+        IHexGridGenerationService generationService,
+        IHexGridTableService tableService,
+        IHexGridLookupProvider lookupProvider,
+        CancellationToken cancellationToken)
+    {
+        var options = HexGridServiceAreas.EdmontonMetro;
+        var result = await generationService.GenerateGridAsync(options, cancellationToken);
+
+        await tableService.BuildNeighborTableAsync(result.HexGridVersionId, cancellationToken);
+        await tableService.BuildSearchRingTableAsync(
+            result.HexGridVersionId,
+            options.MaxPrecomputedRingDistance,
+            cancellationToken);
+        await lookupProvider.ReloadAsync(cancellationToken);
+
+        return Results.Ok(new
+        {
+            result.HexGridVersionId,
+            result.AreaName,
+            result.Name,
+            result.CellCount,
+            result.VertexCount,
+            options.MaxPrecomputedRingDistance
+        });
+    }
+
+    private static async Task<IResult> BuildHexGridTablesAsync(
+        int versionId,
+        int? maxRingDistance,
+        IHexGridTableService tableService,
+        IHexGridLookupProvider lookupProvider,
+        CancellationToken cancellationToken)
+    {
+        var ringDistance = maxRingDistance ?? HexGridServiceAreas.EdmontonMetro.MaxPrecomputedRingDistance;
+
+        await tableService.BuildNeighborTableAsync(versionId, cancellationToken);
+        await tableService.BuildSearchRingTableAsync(versionId, ringDistance, cancellationToken);
+        await lookupProvider.ReloadAsync(cancellationToken);
+
+        return Results.Ok(new
+        {
+            HexGridVersionId = versionId,
+            MaxRingDistance = ringDistance
+        });
+    }
+
+    private static async Task<IResult> ReloadHexGridLookupAsync(
+        IHexGridLookupProvider lookupProvider,
+        CancellationToken cancellationToken)
+    {
+        await lookupProvider.ReloadAsync(cancellationToken);
+        return Results.Ok(new
+        {
+            lookupProvider.Current.HexGridVersionId,
+            lookupProvider.Current.AreaName,
+            CellCount = lookupProvider.Current.CellsById.Count
+        });
+    }
+
+    private static IResult GetHexGridCell(double latitude, double longitude, IHexGridSearchService searchService)
+    {
+        var gridId = searchService.GetGridId(latitude, longitude);
+        if (!gridId.HasValue)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(searchService.GetCell(gridId.Value));
+    }
+
+    private static IResult GetHexGridNeighbors(int gridId, IHexGridSearchService searchService)
+    {
+        return Results.Ok(searchService.GetNeighborGridIds(gridId));
+    }
+
+    private static IResult GetHexGridRing(int gridId, int maxRingDistance, IHexGridSearchService searchService)
+    {
+        return Results.Ok(searchService.GetGridIdsWithinRing(gridId, maxRingDistance));
     }
 
     private static IResult ReadSchedule(BitScheduleConfiguration config, BitScheduleFactory scheduleFactory, ILogger<Program> logger)

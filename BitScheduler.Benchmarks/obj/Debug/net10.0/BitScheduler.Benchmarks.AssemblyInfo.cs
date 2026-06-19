@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BitScheduler.Benchmarks")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+688005938527f950abf2fa753a1c647375945bf3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8c682a27bfa4c6cc50e3924e1b8e092aa45b313e")]
 [assembly: System.Reflection.AssemblyProductAttribute("BitScheduler.Benchmarks")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BitScheduler.Benchmarks")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

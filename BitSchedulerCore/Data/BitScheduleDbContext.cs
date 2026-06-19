@@ -4,6 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using BitSchedulerCore;
+    using BitSchedulerCore.HexGrid;
 
     namespace BitTimeScheduler.Data
     {
@@ -33,8 +34,11 @@
             public DbSet<BitResource> BitResources { get; set; }
             public DbSet<BitClient> BitClients { get; set; }
             public DbSet<BitResourceScheduleRange> BitResourceScheduleRanges { get; set; }
-
-
+            public DbSet<HexGridVersion> HexGridVersions { get; set; }
+            public DbSet<HexGridCell> HexGridCells { get; set; }
+            public DbSet<HexGridCellVertex> HexGridCellVertices { get; set; }
+            public DbSet<HexGridNeighbor> HexGridNeighbors { get; set; }
+            public DbSet<HexGridSearchRing> HexGridSearchRings { get; set; }
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
@@ -194,6 +198,97 @@
 
                     entity.HasIndex(e => new { e.BitResourceId, e.StartDate, e.EndDate });
                     entity.HasIndex(e => new { e.BitClientId, e.BitResourceId, e.StartDate, e.EndDate }).IsUnique();
+                });
+
+                modelBuilder.Entity<HexGridVersion>(entity =>
+                {
+                    entity.HasKey(e => e.Id);
+
+                    entity.Property(e => e.AreaName)
+                          .IsRequired()
+                          .HasMaxLength(100);
+
+                    entity.Property(e => e.Name)
+                          .IsRequired()
+                          .HasMaxLength(200);
+
+                    entity.Property(e => e.CreatedUtc)
+                          .IsRequired();
+
+                    entity.HasIndex(e => new { e.AreaName, e.IsActive });
+                });
+
+                modelBuilder.Entity<HexGridCell>(entity =>
+                {
+                    entity.HasKey(e => e.Id);
+
+                    entity.Property(e => e.AreaName)
+                          .HasMaxLength(100);
+
+                    entity.Property(e => e.CreatedUtc)
+                          .IsRequired();
+
+                    entity.HasOne(e => e.HexGridVersion)
+                          .WithMany(v => v.Cells)
+                          .HasForeignKey(e => e.HexGridVersionId)
+                          .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasIndex(e => new { e.HexGridVersionId, e.Q, e.R }).IsUnique();
+                    entity.HasIndex(e => e.Id);
+                    entity.HasIndex(e => e.IsActive);
+                    entity.HasIndex(e => new { e.AreaName, e.IsActive });
+                });
+
+                modelBuilder.Entity<HexGridCellVertex>(entity =>
+                {
+                    entity.HasKey(e => e.Id);
+
+                    entity.HasOne(e => e.HexGridCell)
+                          .WithMany(c => c.Vertices)
+                          .HasForeignKey(e => e.HexGridCellId)
+                          .OnDelete(DeleteBehavior.Cascade);
+
+                    entity.HasIndex(e => new { e.HexGridCellId, e.VertexOrder }).IsUnique();
+                });
+
+                modelBuilder.Entity<HexGridNeighbor>(entity =>
+                {
+                    entity.HasKey(e => e.Id);
+
+                    entity.Property(e => e.Direction)
+                          .HasConversion<int>()
+                          .IsRequired();
+
+                    entity.HasOne(e => e.HexGridCell)
+                          .WithMany(c => c.Neighbors)
+                          .HasForeignKey(e => e.HexGridCellId)
+                          .OnDelete(DeleteBehavior.Cascade);
+
+                    entity.HasOne(e => e.NeighborHexGridCell)
+                          .WithMany(c => c.NeighborOf)
+                          .HasForeignKey(e => e.NeighborHexGridCellId)
+                          .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasIndex(e => new { e.HexGridCellId, e.Direction }).IsUnique();
+                    entity.HasIndex(e => e.NeighborHexGridCellId);
+                });
+
+                modelBuilder.Entity<HexGridSearchRing>(entity =>
+                {
+                    entity.HasKey(e => e.Id);
+
+                    entity.HasOne(e => e.HexGridCell)
+                          .WithMany(c => c.SearchRings)
+                          .HasForeignKey(e => e.HexGridCellId)
+                          .OnDelete(DeleteBehavior.Cascade);
+
+                    entity.HasOne(e => e.NearbyHexGridCell)
+                          .WithMany(c => c.NearbySearchRings)
+                          .HasForeignKey(e => e.NearbyHexGridCellId)
+                          .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasIndex(e => new { e.HexGridCellId, e.NearbyHexGridCellId }).IsUnique();
+                    entity.HasIndex(e => new { e.HexGridCellId, e.RingDistance });
                 });
 
                 base.OnModelCreating(modelBuilder);
