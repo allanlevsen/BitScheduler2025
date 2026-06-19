@@ -30,6 +30,7 @@
 
             public DbSet<BitDay> BitDays { get; set; }
             public DbSet<BitReservation> BitReservations { get; set; }
+            public DbSet<BitEvent> BitEvents { get; set; }
             public DbSet<BitResourceType> BitResourceTypes { get; set; }
             public DbSet<BitResource> BitResources { get; set; }
             public DbSet<BitClient> BitClients { get; set; }
@@ -58,6 +59,11 @@
 
                     // One client has many reservations.
                     entity.HasMany(e => e.BitReservations)
+                          .WithOne(r => r.BitClient)
+                          .HasForeignKey(r => r.BitClientId)
+                          .OnDelete(DeleteBehavior.Cascade);
+
+                    entity.HasMany(e => e.BitEvents)
                           .WithOne(r => r.BitClient)
                           .HasForeignKey(r => r.BitClientId)
                           .OnDelete(DeleteBehavior.Cascade);
@@ -101,6 +107,11 @@
                           .WithOne(r => r.BitResource)
                           .HasForeignKey(r => r.BitResourceId)
                           .OnDelete(DeleteBehavior.Cascade);
+
+                    entity.HasMany(e => e.BitEvents)
+                          .WithOne(r => r.BitResource)
+                          .HasForeignKey(r => r.BitResourceId)
+                          .OnDelete(DeleteBehavior.Cascade);
                 });
 
                 // Configure BitReservation.
@@ -135,6 +146,36 @@
                           .WithMany(r => r.BitReservations)
                           .HasForeignKey(e => e.BitResourceId)
                           .OnDelete(DeleteBehavior.Cascade);
+                });
+
+                modelBuilder.Entity<BitEvent>(entity =>
+                {
+                    entity.HasKey(e => e.BitEventId);
+
+                    entity.Property(e => e.StartDateTime)
+                          .HasColumnType("timestamp with time zone")
+                          .IsRequired();
+
+                    entity.Property(e => e.EndDateTime)
+                          .HasColumnType("timestamp with time zone")
+                          .IsRequired();
+
+                    entity.Property(e => e.StartAddress)
+                          .HasMaxLength(500);
+
+                    entity.Property(e => e.EndAddress)
+                          .HasMaxLength(500);
+
+                    entity.Property(e => e.CreatedBy)
+                          .IsRequired()
+                          .HasMaxLength(200);
+
+                    entity.Property(e => e.UpdatedBy)
+                          .IsRequired()
+                          .HasMaxLength(200);
+
+                    entity.HasIndex(e => new { e.BitClientId, e.BitResourceId, e.StartDateTime, e.EndDateTime });
+                    entity.HasIndex(e => new { e.BitResourceId, e.StartDateTime });
                 });
 
                 // (Assume your BitDay configuration remains unchanged.)

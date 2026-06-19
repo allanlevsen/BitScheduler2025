@@ -5,12 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration
+    .AddJsonFile(@"..\AspireBitSchedule.Web\appsettings.json", optional: true, reloadOnChange: false)
+    .AddJsonFile($@"..\AspireBitSchedule.Web\appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false);
+
 var connectionString = builder.Configuration.GetConnectionString("BitScheduleConnection")
     ?? throw new InvalidOperationException("Connection string 'BitScheduleConnection' was not found.");
 
 builder.Services.AddDbContext<BitScheduleDbContext>(options =>
     options.UseNpgsql(connectionString));
-builder.Services.AddBitScheduleApiServices();
+builder.Services.AddBitScheduleApiServices(builder.Configuration);
 
 var app = builder.Build();
 
