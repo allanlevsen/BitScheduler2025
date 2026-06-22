@@ -166,6 +166,9 @@
                     entity.Property(e => e.EndAddress)
                           .HasMaxLength(500);
 
+                    entity.Property(e => e.EventType)
+                          .HasMaxLength(100);
+
                     entity.Property(e => e.CreatedBy)
                           .IsRequired()
                           .HasMaxLength(200);
@@ -176,6 +179,7 @@
 
                     entity.HasIndex(e => new { e.BitClientId, e.BitResourceId, e.StartDateTime, e.EndDateTime });
                     entity.HasIndex(e => new { e.BitResourceId, e.StartDateTime });
+                    entity.HasIndex(e => new { e.BitClientId, e.EventType, e.StartDateTime });
                 });
 
                 // (Assume your BitDay configuration remains unchanged.)

@@ -19,6 +19,14 @@ export class ApiService {
     return this.httpClient.post<TResponse>(`${this.apiBaseUrl}${path}`, body);
   }
 
+  public put<TResponse, TRequest>(path: string, body: TRequest): Observable<TResponse> {
+    return this.httpClient.put<TResponse>(`${this.apiBaseUrl}${path}`, body);
+  }
+
+  public delete(path: string): Observable<void> {
+    return this.httpClient.delete<void>(`${this.apiBaseUrl}${path}`);
+  }
+
   private toHttpParams(params?: Record<string, string | number | boolean | undefined>): HttpParams | undefined {
     if (!params) {
       return undefined;

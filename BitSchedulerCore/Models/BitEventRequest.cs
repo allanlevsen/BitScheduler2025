@@ -18,6 +18,7 @@ public class BitEventRequest
 
     public bool RequiresTransportation { get; set; }
     public bool RequiresReturnTransportation { get; set; }
+    public string? EventType { get; set; }
 
     public bool ReserveScheduleBits { get; set; } = true;
     public string UpdatedBy { get; set; } = "system";

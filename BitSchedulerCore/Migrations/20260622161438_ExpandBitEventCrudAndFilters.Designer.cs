@@ -3,6 +3,7 @@ using System;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BitSchedulerCore.Migrations
 {
     [DbContext(typeof(BitScheduleDbContext))]
-    partial class BitScheduleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260622161438_ExpandBitEventCrudAndFilters")]
+    partial class ExpandBitEventCrudAndFilters
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

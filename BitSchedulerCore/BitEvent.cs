@@ -27,4 +27,6 @@ public class BitEvent : AuditableEntity
 
     public bool RequiresTransportation { get; set; }
     public bool RequiresReturnTransportation { get; set; }
+    public string? EventType { get; set; }
+    public bool ScheduleBitsReserved { get; set; }
 }
