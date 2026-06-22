@@ -2,8 +2,11 @@ using BitScheduleServices.Features.Configuration;
 using BitScheduleServices.Features.Events;
 using BitScheduleServices.Features.HexGrid;
 using BitScheduleServices.Features.Schedule;
+using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.HexGrid;
 using BitSchedulerCore.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BitScheduleServices.Infrastructure;
 

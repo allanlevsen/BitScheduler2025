@@ -1,5 +1,4 @@
-using BitScheduleApi.Configuration;
-using BitScheduleApi.Services;
+using BitScheduleServices.Features.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;

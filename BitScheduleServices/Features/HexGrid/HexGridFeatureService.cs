@@ -1,5 +1,6 @@
 using BitSchedulerCore.HexGrid;
 using BitSchedulerCore.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace BitScheduleServices.Features.HexGrid;
 

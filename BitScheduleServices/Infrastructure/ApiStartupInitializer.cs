@@ -1,6 +1,7 @@
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BitScheduleServices.Infrastructure;
 

@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using System.Net.Http.Json;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BitScheduleServices.Features.Configuration;

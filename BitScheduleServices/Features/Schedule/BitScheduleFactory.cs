@@ -2,6 +2,7 @@ using BitSchedulerCore;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
+using Microsoft.Extensions.Logging;
 
 namespace BitScheduleServices.Features.Schedule;
 

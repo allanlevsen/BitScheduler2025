@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AspireBitSchedule.AppHost\AspireBitSchedule.AppHost.csproj" />
-    <ProjectReference Include="..\BitScheduleApi\BitScheduleApi.csproj" />
+    <ProjectReference Include="..\BitScheduleServices\BitScheduleServices.csproj" />
     <ProjectReference Include="..\BitSchedulerCore\BitSchedulerCore.csproj" />
   </ItemGroup>
 

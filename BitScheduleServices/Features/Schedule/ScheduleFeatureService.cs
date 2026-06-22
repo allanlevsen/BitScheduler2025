@@ -1,5 +1,7 @@
 using BitSchedulerCore;
 using BitSchedulerCore.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace BitScheduleServices.Features.Schedule;
 
