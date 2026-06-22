@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "ng serve --host 0.0.0.0 --port 4200 --proxy-config proxy.conf.cjs",
+    "start": "node scripts/write-runtime-config.cjs && ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development"
   },

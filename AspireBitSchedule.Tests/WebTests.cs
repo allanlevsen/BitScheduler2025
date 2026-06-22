@@ -18,8 +18,8 @@ public class WebTests
         await app.StartAsync();
 
         // Act
-        var httpClient = app.CreateHttpClient("angularfrontend");
-        await resourceNotificationService.WaitForResourceAsync("angularfrontend", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
+        var httpClient = app.CreateHttpClient("angular-devserver");
+        await resourceNotificationService.WaitForResourceAsync("angular-devserver", KnownResourceStates.Running).WaitAsync(TimeSpan.FromSeconds(30));
         var response = await httpClient.GetAsync("/");
 
         // Assert

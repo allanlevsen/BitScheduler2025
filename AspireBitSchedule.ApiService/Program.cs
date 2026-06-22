@@ -10,12 +10,22 @@ using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+const string angularDevServerCorsPolicy = "AngularDevServer";
 
 builder.AddServiceDefaults();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.Configure<GoogleMappingOptions>(
     builder.Configuration.GetSection(GoogleMappingOptions.SectionName));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(angularDevServerCorsPolicy, policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Configuration
     .AddJsonFile(@"..\AspireBitSchedule.Web\appsettings.json", optional: true, reloadOnChange: false)
@@ -32,6 +42,7 @@ var app = builder.Build();
 
 app.UseExceptionHandler("/error");
 app.Map("/error", () => Results.Problem("An unhandled error occurred."));
+app.UseCors(angularDevServerCorsPolicy);
 
 if (app.Environment.IsDevelopment())
 {

@@ -2,12 +2,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { appRuntimeConfig } from '../core/config/app-runtime-config';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   private readonly httpClient = inject(HttpClient);
-  private readonly apiBaseUrl = '/api';
+  private readonly apiBaseUrl = normalizeApiBaseUrl(appRuntimeConfig.apiBaseUrl);
 
   public get<T>(path: string, params?: Record<string, string | number | boolean | undefined>): Observable<T> {
     return this.httpClient.get<T>(`${this.apiBaseUrl}${path}`, {
@@ -44,4 +46,14 @@ export class ApiService {
 
     return httpParams;
   }
+}
+
+function normalizeApiBaseUrl(apiBaseUrl: string | undefined): string {
+  if (!apiBaseUrl) {
+    return '/api';
+  }
+
+  return apiBaseUrl.endsWith('/')
+    ? apiBaseUrl.slice(0, -1)
+    : apiBaseUrl;
 }

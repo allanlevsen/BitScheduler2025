@@ -92,7 +92,7 @@ if (app.Environment.IsDevelopment())
                 }
 
                 var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
-                using var requestMessage = CreateProxyHttpRequest(context);
+                using var requestMessage = CreateProxyHttpRequest(context, angularDevServerUrl);
                 using var responseMessage = await httpClientFactory
                     .CreateClient(angularDevServerHttpClient)
                     .SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, context.RequestAborted);
