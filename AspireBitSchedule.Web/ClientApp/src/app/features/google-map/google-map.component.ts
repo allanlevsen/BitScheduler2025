@@ -7,7 +7,7 @@ import { GoogleMapsLoaderService } from '../../core/google-maps/google-maps-load
   selector: 'app-google-map',
   standalone: true,
   templateUrl: './google-map.component.html',
-  styleUrl: './google-map.component.css',
+  styleUrls: ['./google-map.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GoogleMapComponent implements OnChanges, AfterViewInit {

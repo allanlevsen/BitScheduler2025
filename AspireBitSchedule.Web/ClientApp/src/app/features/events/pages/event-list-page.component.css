@@ -1,0 +1,22 @@
+.sticky-filter {
+  top: 1.5rem;
+  position: sticky;
+}
+
+.filter-list {
+  display: grid;
+  gap: 0.85rem;
+  max-height: 18rem;
+  overflow: auto;
+}
+
+.table td,
+.table th {
+  padding: 1rem 1.25rem;
+}
+
+@media (max-width: 1199.98px) {
+  .sticky-filter {
+    position: static;
+  }
+}

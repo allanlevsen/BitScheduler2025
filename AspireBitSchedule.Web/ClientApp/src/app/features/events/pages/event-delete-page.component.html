@@ -1,0 +1,44 @@
+<section class="page-heading">
+  <div>
+    <p class="section-label mb-2">Event Workspace</p>
+    <h1>Remove Event</h1>
+    <p class="page-subtitle">
+      Confirm before permanently removing this event from the schedule.
+    </p>
+  </div>
+</section>
+
+<div class="card panel-card border-danger-subtle">
+  <div class="card-body p-4 p-lg-5">
+    @if (loading()) {
+      <p class="mb-0">Loading event details...</p>
+    } @else if (errorMessage(); as errorMessage) {
+      <div class="alert alert-danger mb-0">{{ errorMessage }}</div>
+    } @else if (event(); as event) {
+      <div class="alert alert-warning">
+        This action cannot be undone.
+      </div>
+
+      <dl class="row mb-4">
+        <dt class="col-sm-3">Event Type</dt>
+        <dd class="col-sm-9">{{ event.eventType || 'Unspecified' }}</dd>
+
+        <dt class="col-sm-3">Resource Id</dt>
+        <dd class="col-sm-9">{{ event.bitResourceId }}</dd>
+
+        <dt class="col-sm-3">Start</dt>
+        <dd class="col-sm-9">{{ event.startDateTime | date:'medium' }}</dd>
+
+        <dt class="col-sm-3">End</dt>
+        <dd class="col-sm-9">{{ event.endDateTime | date:'medium' }}</dd>
+      </dl>
+
+      <div class="d-flex flex-wrap gap-3">
+        <button class="btn btn-danger" type="button" [disabled]="deleting()" (click)="deleteEvent()">
+          {{ deleting() ? 'Removing...' : 'Remove Event' }}
+        </button>
+        <a class="btn btn-outline-secondary" routerLink="/events">Cancel</a>
+      </div>
+    }
+  </div>
+</div>

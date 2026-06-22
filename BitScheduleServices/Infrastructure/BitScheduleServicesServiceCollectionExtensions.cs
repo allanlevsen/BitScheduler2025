@@ -1,6 +1,7 @@
 using BitScheduleServices.Features.Configuration;
 using BitScheduleServices.Features.Events;
 using BitScheduleServices.Features.HexGrid;
+using BitScheduleServices.Features.Resources;
 using BitScheduleServices.Features.Schedule;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.HexGrid;
@@ -34,9 +35,11 @@ public static class BitScheduleServicesServiceCollectionExtensions
         services.AddScoped<BitScheduleDataService>();
         services.AddHttpClient<IGeocodingService, GoogleGeocodingService>();
         services.AddScoped<IBitEventService, BitEventService>();
+        services.AddScoped<IBitResourceService, BitResourceService>();
         services.AddScoped<BitScheduleFactory>();
         services.AddScoped<ScheduleFeatureService>();
         services.AddScoped<EventFeatureService>();
+        services.AddScoped<ResourceFeatureService>();
         services.AddScoped<HexGridFeatureService>();
         services.AddScoped<ApiStartupInitializer>();
         services.AddSingleton<IHexCoordinateService>(_ => new HexCoordinateService(HexGridServiceAreas.EdmontonMetro));

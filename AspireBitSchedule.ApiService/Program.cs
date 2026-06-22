@@ -1,6 +1,7 @@
 using AspireBitSchedule.ApiService.Features.Configuration;
 using AspireBitSchedule.ApiService.Features.Events;
 using AspireBitSchedule.ApiService.Features.HexGrid;
+using AspireBitSchedule.ApiService.Features.Resources;
 using AspireBitSchedule.ApiService.Features.Schedule;
 using AspireBitSchedule.ServiceDefaults;
 using BitScheduleServices.Infrastructure;
@@ -41,6 +42,7 @@ await InitializeAsync(app.Services, app.Logger);
 app.MapConfigurationEndpoints();
 app.MapScheduleEndpoints();
 app.MapEventEndpoints();
+app.MapResourceEndpoints();
 app.MapHexGridEndpoints();
 app.MapDefaultEndpoints();
 

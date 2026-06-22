@@ -1,0 +1,177 @@
+<section class="page-heading">
+  <div>
+    <p class="section-label mb-2">Operations</p>
+    <h1>Events</h1>
+    <p class="page-subtitle">
+      Review scheduled work, filter the dataset, and jump directly into create, edit, or removal flows.
+    </p>
+  </div>
+  <a class="btn btn-primary btn-lg" routerLink="/events/new">Create Event</a>
+</section>
+
+<section class="row g-4 mb-4">
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Visible Events</p>
+        <p class="display-6 mb-0">{{ eventCount() }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Transportation</p>
+        <p class="display-6 mb-0">{{ transportationCount() }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Reserved Bits</p>
+        <p class="display-6 mb-0">{{ reservedCount() }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="row g-4 align-items-start">
+  <div class="col-xl-3">
+    <aside class="card panel-card sticky-filter">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h4 mb-0">Filters</h2>
+          <button class="btn btn-link p-0 text-decoration-none" type="button" (click)="resetFilters()">Reset</button>
+        </div>
+
+        <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+          <div class="mb-4">
+            <label class="form-label" for="rangeStart">Range Start</label>
+            <input class="form-control" id="rangeStart" type="datetime-local" formControlName="rangeStart" />
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" for="rangeEnd">Range End</label>
+            <input class="form-control" id="rangeEnd" type="datetime-local" formControlName="rangeEnd" />
+          </div>
+
+          <div class="mb-4">
+            <h3 class="h6">Resources</h3>
+            <div class="filter-list">
+              @for (resource of resources(); track resource.bitResourceId) {
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    [id]="'resource-' + resource.bitResourceId"
+                    type="checkbox"
+                    [checked]="isResourceSelected(resource.bitResourceId)"
+                    (change)="toggleResource(resource.bitResourceId, $any($event.target).checked)" />
+                  <label class="form-check-label" [for]="'resource-' + resource.bitResourceId">
+                    <span class="d-block fw-semibold">{{ resource.displayName }}</span>
+                    <span class="text-muted small">{{ resource.resourceTypeName }}</span>
+                  </label>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h3 class="h6">Event Types</h3>
+            <div class="filter-list">
+              @if (availableEventTypes().length > 0) {
+                @for (eventType of availableEventTypes(); track eventType) {
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      [id]="'event-type-' + eventType"
+                      type="checkbox"
+                      [checked]="isEventTypeSelected(eventType)"
+                      (change)="toggleEventType(eventType, $any($event.target).checked)" />
+                    <label class="form-check-label" [for]="'event-type-' + eventType">{{ eventType }}</label>
+                  </div>
+                }
+              } @else {
+                <p class="text-muted small mb-0">No event types are available yet.</p>
+              }
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100" type="submit">Apply Filters</button>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <div class="col-xl-9">
+    <div class="card panel-card">
+      <div class="card-body p-0">
+        @if (loading()) {
+          <div class="p-4">Loading events...</div>
+        } @else if (errorMessage(); as errorMessage) {
+          <div class="alert alert-danger m-4">{{ errorMessage }}</div>
+        } @else if (events().length === 0) {
+          <div class="p-5 text-center">
+            <h2 class="h4 mb-2">No events found</h2>
+            <p class="text-muted mb-0">Try broadening the filters or create a new event.</p>
+          </div>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Event</th>
+                  <th scope="col">Resource</th>
+                  <th scope="col">Window</th>
+                  <th scope="col">Flags</th>
+                  <th scope="col" class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (event of events(); track event.bitEventId) {
+                  <tr>
+                    <td>
+                      <div class="fw-semibold">{{ event.eventType || 'Unspecified event' }}</div>
+                      <div class="text-muted small">#{{ event.bitEventId }}</div>
+                    </td>
+                    <td>
+                      @if (lookupResource(event.bitResourceId); as resource) {
+                        <div class="fw-semibold">{{ resource.displayName }}</div>
+                        <div class="text-muted small">{{ resource.resourceTypeName }}</div>
+                      } @else {
+                        <div class="fw-semibold">Resource {{ event.bitResourceId }}</div>
+                      }
+                    </td>
+                    <td>
+                      <div>{{ event.startDateTime | date:'medium' }}</div>
+                      <div class="text-muted small">to {{ event.endDateTime | date:'medium' }}</div>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-wrap gap-2">
+                        @if (event.requiresTransportation) {
+                          <span class="badge text-bg-primary">Transport</span>
+                        }
+                        @if (event.requiresReturnTransportation) {
+                          <span class="badge text-bg-secondary">Return</span>
+                        }
+                        @if (event.scheduleBitsReserved) {
+                          <span class="badge text-bg-dark">Reserved</span>
+                        }
+                      </div>
+                    </td>
+                    <td class="text-end">
+                      <div class="d-inline-flex gap-2">
+                        <a class="btn btn-sm btn-outline-primary" [routerLink]="['/events', event.bitEventId, 'edit']">Edit</a>
+                        <a class="btn btn-sm btn-outline-danger" [routerLink]="['/events', event.bitEventId, 'delete']">Remove</a>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
