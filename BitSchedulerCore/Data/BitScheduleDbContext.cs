@@ -4,7 +4,6 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using BitSchedulerCore;
-    using BitSchedulerCore.HexGrid;
 
     namespace BitTimeScheduler.Data
     {

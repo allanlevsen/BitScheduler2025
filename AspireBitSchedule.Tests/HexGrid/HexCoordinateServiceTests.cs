@@ -1,4 +1,4 @@
-using BitSchedulerCore.HexGrid;
+using BitSchedulerCore.Models;
 
 namespace AspireBitSchedule.Tests.HexGrid;
 

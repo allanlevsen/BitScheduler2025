@@ -1,7 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var apiService = builder.AddProject<Projects.AspireBitSchedule_ApiService>("apiservice");
-var frontend = builder.AddProject<Projects.AspireBitSchedule_Web>("frontend")
+builder.AddProject<Projects.AspireBitSchedule_Web>("frontend")
     .WithEnvironment("BACKEND_BASE_URL", apiService.GetEndpoint("http"))
     .WithReference(apiService)
     .WaitFor(apiService);

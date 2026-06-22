@@ -1,4 +1,4 @@
-namespace BitSchedulerCore.HexGrid;
+namespace BitSchedulerCore.Models;
 
 public sealed class HexCoordinateService : IHexCoordinateService
 {
@@ -106,7 +106,7 @@ public sealed class HexCoordinateService : IHexCoordinateService
         }
         else if (yDiff > zDiff)
         {
-            ry = -rx - rz;
+            return ((int)rx, (int)Math.Round(-rx - rz));
         }
         else
         {

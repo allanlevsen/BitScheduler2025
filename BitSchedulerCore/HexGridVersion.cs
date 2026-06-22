@@ -1,10 +1,14 @@
-namespace BitSchedulerCore.HexGrid;
+using System.ComponentModel.DataAnnotations;
+
+namespace BitSchedulerCore;
 
 public sealed class HexGridVersion
 {
     public int Id { get; set; }
 
+    [MaxLength(100)]
     public string AreaName { get; set; } = null!;
+    [MaxLength(200)]
     public string Name { get; set; } = null!;
 
     public double OriginLatitude { get; set; }

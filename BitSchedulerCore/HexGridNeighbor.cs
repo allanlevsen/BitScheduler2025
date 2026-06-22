@@ -1,4 +1,6 @@
-namespace BitSchedulerCore.HexGrid;
+using BitSchedulerCore.Models;
+
+namespace BitSchedulerCore;
 
 public sealed class HexGridNeighbor
 {

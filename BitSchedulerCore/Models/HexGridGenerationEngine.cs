@@ -1,4 +1,4 @@
-namespace BitSchedulerCore.HexGrid;
+namespace BitSchedulerCore.Models;
 
 public static class HexGridGenerationEngine
 {

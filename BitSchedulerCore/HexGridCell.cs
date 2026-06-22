@@ -1,4 +1,6 @@
-namespace BitSchedulerCore.HexGrid;
+using System.ComponentModel.DataAnnotations;
+
+namespace BitSchedulerCore;
 
 public sealed class HexGridCell
 {
@@ -15,6 +17,7 @@ public sealed class HexGridCell
     public double HexRadiusMeters { get; set; }
 
     public bool IsActive { get; set; }
+    [MaxLength(100)]
     public string? AreaName { get; set; }
 
     public DateTime CreatedUtc { get; set; }

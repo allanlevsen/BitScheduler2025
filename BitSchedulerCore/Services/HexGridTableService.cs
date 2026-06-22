@@ -1,5 +1,4 @@
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
-using BitSchedulerCore.HexGrid;
 using Microsoft.EntityFrameworkCore;
 
 namespace BitSchedulerCore.Services;

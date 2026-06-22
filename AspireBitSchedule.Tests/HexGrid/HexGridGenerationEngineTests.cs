@@ -1,4 +1,4 @@
-using BitSchedulerCore.HexGrid;
+using BitSchedulerCore.Models;
 
 namespace AspireBitSchedule.Tests.HexGrid;
 
@@ -34,11 +34,11 @@ public sealed class HexGridGenerationEngineTests
 
         var cells = HexGridGenerationEngine.GenerateCells(options);
 
-        Assert.All(cells, cell =>
-        {
-            Assert.InRange(cell.CenterLatitude, options.MinLatitude, options.MaxLatitude);
-            Assert.InRange(cell.CenterLongitude, options.MinLongitude, options.MaxLongitude);
-        });
+        Assert.DoesNotContain(cells, cell =>
+            cell.CenterLatitude < options.MinLatitude ||
+            cell.CenterLatitude > options.MaxLatitude ||
+            cell.CenterLongitude < options.MinLongitude ||
+            cell.CenterLongitude > options.MaxLongitude);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public sealed class HexGridGenerationEngineTests
         var cells = HexGridGenerationEngine.GenerateCells(options);
 
         Assert.NotEmpty(cells);
-        Assert.All(cells, cell => Assert.Equal(6, cell.Vertices.Count));
+        Assert.All(cells, static cell => Assert.Equal(6, cell.Vertices.Count));
     }
 
     private static HexGridGenerationOptions CreateSmallEdmontonTestArea(bool includeVertices)

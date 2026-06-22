@@ -26,7 +26,7 @@ public sealed class BitEventService(
 
         if (bitEvent.ScheduleBitsReserved)
         {
-            await ReserveEventTimeAsync(clientId, bitEvent, cancellationToken);
+            await ReserveEventTimeAsync(clientId, bitEvent);
         }
 
         await transaction.CommitAsync(cancellationToken);
@@ -127,12 +127,12 @@ public sealed class BitEventService(
 
         if (previousReservation.ScheduleBitsReserved)
         {
-            await ReleaseEventTimeAsync(clientId, previousReservation, cancellationToken);
+            await ReleaseEventTimeAsync(clientId, previousReservation);
         }
 
         if (bitEvent.ScheduleBitsReserved)
         {
-            await ReserveEventTimeAsync(clientId, bitEvent, cancellationToken);
+            await ReserveEventTimeAsync(clientId, bitEvent);
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -167,7 +167,7 @@ public sealed class BitEventService(
 
         if (reservation.ScheduleBitsReserved)
         {
-            await ReleaseEventTimeAsync(clientId, reservation, cancellationToken);
+            await ReleaseEventTimeAsync(clientId, reservation);
         }
 
         dbContext.BitEvents.Remove(bitEvent);
@@ -182,7 +182,7 @@ public sealed class BitEventService(
         return true;
     }
 
-    private async Task ReserveEventTimeAsync(int clientId, BitEvent bitEvent, CancellationToken cancellationToken)
+    private async Task ReserveEventTimeAsync(int clientId, BitEvent bitEvent)
     {
         var configuration = new BitScheduleConfiguration
         {
@@ -230,7 +230,7 @@ public sealed class BitEventService(
         }
     }
 
-    private async Task ReleaseEventTimeAsync(int clientId, EventReservationSnapshot reservation, CancellationToken cancellationToken)
+    private async Task ReleaseEventTimeAsync(int clientId, EventReservationSnapshot reservation)
     {
         var configuration = new BitScheduleConfiguration
         {

@@ -91,27 +91,27 @@ public sealed class GoogleGeocodingService(
         public List<GoogleGeocodeResult>? Results { get; set; }
     }
 
-    private sealed class GoogleGeocodeResult
+    private sealed class GoogleGeocodeResult(string? formattedAddress, GoogleGeocodeGeometry? geometry)
     {
         [JsonPropertyName("formatted_address")]
-        public string? FormattedAddress { get; set; }
+        public string? FormattedAddress { get; set; } = formattedAddress;
 
         [JsonPropertyName("geometry")]
-        public GoogleGeocodeGeometry? Geometry { get; set; }
+        public GoogleGeocodeGeometry? Geometry { get; set; } = geometry;
     }
 
-    private sealed class GoogleGeocodeGeometry
+    private sealed class GoogleGeocodeGeometry(GoogleGeocodeLocation? location)
     {
         [JsonPropertyName("location")]
-        public GoogleGeocodeLocation? Location { get; set; }
+        public GoogleGeocodeLocation? Location { get; set; } = location;
     }
 
-    private sealed class GoogleGeocodeLocation
+    private sealed class GoogleGeocodeLocation(double lat, double lng)
     {
         [JsonPropertyName("lat")]
-        public double Lat { get; set; }
+        public double Lat { get; set; } = lat;
 
         [JsonPropertyName("lng")]
-        public double Lng { get; set; }
+        public double Lng { get; set; } = lng;
     }
 }

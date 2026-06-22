@@ -1,4 +1,4 @@
-namespace BitSchedulerCore.HexGrid;
+namespace BitSchedulerCore;
 
 public sealed class HexGridCellVertex
 {

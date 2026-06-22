@@ -1,4 +1,4 @@
-using BitSchedulerCore.HexGrid;
+using BitSchedulerCore.Models;
 
 namespace BitSchedulerCore.Services;
 

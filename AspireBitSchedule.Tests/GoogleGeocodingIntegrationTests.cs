@@ -32,7 +32,7 @@ public sealed class GoogleGeocodingIntegrationTests
         var result = await service.GeocodeAsync("10004 104 Ave NW, Edmonton, AB", CancellationToken.None);
 
         Assert.NotNull(result);
-        Assert.InRange(result!.Latitude, 53.4, 53.7);
+        Assert.InRange(result.Latitude, 53.4, 53.7);
         Assert.InRange(result.Longitude, -113.7, -113.3);
         Assert.Contains("Edmonton", result.FormattedAddress, StringComparison.OrdinalIgnoreCase);
     }
@@ -50,7 +50,7 @@ public sealed class GoogleGeocodingIntegrationTests
         var result = await service.GeocodeAsync("10220 103 St NW, Edmonton, AB", CancellationToken.None);
 
         Assert.NotNull(result);
-        Assert.False(string.IsNullOrWhiteSpace(result!.FormattedAddress));
+        Assert.False(string.IsNullOrWhiteSpace(result.FormattedAddress));
         Assert.InRange(result.Latitude, 53.4, 53.7);
         Assert.InRange(result.Longitude, -113.7, -113.3);
     }
