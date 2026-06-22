@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 
 import { GoogleMappingConfiguration } from './core/config/google-mapping-configuration';
-import { GoogleMappingConfigService } from './core/config/google-mapping-config.service';
+import { ConfigurationDataService } from './data-services/configuration-data.service';
 import { GoogleMapComponent } from './features/google-map/google-map.component';
 
 @Component({
@@ -13,14 +13,14 @@ import { GoogleMapComponent } from './features/google-map/google-map.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-  private readonly googleMappingConfigService = inject(GoogleMappingConfigService);
+  private readonly configurationDataService = inject(ConfigurationDataService);
 
   protected readonly googleMapping = signal<GoogleMappingConfiguration | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
   public ngOnInit(): void {
-    this.googleMappingConfigService.getConfiguration().subscribe({
+    this.configurationDataService.getGoogleMappingConfiguration().subscribe({
       next: (configuration) => {
         this.googleMapping.set(configuration);
         this.loading.set(false);

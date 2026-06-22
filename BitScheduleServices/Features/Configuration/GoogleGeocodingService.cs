@@ -1,12 +1,11 @@
 using System.Text.Json.Serialization;
-using BitScheduleApi.Configuration;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
 using Microsoft.Extensions.Options;
 
-namespace BitScheduleApi.Services;
+namespace BitScheduleServices.Features.Configuration;
 
-internal sealed class GoogleGeocodingService(
+public sealed class GoogleGeocodingService(
     HttpClient httpClient,
     IOptions<GoogleGeocodingOptions> options,
     ILogger<GoogleGeocodingService> logger) : IGeocodingService

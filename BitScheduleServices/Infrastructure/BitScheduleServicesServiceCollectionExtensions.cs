@@ -1,13 +1,15 @@
-using BitScheduleApi.Configuration;
-using BitScheduleApi.Services;
+using BitScheduleServices.Features.Configuration;
+using BitScheduleServices.Features.Events;
+using BitScheduleServices.Features.HexGrid;
+using BitScheduleServices.Features.Schedule;
 using BitSchedulerCore.HexGrid;
 using BitSchedulerCore.Services;
 
-namespace BitScheduleApi.Extensions;
+namespace BitScheduleServices.Infrastructure;
 
-internal static class ServiceCollectionExtensions
+public static class BitScheduleServicesServiceCollectionExtensions
 {
-    public static IServiceCollection AddBitScheduleApiServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBitScheduleServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<GoogleGeocodingOptions>(
             configuration.GetSection(GoogleGeocodingOptions.SectionName));
@@ -23,12 +25,16 @@ internal static class ServiceCollectionExtensions
                 options.Language = configuration["GoogleMapping:Language"] ?? string.Empty;
             }
         });
+
         services.AddScoped<BitResourceScheduleRangePayloadConverter>();
         services.AddScoped<SeedingService>();
         services.AddScoped<BitScheduleDataService>();
         services.AddHttpClient<IGeocodingService, GoogleGeocodingService>();
         services.AddScoped<IBitEventService, BitEventService>();
         services.AddScoped<BitScheduleFactory>();
+        services.AddScoped<ScheduleFeatureService>();
+        services.AddScoped<EventFeatureService>();
+        services.AddScoped<HexGridFeatureService>();
         services.AddScoped<ApiStartupInitializer>();
         services.AddSingleton<IHexCoordinateService>(_ => new HexCoordinateService(HexGridServiceAreas.EdmontonMetro));
         services.AddSingleton<HexGridTableBuilder>();

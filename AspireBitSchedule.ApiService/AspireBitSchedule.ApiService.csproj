@@ -8,10 +8,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AspireBitSchedule.ServiceDefaults\AspireBitSchedule.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\BitScheduleServices\BitScheduleServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
   </ItemGroup>
 
 </Project>

@@ -2,9 +2,9 @@ using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace BitScheduleApi.Services;
+namespace BitScheduleServices.Infrastructure;
 
-internal sealed class ApiStartupInitializer(
+public sealed class ApiStartupInitializer(
     SeedingService seedingService,
     BitScheduleDbContext dbContext,
     IHexGridLookupProvider hexGridLookupProvider,

@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireBitSchedule.Web", "As
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireBitSchedule.Tests", "AspireBitSchedule.Tests\AspireBitSchedule.Tests.csproj", "{643AF547-3A64-3E7E-9569-82E91356EF8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitScheduleApi", "BitScheduleApi\BitScheduleApi.csproj", "{EC4E1C75-4AA2-16E6-FAF7-1B19F379FA25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitScheduleServices", "BitScheduleServices\BitScheduleServices.csproj", "{EC4E1C75-4AA2-16E6-FAF7-1B19F379FA25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitSchedulerCore", "BitSchedulerCore\BitSchedulerCore.csproj", "{5F47AF1A-9262-9C40-462E-CBB0331367EE}"
 EndProject

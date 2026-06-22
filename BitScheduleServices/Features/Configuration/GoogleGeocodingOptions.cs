@@ -1,4 +1,4 @@
-namespace BitScheduleApi.Configuration;
+namespace BitScheduleServices.Features.Configuration;
 
 public sealed class GoogleGeocodingOptions
 {

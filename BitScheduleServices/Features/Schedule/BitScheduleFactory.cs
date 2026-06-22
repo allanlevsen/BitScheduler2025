@@ -3,9 +3,9 @@ using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
 
-namespace BitScheduleApi.Services;
+namespace BitScheduleServices.Features.Schedule;
 
-internal sealed class BitScheduleFactory(BitScheduleDataService dataService, BitScheduleDbContext dbContext, ILogger<BitSchedule> logger)
+public sealed class BitScheduleFactory(BitScheduleDataService dataService, BitScheduleDbContext dbContext, ILogger<BitSchedule> logger)
 {
     private const int DefaultClientId = 1;
 

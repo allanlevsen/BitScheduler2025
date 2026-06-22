@@ -14,7 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AspireBitSchedule.ApiService\AspireBitSchedule.ApiService.csproj" />
     <ProjectReference Include="..\AspireBitSchedule.Web\AspireBitSchedule.Web.csproj" />
-    <ProjectReference Include="..\BitScheduleApi\BitScheduleApi.csproj" />
+    <ProjectReference Include="..\BitScheduleServices\BitScheduleServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>
