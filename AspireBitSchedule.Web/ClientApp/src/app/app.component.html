@@ -1,23 +1,5 @@
 <div class="app-shell">
-  <header class="border-bottom bg-white shadow-sm">
-    <nav class="navbar navbar-expand-lg">
-      <div class="container-xxl py-2">
-        <a class="navbar-brand brand-lockup" routerLink="/events">
-          <span class="brand-kicker">Bit Scheduler</span>
-          <span class="brand-title">Events Console</span>
-        </a>
-
-        <div class="navbar-nav ms-auto">
-          <a class="nav-link px-3" routerLink="/events" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-            Events
-          </a>
-          <a class="btn btn-primary ms-lg-3" routerLink="/events/new">
-            Create Event
-          </a>
-        </div>
-      </div>
-    </nav>
-  </header>
+  <app-admin-topbar />
 
   <main class="container-xxl py-4 py-lg-5">
     <router-outlet />

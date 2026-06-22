@@ -1,0 +1,30 @@
+<header class="border-bottom bg-white shadow-sm">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-xxl py-2">
+      <a class="navbar-brand brand-lockup" routerLink="/events">
+        <span class="brand-kicker">Bit Scheduler</span>
+        <span class="brand-title">Administration Console</span>
+      </a>
+
+      <div class="navbar-nav ms-auto align-items-lg-center gap-2">
+        <div class="nav-item dropdown" [class.show]="administrationOpen()">
+          <button
+            class="btn btn-outline-primary dropdown-toggle"
+            type="button"
+            [attr.aria-expanded]="administrationOpen()"
+            (click)="$event.stopPropagation(); toggleAdministrationMenu()">
+            Administration
+          </button>
+
+          <div class="dropdown-menu dropdown-menu-end" [class.show]="administrationOpen()" (click)="closeAdministrationMenu()">
+            <a class="dropdown-item" routerLink="/events" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Events</a>
+            <a class="dropdown-item" routerLink="/resources" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Resources</a>
+            <a class="dropdown-item" routerLink="/resource-types" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Resource Types</a>
+          </div>
+        </div>
+
+        <a class="btn btn-primary" routerLink="/events/new">Create Event</a>
+      </div>
+    </div>
+  </nav>
+</header>

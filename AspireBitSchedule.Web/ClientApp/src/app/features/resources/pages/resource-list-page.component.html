@@ -1,0 +1,85 @@
+<section class="page-heading">
+  <div>
+    <p class="section-label mb-2">Administration</p>
+    <h1>Resources</h1>
+    <p class="page-subtitle">
+      Manage the people, equipment, and other schedulable resources available to the system.
+    </p>
+  </div>
+  <a class="btn btn-primary btn-lg" routerLink="/resources/new">Create Resource</a>
+</section>
+
+<section class="row g-4 mb-4">
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Total Resources</p>
+        <p class="display-6 mb-0">{{ resourceCount() }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Resource Types</p>
+        <p class="display-6 mb-0">{{ uniqueTypeCount() }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">With Email</p>
+        <p class="display-6 mb-0">{{ namedEmailCount() }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="card panel-card">
+    <div class="card-body p-0">
+      @if (loading()) {
+        <div class="p-4">Loading resources...</div>
+      } @else if (errorMessage(); as errorMessage) {
+        <div class="alert alert-danger m-4">{{ errorMessage }}</div>
+      } @else if (resources().length === 0) {
+        <div class="p-5 text-center">
+          <h2 class="h4 mb-2">No resources found</h2>
+          <p class="text-muted mb-0">Create a resource to start assigning work and events.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Resource</th>
+                <th scope="col">Type</th>
+                <th scope="col">Email</th>
+                <th scope="col" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (resource of resources(); track resource.bitResourceId) {
+                <tr>
+                  <td>
+                    <div class="fw-semibold">{{ resource.displayName }}</div>
+                    <div class="text-muted small">#{{ resource.bitResourceId }}</div>
+                  </td>
+                  <td>{{ resource.resourceTypeName }}</td>
+                  <td>{{ resource.emailAddress }}</td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-2">
+                      <a class="btn btn-sm btn-outline-primary" [routerLink]="['/resources', resource.bitResourceId, 'edit']">Edit</a>
+                      <a class="btn btn-sm btn-outline-danger" [routerLink]="['/resources', resource.bitResourceId, 'delete']">Remove</a>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</section>

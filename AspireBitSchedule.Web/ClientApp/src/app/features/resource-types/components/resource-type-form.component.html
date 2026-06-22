@@ -1,0 +1,35 @@
+<section class="page-heading">
+  <div>
+    <p class="section-label mb-2">Administration</p>
+    <h1>{{ title() }}</h1>
+    <p class="page-subtitle">
+      Maintain the list of resource categories that power schedulable resources throughout the system.
+    </p>
+  </div>
+</section>
+
+<div class="card panel-card">
+  <div class="card-body p-4 p-lg-5">
+    @if (errorMessage(); as errorMessage) {
+      <div class="alert alert-danger mb-4" role="alert">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <form class="row g-4" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="col-12">
+        <label class="form-label" for="name">Name</label>
+        <input class="form-control" id="name" type="text" formControlName="name" placeholder="Person, Equipment, Meeting Room..." />
+      </div>
+
+      <div class="col-12 d-flex flex-wrap gap-3 pt-2">
+        <button class="btn btn-primary px-4" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Saving...' : submitLabel() }}
+        </button>
+        <button class="btn btn-outline-secondary" type="button" (click)="cancel.emit()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -5,8 +5,10 @@ using Microsoft.Extensions.Options;
 const string angularDevServerCorsPolicy = "AngularDevServer";
 const string angularDevServerHttpClient = "AngularDevServer";
 const string angularDevServerUrl = "http://localhost:4200";
+const string apiBackendHttpClient = "ApiBackend";
 
 var builder = WebApplication.CreateBuilder(args);
+var apiBackendUrl = builder.Configuration["BACKEND_BASE_URL"];
 
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
@@ -15,6 +17,14 @@ builder.Services.AddHttpClient(angularDevServerHttpClient, client =>
     client.BaseAddress = new Uri(angularDevServerUrl);
     client.Timeout = Timeout.InfiniteTimeSpan;
 });
+if (!string.IsNullOrWhiteSpace(apiBackendUrl))
+{
+    builder.Services.AddHttpClient(apiBackendHttpClient, client =>
+    {
+        client.BaseAddress = new Uri(apiBackendUrl);
+        client.Timeout = Timeout.InfiniteTimeSpan;
+    });
+}
 
 builder.Services.Configure<GoogleMappingOptions>(
     builder.Configuration.GetSection(GoogleMappingOptions.SectionName));
@@ -39,6 +49,30 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+if (!string.IsNullOrWhiteSpace(apiBackendUrl))
+{
+    app.MapWhen(
+        context => context.Request.Path.StartsWithSegments("/api") &&
+            !context.Request.Path.StartsWithSegments("/api/config"),
+        apiApp =>
+        {
+            apiApp.Run(async context =>
+            {
+                var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
+                using var requestMessage = CreateProxyHttpRequest(context, apiBackendUrl);
+                using var responseMessage = await httpClientFactory
+                    .CreateClient(apiBackendHttpClient)
+                    .SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, context.RequestAborted);
+
+                context.Response.StatusCode = (int)responseMessage.StatusCode;
+
+                CopyProxyResponseHeaders(context, responseMessage);
+
+                await responseMessage.Content.CopyToAsync(context.Response.Body, context.RequestAborted);
+            });
+        });
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -97,7 +131,7 @@ app.MapDefaultEndpoints();
 
 app.Run();
 
-static HttpRequestMessage CreateProxyHttpRequest(HttpContext context)
+static HttpRequestMessage CreateProxyHttpRequest(HttpContext context, string baseUrl)
 {
     var requestMessage = new HttpRequestMessage();
     var requestMethod = context.Request.Method;
@@ -111,7 +145,7 @@ static HttpRequestMessage CreateProxyHttpRequest(HttpContext context)
     }
 
     requestMessage.Method = new HttpMethod(requestMethod);
-    requestMessage.RequestUri = new Uri($"{angularDevServerUrl}{context.Request.Path}{context.Request.QueryString}");
+    requestMessage.RequestUri = new Uri($"{baseUrl}{context.Request.Path}{context.Request.QueryString}");
 
     foreach (var header in context.Request.Headers)
     {

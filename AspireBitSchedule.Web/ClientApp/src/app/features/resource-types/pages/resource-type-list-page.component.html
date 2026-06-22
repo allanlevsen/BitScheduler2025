@@ -1,0 +1,82 @@
+<section class="page-heading">
+  <div>
+    <p class="section-label mb-2">Administration</p>
+    <h1>Resource Types</h1>
+    <p class="page-subtitle">
+      Manage the supporting list that powers the resource type dropdown on resource maintenance screens.
+    </p>
+  </div>
+  <a class="btn btn-primary btn-lg" routerLink="/resource-types/new">Create Resource Type</a>
+</section>
+
+<section class="row g-4 mb-4">
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Defined Types</p>
+        <p class="display-6 mb-0">{{ typeCount() }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Current Resources</p>
+        <p class="display-6 mb-0">{{ resourceCount() }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Unused Types</p>
+        <p class="display-6 mb-0">{{ unusedTypeCount() }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="card panel-card">
+    <div class="card-body p-0">
+      @if (loading()) {
+        <div class="p-4">Loading resource types...</div>
+      } @else if (errorMessage(); as errorMessage) {
+        <div class="alert alert-danger m-4">{{ errorMessage }}</div>
+      } @else if (resourceTypes().length === 0) {
+        <div class="p-5 text-center">
+          <h2 class="h4 mb-2">No resource types found</h2>
+          <p class="text-muted mb-0">Create a resource type before adding matching resources.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Resource Type</th>
+                <th scope="col">Identifier</th>
+                <th scope="col" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (resourceType of resourceTypes(); track resourceType.bitResourceTypeId) {
+                <tr>
+                  <td>
+                    <div class="fw-semibold">{{ resourceType.name }}</div>
+                  </td>
+                  <td class="text-muted">#{{ resourceType.bitResourceTypeId }}</td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-2">
+                      <a class="btn btn-sm btn-outline-primary" [routerLink]="['/resource-types', resourceType.bitResourceTypeId, 'edit']">Edit</a>
+                      <a class="btn btn-sm btn-outline-danger" [routerLink]="['/resource-types', resourceType.bitResourceTypeId, 'delete']">Remove</a>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</section>
