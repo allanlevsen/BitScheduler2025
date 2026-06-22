@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnChanges, SimpleChanges, ViewChild, inject, input, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnChanges, SimpleChanges, ViewChild, inject, input, signal } from '@angular/core';
 
 import { GoogleMappingConfiguration } from '../../core/config/google-mapping-configuration';
 import { GoogleMapsLoaderService } from '../../core/google-maps/google-maps-loader.service';
@@ -10,10 +10,12 @@ import { GoogleMapsLoaderService } from '../../core/google-maps/google-maps-load
   styleUrl: './google-map.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GoogleMapComponent implements OnChanges {
+export class GoogleMapComponent implements OnChanges, AfterViewInit {
   private readonly googleMapsLoaderService = inject(GoogleMapsLoaderService);
   private map: google.maps.Map | null = null;
   private marker: google.maps.marker.AdvancedMarkerElement | google.maps.Marker | null = null;
+  private viewInitialized = false;
+  private initializationInProgress = false;
 
   public readonly configuration = input<GoogleMappingConfiguration | null>(null);
 
@@ -28,11 +30,12 @@ export class GoogleMapComponent implements OnChanges {
       return;
     }
 
-    this.initializeMap().catch((error: unknown) => {
-      const message = error instanceof Error ? error.message : 'Failed to initialize Google Maps.';
-      this.mapError.set(message);
-      this.mapStatus.set(message);
-    });
+    void this.tryInitializeMap();
+  }
+
+  public ngAfterViewInit(): void {
+    this.viewInitialized = true;
+    void this.tryInitializeMap();
   }
 
   private async initializeMap(): Promise<void> {
@@ -88,5 +91,23 @@ export class GoogleMapComponent implements OnChanges {
     }
 
     this.mapStatus.set('Google Maps loaded.');
+  }
+
+  private async tryInitializeMap(): Promise<void> {
+    if (!this.viewInitialized || !this.configuration() || this.initializationInProgress) {
+      return;
+    }
+
+    this.initializationInProgress = true;
+
+    try {
+      await this.initializeMap();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to initialize Google Maps.';
+      this.mapError.set(message);
+      this.mapStatus.set(message);
+    } finally {
+      this.initializationInProgress = false;
+    }
   }
 }
