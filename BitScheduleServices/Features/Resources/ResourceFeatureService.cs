@@ -1,4 +1,3 @@
-using BitScheduleServices.Features.Schedule;
 using BitScheduleServices.Features.Clients;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;

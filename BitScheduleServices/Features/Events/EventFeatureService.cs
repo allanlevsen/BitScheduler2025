@@ -1,5 +1,4 @@
 using BitScheduleServices.Features.Clients;
-using BitScheduleServices.Features.Schedule;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
 using Microsoft.AspNetCore.Http;
