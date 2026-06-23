@@ -10,7 +10,6 @@
         public string EmailAddress { get; set; } = string.Empty;
         public int BitClientId { get; set; }
         public BitClient BitClient { get; set; } = null!;
-        public ICollection<BitReservation> BitReservations { get; set; } = new List<BitReservation>();
         public ICollection<BitResourceScheduleRange> BitResourceScheduleRanges { get; set; } = new List<BitResourceScheduleRange>();
         public ICollection<BitEvent> BitEvents { get; set; } = new List<BitEvent>();
     }

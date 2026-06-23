@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using BitSchedulerCore.Data.BitTimeScheduler.Data; // Required for the DbContext
-using BitSchedulerCore.Models; // Contains AuditableEntity, used by BitReservation (though not directly here)
+using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
 // Required for BitScheduleDataService
 using Microsoft.EntityFrameworkCore; // Required for DbUpdateException

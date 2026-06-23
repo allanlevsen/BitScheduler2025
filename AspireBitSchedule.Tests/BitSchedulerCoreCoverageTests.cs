@@ -80,8 +80,6 @@ public class BitSchedulerCoreCoverageTests : IAsyncLifetime
         Assert.True(explicitDay.IsFree);
         Assert.Equal((UInt128)0, explicitDay.DayData);
         Assert.Equal((uint)BitTimeMetadataFlags.IsFree, explicitDay.Metadata);
-        Assert.NotNull(explicitDay.Reservations);
-        Assert.Empty(explicitDay.Reservations);
     }
 
     [Fact]
@@ -805,6 +803,7 @@ WHERE datname = @databaseName
         var resourceType = new BitResourceType
         {
             BitResourceTypeId = resourceId,
+            BitClientId = clientId,
             Name = $"Type {resourceId}"
         };
 

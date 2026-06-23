@@ -219,6 +219,7 @@ public class BitEventServiceTests : IAsyncLifetime
         var resourceType = new BitResourceType
         {
             BitResourceTypeId = resourceId,
+            BitClientId = clientId,
             Name = $"Type {resourceId}"
         };
 

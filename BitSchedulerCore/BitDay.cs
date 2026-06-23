@@ -71,9 +71,6 @@ namespace BitSchedulerCore
             set => Bits = (Bits & DayDataMask) | ((UInt128)value << MetadataShift);
         }
 
-        // Navigation property for associated reservations.
-        public ICollection<BitReservation> Reservations { get; set; } = new List<BitReservation>();
-
         #endregion
 
         #region Day Slot Operations

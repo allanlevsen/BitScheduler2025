@@ -12,7 +12,7 @@ public sealed class BitResourceService(
     public async Task<BitResourceListItem> CreateResourceAsync(int clientId, BitResourceRequest request, CancellationToken cancellationToken = default)
     {
         ValidateRequest(request);
-        await EnsureResourceTypeExistsAsync(request.BitResourceTypeId, cancellationToken);
+        await EnsureResourceTypeExistsAsync(clientId, request.BitResourceTypeId, cancellationToken);
 
         var resource = new BitResource
         {
@@ -48,14 +48,16 @@ public sealed class BitResourceService(
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<BitResourceTypeListItem>> ListResourceTypesAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<BitResourceTypeListItem>> ListResourceTypesAsync(int clientId, CancellationToken cancellationToken = default)
     {
         return await dbContext.BitResourceTypes
             .AsNoTracking()
+            .Where(resourceType => resourceType.BitClientId == clientId)
             .OrderBy(resourceType => resourceType.Name)
             .Select(resourceType => new BitResourceTypeListItem
             {
                 BitResourceTypeId = resourceType.BitResourceTypeId,
+                BitClientId = resourceType.BitClientId,
                 Name = resourceType.Name
             })
             .ToListAsync(cancellationToken);
@@ -64,7 +66,7 @@ public sealed class BitResourceService(
     public async Task<BitResourceListItem?> UpdateResourceAsync(int clientId, int bitResourceId, BitResourceRequest request, CancellationToken cancellationToken = default)
     {
         ValidateRequest(request);
-        await EnsureResourceTypeExistsAsync(request.BitResourceTypeId, cancellationToken);
+        await EnsureResourceTypeExistsAsync(clientId, request.BitResourceTypeId, cancellationToken);
 
         var resource = await dbContext.BitResources
             .SingleOrDefaultAsync(
@@ -131,14 +133,17 @@ public sealed class BitResourceService(
             });
     }
 
-    private async Task EnsureResourceTypeExistsAsync(int bitResourceTypeId, CancellationToken cancellationToken)
+    private async Task EnsureResourceTypeExistsAsync(int clientId, int bitResourceTypeId, CancellationToken cancellationToken)
     {
         var resourceTypeExists = await dbContext.BitResourceTypes
-            .AnyAsync(resourceType => resourceType.BitResourceTypeId == bitResourceTypeId, cancellationToken);
+            .AnyAsync(
+                resourceType => resourceType.BitResourceTypeId == bitResourceTypeId &&
+                                resourceType.BitClientId == clientId,
+                cancellationToken);
 
         if (!resourceTypeExists)
         {
-            throw new InvalidOperationException($"Resource type {bitResourceTypeId} does not exist.");
+            throw new InvalidOperationException($"Resource type {bitResourceTypeId} does not exist for client {clientId}.");
         }
     }
 

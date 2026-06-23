@@ -28,7 +28,6 @@
             }
 
             public DbSet<BitDay> BitDays { get; set; }
-            public DbSet<BitReservation> BitReservations { get; set; }
             public DbSet<BitEvent> BitEvents { get; set; }
             public DbSet<BitResourceType> BitResourceTypes { get; set; }
             public DbSet<BitResource> BitResources { get; set; }
@@ -56,13 +55,12 @@
                           .HasForeignKey(r => r.BitClientId)
                           .OnDelete(DeleteBehavior.Cascade);
 
-                    // One client has many reservations.
-                    entity.HasMany(e => e.BitReservations)
+                    entity.HasMany(e => e.BitEvents)
                           .WithOne(r => r.BitClient)
                           .HasForeignKey(r => r.BitClientId)
                           .OnDelete(DeleteBehavior.Cascade);
 
-                    entity.HasMany(e => e.BitEvents)
+                    entity.HasMany(e => e.BitResourceTypes)
                           .WithOne(r => r.BitClient)
                           .HasForeignKey(r => r.BitClientId)
                           .OnDelete(DeleteBehavior.Cascade);
@@ -77,9 +75,14 @@
                 modelBuilder.Entity<BitResourceType>(entity =>
                 {
                     entity.HasKey(e => e.BitResourceTypeId);
+                    entity.Property(e => e.BitClientId)
+                          .IsRequired();
                     entity.Property(e => e.Name)
                           .IsRequired()
                           .HasMaxLength(100);
+
+                    entity.HasIndex(e => new { e.BitClientId, e.Name })
+                          .IsUnique();
 
                     // One resource type has many resources.
                     entity.HasMany(e => e.BitResources)
@@ -110,40 +113,6 @@
                     entity.HasMany(e => e.BitEvents)
                           .WithOne(r => r.BitResource)
                           .HasForeignKey(r => r.BitResourceId)
-                          .OnDelete(DeleteBehavior.Cascade);
-                });
-
-                // Configure BitReservation.
-                modelBuilder.Entity<BitReservation>(entity =>
-                {
-                    entity.HasKey(e => e.BitReservationId);
-
-                    entity.Property(e => e.BitClientId)
-                          .IsRequired();
-
-                    entity.Property(e => e.Date)
-                          .HasColumnType("date")
-                          .IsRequired();
-
-                    entity.Property(e => e.BitResourceId)
-                          .IsRequired();
-
-                    entity.Property(e => e.StartBlock)
-                          .IsRequired();
-
-                    entity.Property(e => e.SlotLength)
-                          .IsRequired();
-
-                    // Relationship: BitReservation -> BitClient.
-                    entity.HasOne(e => e.BitClient)
-                          .WithMany(c => c.BitReservations)
-                          .HasForeignKey(e => e.BitClientId)
-                          .OnDelete(DeleteBehavior.Cascade);
-
-                    // Relationship: BitReservation -> BitResource.
-                    entity.HasOne(e => e.BitResource)
-                          .WithMany(r => r.BitReservations)
-                          .HasForeignKey(e => e.BitResourceId)
                           .OnDelete(DeleteBehavior.Cascade);
                 });
 

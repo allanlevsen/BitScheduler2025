@@ -3,21 +3,24 @@ using BitSchedulerCore.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using BitScheduleServices.Features.Schedule;
 
 namespace BitScheduleServices.Features.ResourceTypes;
 
-public sealed class ResourceTypeFeatureService(IBitResourceTypeService resourceTypeService)
+public sealed class ResourceTypeFeatureService(
+    IBitResourceTypeService resourceTypeService,
+    BitScheduleFactory scheduleFactory)
 {
     public async Task<IResult> ListResourceTypesAsync(ILogger logger, CancellationToken cancellationToken)
     {
         try
         {
-            var resourceTypes = await resourceTypeService.ListResourceTypesAsync(cancellationToken);
+            var resourceTypes = await resourceTypeService.ListResourceTypesAsync(scheduleFactory.DefaultClient, cancellationToken);
             return Results.Ok(resourceTypes);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while listing resource types.");
+            logger.LogError(ex, "Error occurred while listing resource types for ClientId {ClientId}.", scheduleFactory.DefaultClient);
             return Results.Problem("An error occurred while listing resource types.", statusCode: 500);
         }
     }
@@ -26,7 +29,7 @@ public sealed class ResourceTypeFeatureService(IBitResourceTypeService resourceT
     {
         try
         {
-            var resourceType = await resourceTypeService.GetResourceTypeAsync(bitResourceTypeId, cancellationToken);
+            var resourceType = await resourceTypeService.GetResourceTypeAsync(scheduleFactory.DefaultClient, bitResourceTypeId, cancellationToken);
             return resourceType is null ? Results.NotFound() : Results.Ok(resourceType);
         }
         catch (Exception ex)
@@ -38,6 +41,8 @@ public sealed class ResourceTypeFeatureService(IBitResourceTypeService resourceT
 
     public async Task<IResult> CreateResourceTypeAsync(BitResourceTypeRequest request, ILogger logger, CancellationToken cancellationToken)
     {
+        request.BitClientId = scheduleFactory.DefaultClient;
+
         try
         {
             var resourceType = await resourceTypeService.CreateResourceTypeAsync(request, cancellationToken);
@@ -62,9 +67,11 @@ public sealed class ResourceTypeFeatureService(IBitResourceTypeService resourceT
 
     public async Task<IResult> UpdateResourceTypeAsync(int bitResourceTypeId, BitResourceTypeRequest request, ILogger logger, CancellationToken cancellationToken)
     {
+        request.BitClientId = scheduleFactory.DefaultClient;
+
         try
         {
-            var resourceType = await resourceTypeService.UpdateResourceTypeAsync(bitResourceTypeId, request, cancellationToken);
+            var resourceType = await resourceTypeService.UpdateResourceTypeAsync(scheduleFactory.DefaultClient, bitResourceTypeId, request, cancellationToken);
             return resourceType is null ? Results.NotFound() : Results.Ok(resourceType);
         }
         catch (ArgumentException ex)
@@ -88,7 +95,7 @@ public sealed class ResourceTypeFeatureService(IBitResourceTypeService resourceT
     {
         try
         {
-            var deleted = await resourceTypeService.DeleteResourceTypeAsync(bitResourceTypeId, cancellationToken);
+            var deleted = await resourceTypeService.DeleteResourceTypeAsync(scheduleFactory.DefaultClient, bitResourceTypeId, cancellationToken);
             return deleted ? Results.NoContent() : Results.NotFound();
         }
         catch (DbUpdateException ex)

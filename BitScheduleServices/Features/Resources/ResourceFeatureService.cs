@@ -28,12 +28,12 @@ public sealed class ResourceFeatureService(
     {
         try
         {
-            var resourceTypes = await resourceService.ListResourceTypesAsync(cancellationToken);
+            var resourceTypes = await resourceService.ListResourceTypesAsync(scheduleFactory.DefaultClient, cancellationToken);
             return Results.Ok(resourceTypes);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while listing resource types.");
+            logger.LogError(ex, "Error occurred while listing resource types for ClientId {ClientId}.", scheduleFactory.DefaultClient);
             return Results.Problem("An error occurred while listing resource types.", statusCode: 500);
         }
     }

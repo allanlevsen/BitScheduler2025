@@ -8,21 +8,7 @@ public class SeedingService(BitScheduleDbContext dbContext, BitResourceScheduleR
 {
     public async Task SeedAsync()
     {
-        // 1. Seed BitResourceType
-        if (!await dbContext.BitResourceTypes.AnyAsync())
-        {
-            var resourceTypes = new List<BitResourceType>
-            {
-                new BitResourceType { Name = "Person" },
-                new BitResourceType { Name = "Equipment" },
-                new BitResourceType { Name = "Meeting Room" }
-            };
-
-            dbContext.BitResourceTypes.AddRange(resourceTypes);
-            await dbContext.SaveChangesAsync();
-        }
-
-        // 2. Seed BitClient with some sample companies.
+        // 1. Seed BitClient with some sample companies.
         if (!await dbContext.BitClients.AnyAsync())
         {
             var clients = new List<BitClient>
@@ -37,16 +23,36 @@ public class SeedingService(BitScheduleDbContext dbContext, BitResourceScheduleR
             await dbContext.SaveChangesAsync();
         }
 
+        // 2. Seed BitResourceType for the default seeded client.
+        if (!await dbContext.BitResourceTypes.AnyAsync())
+        {
+            var client = await dbContext.BitClients.OrderBy(c => c.BitClientId).FirstOrDefaultAsync();
+
+            if (client == null)
+            {
+                return;
+            }
+
+            var resourceTypes = new List<BitResourceType>
+            {
+                new() { BitClientId = client.BitClientId, Name = "Person" },
+                new() { BitClientId = client.BitClientId, Name = "Equipment" },
+                new() { BitClientId = client.BitClientId, Name = "Meeting Room" }
+            };
+
+            dbContext.BitResourceTypes.AddRange(resourceTypes);
+            await dbContext.SaveChangesAsync();
+        }
+
         // 3. Seed BitResource with 5 people and 5 equipment.
         if (!await dbContext.BitResources.AnyAsync())
         {
             // Get the "Person" and "Equipment" resource types.
-            var personType = await dbContext.BitResourceTypes.FirstOrDefaultAsync(rt => rt.Name == "Person");
-            var equipmentType = await dbContext.BitResourceTypes.FirstOrDefaultAsync(rt => rt.Name == "Equipment");
+            var client = await dbContext.BitClients.OrderBy(c => c.BitClientId).FirstOrDefaultAsync();
+            var personType = await dbContext.BitResourceTypes.FirstOrDefaultAsync(rt => rt.Name == "Person" && rt.BitClientId == client!.BitClientId);
+            var equipmentType = await dbContext.BitResourceTypes.FirstOrDefaultAsync(rt => rt.Name == "Equipment" && rt.BitClientId == client!.BitClientId);
 
             // For simplicity, choose the first client for assignment.
-            var client = await dbContext.BitClients.FirstOrDefaultAsync();
-
             if (personType == null || equipmentType == null || client == null)
             {
                 return;
