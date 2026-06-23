@@ -3,5 +3,5 @@ export interface AppRuntimeConfig {
 }
 
 export const appRuntimeConfig: AppRuntimeConfig = {
-  apiBaseUrl: 'http://localhost:52791/api'
+  apiBaseUrl: 'http://localhost:51699/api'
 };
