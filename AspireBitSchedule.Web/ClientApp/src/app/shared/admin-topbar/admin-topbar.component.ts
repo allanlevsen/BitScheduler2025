@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+
+import { ClientContextService } from '../../core/client-context/client-context.service';
 
 @Component({
   selector: 'app-admin-topbar',
@@ -10,6 +12,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminTopbarComponent {
+  protected readonly clientContext = inject(ClientContextService);
   protected readonly administrationOpen = signal(false);
 
   protected toggleAdministrationMenu(): void {
@@ -23,5 +26,9 @@ export class AdminTopbarComponent {
   @HostListener('document:click')
   protected handleDocumentClick(): void {
     this.closeAdministrationMenu();
+  }
+
+  protected selectClient(bitClientId: string): void {
+    this.clientContext.changeClient(Number(bitClientId));
   }
 }

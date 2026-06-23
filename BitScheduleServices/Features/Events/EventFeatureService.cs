@@ -1,3 +1,4 @@
+using BitScheduleServices.Features.Clients;
 using BitScheduleServices.Features.Schedule;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
@@ -8,7 +9,7 @@ namespace BitScheduleServices.Features.Events;
 
 public sealed class EventFeatureService(
     IBitEventService eventService,
-    BitScheduleFactory scheduleFactory)
+    ICurrentBitClientAccessor currentBitClientAccessor)
 {
     public async Task<IResult> ListEventsAsync(
         BitEventListRequest? request,
@@ -17,7 +18,8 @@ public sealed class EventFeatureService(
     {
         try
         {
-            var bitEvents = await eventService.ListEventsAsync(scheduleFactory.DefaultClient, request, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var bitEvents = await eventService.ListEventsAsync(bitClientId, request, cancellationToken);
             return Results.Ok(bitEvents);
         }
         catch (ArgumentException ex)
@@ -27,7 +29,7 @@ public sealed class EventFeatureService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while listing events for ClientId {ClientId} with request {@Request}", scheduleFactory.DefaultClient, request);
+            logger.LogError(ex, "Error occurred while listing events for the current BitClient with request {@Request}", request);
             return Results.Problem("An error occurred while listing events.", statusCode: 500);
         }
     }
@@ -44,8 +46,9 @@ public sealed class EventFeatureService(
 
         try
         {
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
             var bitEvent = await eventService.CreateEventAsync(
-                scheduleFactory.DefaultClient,
+                bitClientId,
                 request,
                 cancellationToken);
 
@@ -58,12 +61,12 @@ public sealed class EventFeatureService(
         }
         catch (InvalidOperationException ex)
         {
-            logger.LogWarning(ex, "Event creation conflict for ClientId {ClientId} with request {@Request}", scheduleFactory.DefaultClient, request);
+            logger.LogWarning(ex, "Event creation conflict for the current BitClient with request {@Request}", request);
             return Results.Conflict(ex.Message);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while creating an event for ClientId {ClientId} with request {@Request}", scheduleFactory.DefaultClient, request);
+            logger.LogError(ex, "Error occurred while creating an event for the current BitClient with request {@Request}", request);
             return Results.Problem("An error occurred while creating the event.", statusCode: 500);
         }
     }
@@ -81,8 +84,9 @@ public sealed class EventFeatureService(
 
         try
         {
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
             var bitEvent = await eventService.UpdateEventAsync(
-                scheduleFactory.DefaultClient,
+                bitClientId,
                 bitEventId,
                 request,
                 cancellationToken);
@@ -96,12 +100,12 @@ public sealed class EventFeatureService(
         }
         catch (InvalidOperationException ex)
         {
-            logger.LogWarning(ex, "Event update conflict for ClientId {ClientId}, BitEventId {BitEventId}, request {@Request}", scheduleFactory.DefaultClient, bitEventId, request);
+            logger.LogWarning(ex, "Event update conflict for BitEventId {BitEventId} on the current BitClient, request {@Request}", bitEventId, request);
             return Results.Conflict(ex.Message);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while updating event {BitEventId} for ClientId {ClientId} with request {@Request}", bitEventId, scheduleFactory.DefaultClient, request);
+            logger.LogError(ex, "Error occurred while updating event {BitEventId} for the current BitClient with request {@Request}", bitEventId, request);
             return Results.Problem("An error occurred while updating the event.", statusCode: 500);
         }
     }
@@ -113,12 +117,13 @@ public sealed class EventFeatureService(
     {
         try
         {
-            var bitEvent = await eventService.GetEventAsync(scheduleFactory.DefaultClient, bitEventId, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var bitEvent = await eventService.GetEventAsync(bitClientId, bitEventId, cancellationToken);
             return bitEvent is null ? Results.NotFound() : Results.Ok(bitEvent);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while reading event {BitEventId} for ClientId {ClientId}", bitEventId, scheduleFactory.DefaultClient);
+            logger.LogError(ex, "Error occurred while reading event {BitEventId} for the current BitClient.", bitEventId);
             return Results.Problem("An error occurred while reading the event.", statusCode: 500);
         }
     }
@@ -130,12 +135,13 @@ public sealed class EventFeatureService(
     {
         try
         {
-            var deleted = await eventService.DeleteEventAsync(scheduleFactory.DefaultClient, bitEventId, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var deleted = await eventService.DeleteEventAsync(bitClientId, bitEventId, cancellationToken);
             return deleted ? Results.NoContent() : Results.NotFound();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while deleting event {BitEventId} for ClientId {ClientId}", bitEventId, scheduleFactory.DefaultClient);
+            logger.LogError(ex, "Error occurred while deleting event {BitEventId} for the current BitClient.", bitEventId);
             return Results.Problem("An error occurred while deleting the event.", statusCode: 500);
         }
     }

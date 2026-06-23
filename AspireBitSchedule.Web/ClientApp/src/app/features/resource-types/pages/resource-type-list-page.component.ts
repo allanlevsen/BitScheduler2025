@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { ResourceDataService } from '../../../data-services/resource-data.service';
 import { ResourceTypeDataService } from '../../../data-services/resource-type-data.service';
 import { ResourceListItem } from '../../resources/models/resource.models';
@@ -16,6 +18,7 @@ import { ResourceTypeListItem } from '../models/resource-type.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResourceTypeListPageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly resourceTypeDataService = inject(ResourceTypeDataService);
   private readonly resourceDataService = inject(ResourceDataService);
 
@@ -32,6 +35,16 @@ export class ResourceTypeListPageComponent {
   });
 
   public constructor() {
+    this.loadData();
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadData());
+  }
+
+  private loadData(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
     let pendingLoads = 2;
     const finishLoad = (): void => {
       pendingLoads -= 1;

@@ -7,6 +7,19 @@
       </a>
 
       <div class="navbar-nav ms-auto align-items-lg-center gap-2">
+        <div class="client-picker">
+          <select
+            id="bit-client-select"
+            class="form-select client-picker-select"
+            [disabled]="clientContext.loading() || !clientContext.ready()"
+            [value]="clientContext.currentClient()?.bitClientId ?? ''"
+            (change)="selectClient($any($event.target).value)">
+            @for (client of clientContext.clients(); track client.bitClientId) {
+              <option [value]="client.bitClientId">{{ client.name }}</option>
+            }
+          </select>
+        </div>
+
         <div class="nav-item dropdown" [class.show]="administrationOpen()">
           <button
             class="btn btn-outline-primary dropdown-toggle"

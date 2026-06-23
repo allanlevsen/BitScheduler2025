@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { ResourceDataService } from '../../../data-services/resource-data.service';
 import { ResourceFormComponent } from '../components/resource-form.component';
 import { ResourceListItem, ResourceRequest, ResourceTypeListItem } from '../models/resource.models';
@@ -30,6 +32,7 @@ import { ResourceListItem, ResourceRequest, ResourceTypeListItem } from '../mode
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResourceEditPageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly resourceDataService = inject(ResourceDataService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -43,6 +46,33 @@ export class ResourceEditPageComponent {
   private readonly bitResourceId = Number(this.route.snapshot.paramMap.get('bitResourceId'));
 
   public constructor() {
+    this.loadData();
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadData());
+  }
+
+  protected updateResource(request: ResourceRequest): void {
+    this.saving.set(true);
+    this.errorMessage.set(null);
+
+    this.resourceDataService.updateResource(this.bitResourceId, request).subscribe({
+      next: () => void this.router.navigate(['/resources']),
+      error: (error: { error?: string }) => {
+        this.errorMessage.set(error.error ?? 'Unable to update the resource.');
+        this.saving.set(false);
+      }
+    });
+  }
+
+  protected navigateBack(): void {
+    void this.router.navigate(['/resources']);
+  }
+
+  private loadData(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
     let pendingLoads = 2;
     const finishLoad = (): void => {
       pendingLoads -= 1;
@@ -72,22 +102,5 @@ export class ResourceEditPageComponent {
         finishLoad();
       }
     });
-  }
-
-  protected updateResource(request: ResourceRequest): void {
-    this.saving.set(true);
-    this.errorMessage.set(null);
-
-    this.resourceDataService.updateResource(this.bitResourceId, request).subscribe({
-      next: () => void this.router.navigate(['/resources']),
-      error: (error: { error?: string }) => {
-        this.errorMessage.set(error.error ?? 'Unable to update the resource.');
-        this.saving.set(false);
-      }
-    });
-  }
-
-  protected navigateBack(): void {
-    void this.router.navigate(['/resources']);
   }
 }

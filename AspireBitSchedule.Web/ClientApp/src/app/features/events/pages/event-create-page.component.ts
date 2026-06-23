@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { EventDataService } from '../../../data-services/event-data.service';
 import { ResourceDataService } from '../../../data-services/resource-data.service';
 import { EventFormComponent } from '../components/event-form.component';
@@ -25,6 +27,7 @@ import { ResourceListItem } from '../../resources/models/resource.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventCreatePageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly eventDataService = inject(EventDataService);
   private readonly resourceDataService = inject(ResourceDataService);
   private readonly router = inject(Router);
@@ -34,10 +37,10 @@ export class EventCreatePageComponent {
   protected readonly errorMessage = signal<string | null>(null);
 
   public constructor() {
-    this.resourceDataService.listResources().subscribe({
-      next: (resources) => this.resources.set(resources),
-      error: () => this.errorMessage.set('Unable to load resources.')
-    });
+    this.loadResources();
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadResources());
   }
 
   protected createEvent(request: EventRequest): void {
@@ -55,5 +58,14 @@ export class EventCreatePageComponent {
 
   protected navigateBack(): void {
     void this.router.navigate(['/events']);
+  }
+
+  private loadResources(): void {
+    this.errorMessage.set(null);
+
+    this.resourceDataService.listResources().subscribe({
+      next: (resources) => this.resources.set(resources),
+      error: () => this.errorMessage.set('Unable to load resources.')
+    });
   }
 }

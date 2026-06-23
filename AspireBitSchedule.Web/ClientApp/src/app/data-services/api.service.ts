@@ -13,20 +13,27 @@ export class ApiService {
 
   public get<T>(path: string, params?: Record<string, string | number | boolean | undefined>): Observable<T> {
     return this.httpClient.get<T>(`${this.apiBaseUrl}${path}`, {
+      withCredentials: true,
       params: this.toHttpParams(params)
     });
   }
 
   public post<TResponse, TRequest>(path: string, body: TRequest): Observable<TResponse> {
-    return this.httpClient.post<TResponse>(`${this.apiBaseUrl}${path}`, body);
+    return this.httpClient.post<TResponse>(`${this.apiBaseUrl}${path}`, body, {
+      withCredentials: true
+    });
   }
 
   public put<TResponse, TRequest>(path: string, body: TRequest): Observable<TResponse> {
-    return this.httpClient.put<TResponse>(`${this.apiBaseUrl}${path}`, body);
+    return this.httpClient.put<TResponse>(`${this.apiBaseUrl}${path}`, body, {
+      withCredentials: true
+    });
   }
 
   public delete(path: string): Observable<void> {
-    return this.httpClient.delete<void>(`${this.apiBaseUrl}${path}`);
+    return this.httpClient.delete<void>(`${this.apiBaseUrl}${path}`, {
+      withCredentials: true
+    });
   }
 
   private toHttpParams(params?: Record<string, string | number | boolean | undefined>): HttpParams | undefined {

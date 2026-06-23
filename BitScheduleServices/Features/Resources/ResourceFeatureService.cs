@@ -1,4 +1,5 @@
 using BitScheduleServices.Features.Schedule;
+using BitScheduleServices.Features.Clients;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
 using Microsoft.AspNetCore.Http;
@@ -8,18 +9,19 @@ namespace BitScheduleServices.Features.Resources;
 
 public sealed class ResourceFeatureService(
     IBitResourceService resourceService,
-    BitScheduleFactory scheduleFactory)
+    ICurrentBitClientAccessor currentBitClientAccessor)
 {
     public async Task<IResult> ListResourcesAsync(ILogger logger, CancellationToken cancellationToken)
     {
         try
         {
-            var resources = await resourceService.ListResourcesAsync(scheduleFactory.DefaultClient, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var resources = await resourceService.ListResourcesAsync(bitClientId, cancellationToken);
             return Results.Ok(resources);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while listing resources for ClientId {ClientId}", scheduleFactory.DefaultClient);
+            logger.LogError(ex, "Error occurred while listing resources for the current BitClient.");
             return Results.Problem("An error occurred while listing resources.", statusCode: 500);
         }
     }
@@ -28,12 +30,13 @@ public sealed class ResourceFeatureService(
     {
         try
         {
-            var resourceTypes = await resourceService.ListResourceTypesAsync(scheduleFactory.DefaultClient, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var resourceTypes = await resourceService.ListResourceTypesAsync(bitClientId, cancellationToken);
             return Results.Ok(resourceTypes);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while listing resource types for ClientId {ClientId}.", scheduleFactory.DefaultClient);
+            logger.LogError(ex, "Error occurred while listing resource types for the current BitClient.");
             return Results.Problem("An error occurred while listing resource types.", statusCode: 500);
         }
     }
@@ -42,12 +45,13 @@ public sealed class ResourceFeatureService(
     {
         try
         {
-            var resource = await resourceService.GetResourceAsync(scheduleFactory.DefaultClient, bitResourceId, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var resource = await resourceService.GetResourceAsync(bitClientId, bitResourceId, cancellationToken);
             return resource is null ? Results.NotFound() : Results.Ok(resource);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while reading resource {BitResourceId} for ClientId {ClientId}", bitResourceId, scheduleFactory.DefaultClient);
+            logger.LogError(ex, "Error occurred while reading resource {BitResourceId} for the current BitClient.", bitResourceId);
             return Results.Problem("An error occurred while reading the resource.", statusCode: 500);
         }
     }
@@ -61,7 +65,8 @@ public sealed class ResourceFeatureService(
 
         try
         {
-            var resource = await resourceService.CreateResourceAsync(scheduleFactory.DefaultClient, request, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var resource = await resourceService.CreateResourceAsync(bitClientId, request, cancellationToken);
             return Results.Ok(resource);
         }
         catch (ArgumentException ex)
@@ -71,12 +76,12 @@ public sealed class ResourceFeatureService(
         }
         catch (InvalidOperationException ex)
         {
-            logger.LogWarning(ex, "Resource creation conflict for ClientId {ClientId} with request {@Request}", scheduleFactory.DefaultClient, request);
+            logger.LogWarning(ex, "Resource creation conflict for the current BitClient with request {@Request}", request);
             return Results.Conflict(ex.Message);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while creating a resource for ClientId {ClientId} with request {@Request}", scheduleFactory.DefaultClient, request);
+            logger.LogError(ex, "Error occurred while creating a resource for the current BitClient with request {@Request}", request);
             return Results.Problem("An error occurred while creating the resource.", statusCode: 500);
         }
     }
@@ -90,7 +95,8 @@ public sealed class ResourceFeatureService(
 
         try
         {
-            var resource = await resourceService.UpdateResourceAsync(scheduleFactory.DefaultClient, bitResourceId, request, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var resource = await resourceService.UpdateResourceAsync(bitClientId, bitResourceId, request, cancellationToken);
             return resource is null ? Results.NotFound() : Results.Ok(resource);
         }
         catch (ArgumentException ex)
@@ -100,12 +106,12 @@ public sealed class ResourceFeatureService(
         }
         catch (InvalidOperationException ex)
         {
-            logger.LogWarning(ex, "Resource update conflict for ClientId {ClientId}, BitResourceId {BitResourceId}, request {@Request}", scheduleFactory.DefaultClient, bitResourceId, request);
+            logger.LogWarning(ex, "Resource update conflict for BitResourceId {BitResourceId} on the current BitClient, request {@Request}", bitResourceId, request);
             return Results.Conflict(ex.Message);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while updating resource {BitResourceId} for ClientId {ClientId} with request {@Request}", bitResourceId, scheduleFactory.DefaultClient, request);
+            logger.LogError(ex, "Error occurred while updating resource {BitResourceId} for the current BitClient with request {@Request}", bitResourceId, request);
             return Results.Problem("An error occurred while updating the resource.", statusCode: 500);
         }
     }
@@ -114,12 +120,13 @@ public sealed class ResourceFeatureService(
     {
         try
         {
-            var deleted = await resourceService.DeleteResourceAsync(scheduleFactory.DefaultClient, bitResourceId, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var deleted = await resourceService.DeleteResourceAsync(bitClientId, bitResourceId, cancellationToken);
             return deleted ? Results.NoContent() : Results.NotFound();
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while deleting resource {BitResourceId} for ClientId {ClientId}", bitResourceId, scheduleFactory.DefaultClient);
+            logger.LogError(ex, "Error occurred while deleting resource {BitResourceId} for the current BitClient.", bitResourceId);
             return Results.Problem("An error occurred while deleting the resource.", statusCode: 500);
         }
     }

@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { ResourceDataService } from '../../../data-services/resource-data.service';
 import { ResourceListItem } from '../models/resource.models';
 
@@ -14,6 +16,7 @@ import { ResourceListItem } from '../models/resource.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResourceListPageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly resourceDataService = inject(ResourceDataService);
 
   protected readonly resources = signal<ResourceListItem[]>([]);
@@ -25,6 +28,16 @@ export class ResourceListPageComponent {
   protected readonly namedEmailCount = computed(() => this.resources().filter((resource) => resource.emailAddress.trim().length > 0).length);
 
   public constructor() {
+    this.loadResources();
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadResources());
+  }
+
+  private loadResources(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
     this.resourceDataService.listResources().subscribe({
       next: (resources) => {
         this.resources.set(resources);

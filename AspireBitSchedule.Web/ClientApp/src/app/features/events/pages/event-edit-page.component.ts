@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { EventDataService } from '../../../data-services/event-data.service';
 import { ResourceDataService } from '../../../data-services/resource-data.service';
 import { EventFormComponent } from '../components/event-form.component';
@@ -32,6 +34,7 @@ import { ResourceListItem } from '../../resources/models/resource.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventEditPageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly eventDataService = inject(EventDataService);
   private readonly resourceDataService = inject(ResourceDataService);
   private readonly route = inject(ActivatedRoute);
@@ -46,21 +49,10 @@ export class EventEditPageComponent {
   private readonly bitEventId = Number(this.route.snapshot.paramMap.get('bitEventId'));
 
   public constructor() {
-    this.resourceDataService.listResources().subscribe({
-      next: (resources) => this.resources.set(resources),
-      error: () => this.errorMessage.set('Unable to load resources.')
-    });
-
-    this.eventDataService.getEvent(this.bitEventId).subscribe({
-      next: (event) => {
-        this.event.set(event);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Unable to load the event.');
-        this.loading.set(false);
-      }
-    });
+    this.loadData();
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadData());
   }
 
   protected updateEvent(request: EventRequest): void {
@@ -78,5 +70,26 @@ export class EventEditPageComponent {
 
   protected navigateBack(): void {
     void this.router.navigate(['/events']);
+  }
+
+  private loadData(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    this.resourceDataService.listResources().subscribe({
+      next: (resources) => this.resources.set(resources),
+      error: () => this.errorMessage.set('Unable to load resources.')
+    });
+
+    this.eventDataService.getEvent(this.bitEventId).subscribe({
+      next: (event) => {
+        this.event.set(event);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.errorMessage.set('Unable to load the event.');
+        this.loading.set(false);
+      }
+    });
   }
 }

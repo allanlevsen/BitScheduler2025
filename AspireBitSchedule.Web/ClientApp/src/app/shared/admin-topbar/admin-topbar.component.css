@@ -19,6 +19,25 @@
   font-weight: 700;
 }
 
+.client-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 15rem;
+}
+
+.client-picker-label {
+  color: var(--bs-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.client-picker-select {
+  min-width: 15rem;
+}
+
 .dropdown-menu.show {
   display: block;
 }
@@ -27,4 +46,15 @@
   color: var(--bs-primary);
   font-weight: 600;
   background-color: rgba(var(--bs-primary-rgb), 0.08);
+}
+
+@media (max-width: 991.98px) {
+  .client-picker {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .client-picker-select {
+    min-width: 0;
+  }
 }

@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { ResourceDataService } from '../../../data-services/resource-data.service';
 import { ResourceFormComponent } from '../components/resource-form.component';
 import { ResourceRequest, ResourceTypeListItem } from '../models/resource.models';
@@ -23,6 +25,7 @@ import { ResourceRequest, ResourceTypeListItem } from '../models/resource.models
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResourceCreatePageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly resourceDataService = inject(ResourceDataService);
   private readonly router = inject(Router);
 
@@ -31,10 +34,10 @@ export class ResourceCreatePageComponent {
   protected readonly errorMessage = signal<string | null>(null);
 
   public constructor() {
-    this.resourceDataService.listResourceTypes().subscribe({
-      next: (resourceTypes) => this.resourceTypes.set(resourceTypes),
-      error: () => this.errorMessage.set('Unable to load resource types.')
-    });
+    this.loadResourceTypes();
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadResourceTypes());
   }
 
   protected createResource(request: ResourceRequest): void {
@@ -52,5 +55,14 @@ export class ResourceCreatePageComponent {
 
   protected navigateBack(): void {
     void this.router.navigate(['/resources']);
+  }
+
+  private loadResourceTypes(): void {
+    this.errorMessage.set(null);
+
+    this.resourceDataService.listResourceTypes().subscribe({
+      next: (resourceTypes) => this.resourceTypes.set(resourceTypes),
+      error: () => this.errorMessage.set('Unable to load resource types.')
+    });
   }
 }

@@ -1,7 +1,9 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { EventDataService } from '../../../data-services/event-data.service';
 import { EventModel } from '../models/event.models';
 
@@ -13,6 +15,7 @@ import { EventModel } from '../models/event.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventDeletePageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly eventDataService = inject(EventDataService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -25,16 +28,10 @@ export class EventDeletePageComponent {
   private readonly bitEventId = Number(this.route.snapshot.paramMap.get('bitEventId'));
 
   public constructor() {
-    this.eventDataService.getEvent(this.bitEventId).subscribe({
-      next: (event) => {
-        this.event.set(event);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Unable to load the event.');
-        this.loading.set(false);
-      }
-    });
+    this.loadEvent();
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.loadEvent());
   }
 
   protected deleteEvent(): void {
@@ -46,6 +43,22 @@ export class EventDeletePageComponent {
       error: (error: { error?: string }) => {
         this.errorMessage.set(error.error ?? 'Unable to delete the event.');
         this.deleting.set(false);
+      }
+    });
+  }
+
+  private loadEvent(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    this.eventDataService.getEvent(this.bitEventId).subscribe({
+      next: (event) => {
+        this.event.set(event);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.errorMessage.set('Unable to load the event.');
+        this.loading.set(false);
       }
     });
   }

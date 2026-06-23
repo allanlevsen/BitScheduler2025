@@ -1,3 +1,4 @@
+using AspireBitSchedule.ApiService.Features.Clients;
 using AspireBitSchedule.ApiService.Features.Configuration;
 using AspireBitSchedule.ApiService.Features.Events;
 using AspireBitSchedule.ApiService.Features.HexGrid;
@@ -15,6 +16,14 @@ const string angularDevServerCorsPolicy = "AngularDevServer";
 builder.AddServiceDefaults();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.Name = ".BitScheduler.Session";
+});
 builder.Services.Configure<GoogleMappingOptions>(
     builder.Configuration.GetSection(GoogleMappingOptions.SectionName));
 builder.Services.AddCors(options =>
@@ -22,6 +31,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(angularDevServerCorsPolicy, policy =>
     {
         policy.WithOrigins("http://localhost:4200")
+            .AllowCredentials()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -43,6 +53,7 @@ var app = builder.Build();
 app.UseExceptionHandler("/error");
 app.Map("/error", () => Results.Problem("An unhandled error occurred."));
 app.UseCors(angularDevServerCorsPolicy);
+app.UseSession();
 
 if (app.Environment.IsDevelopment())
 {
@@ -51,6 +62,7 @@ if (app.Environment.IsDevelopment())
 
 await InitializeAsync(app.Services, app.Logger);
 
+app.MapClientEndpoints();
 app.MapConfigurationEndpoints();
 app.MapScheduleEndpoints();
 app.MapEventEndpoints();

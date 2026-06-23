@@ -1,7 +1,17 @@
 <div class="app-shell">
   <app-admin-topbar />
 
-  <main class="container-xxl py-4 py-lg-5">
-    <router-outlet />
-  </main>
+  @if (clientContext.ready()) {
+    <main class="container-xxl py-4 py-lg-5">
+      <router-outlet />
+    </main>
+  } @else {
+    <main class="container-xxl py-4 py-lg-5">
+      <div class="card panel-card">
+        <div class="card-body p-4">
+          {{ clientContext.errorMessage() ?? 'Loading client context...' }}
+        </div>
+      </div>
+    </main>
+  }
 </div>

@@ -1,8 +1,10 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { EventDataService } from '../../../data-services/event-data.service';
 import { ResourceDataService } from '../../../data-services/resource-data.service';
 import { EventListRequest, EventModel } from '../models/event.models';
@@ -17,6 +19,7 @@ import { ResourceListItem } from '../../resources/models/resource.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventListPageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly eventDataService = inject(EventDataService);
   private readonly resourceDataService = inject(ResourceDataService);
   private readonly formBuilder = inject(FormBuilder);
@@ -39,22 +42,18 @@ export class EventListPageComponent {
   protected readonly reservedCount = computed(() => this.events().filter((event) => event.scheduleBitsReserved).length);
 
   public constructor() {
-    this.resourceDataService.listResources().subscribe({
-      next: (resources) => this.resources.set(resources),
-      error: () => this.errorMessage.set('Unable to load resources.')
-    });
-
-    this.eventDataService.listEvents().subscribe({
-      next: (events) => {
-        this.availableEventTypes.set(extractEventTypes(events));
-        this.events.set(events);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Unable to load events.');
-        this.loading.set(false);
-      }
-    });
+    this.loadPageData();
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.selectedResourceIds.set([]);
+        this.selectedEventTypes.set([]);
+        this.filterForm.reset({
+          rangeStart: '',
+          rangeEnd: ''
+        });
+        this.loadPageData();
+      });
   }
 
   protected applyFilters(): void {
@@ -112,6 +111,28 @@ export class EventListPageComponent {
 
   protected lookupResource(resourceId: number): ResourceListItem | undefined {
     return this.resources().find((resource) => resource.bitResourceId === resourceId);
+  }
+
+  private loadPageData(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    this.resourceDataService.listResources().subscribe({
+      next: (resources) => this.resources.set(resources),
+      error: () => this.errorMessage.set('Unable to load resources.')
+    });
+
+    this.eventDataService.listEvents().subscribe({
+      next: (events) => {
+        this.availableEventTypes.set(extractEventTypes(events));
+        this.events.set(events);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.errorMessage.set('Unable to load events.');
+        this.loading.set(false);
+      }
+    });
   }
 
   private buildFilterRequest(): EventListRequest {

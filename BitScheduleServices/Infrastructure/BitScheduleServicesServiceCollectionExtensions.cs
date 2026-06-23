@@ -1,3 +1,4 @@
+using BitScheduleServices.Features.Clients;
 using BitScheduleServices.Features.Configuration;
 using BitScheduleServices.Features.Events;
 using BitScheduleServices.Features.HexGrid;
@@ -33,11 +34,15 @@ public static class BitScheduleServicesServiceCollectionExtensions
         services.AddScoped<BitResourceScheduleRangePayloadConverter>();
         services.AddScoped<SeedingService>();
         services.AddScoped<BitScheduleDataService>();
+        services.AddHttpContextAccessor();
         services.AddHttpClient<IGeocodingService, GoogleGeocodingService>();
+        services.AddScoped<IBitClientService, BitClientService>();
         services.AddScoped<IBitEventService, BitEventService>();
         services.AddScoped<IBitResourceService, BitResourceService>();
         services.AddScoped<IBitResourceTypeService, BitResourceTypeService>();
+        services.AddScoped<ICurrentBitClientAccessor, SessionBitClientAccessor>();
         services.AddScoped<BitScheduleFactory>();
+        services.AddScoped<ClientFeatureService>();
         services.AddScoped<ScheduleFeatureService>();
         services.AddScoped<EventFeatureService>();
         services.AddScoped<ResourceFeatureService>();

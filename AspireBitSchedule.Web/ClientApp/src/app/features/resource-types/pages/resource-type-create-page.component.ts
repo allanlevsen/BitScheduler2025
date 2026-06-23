@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
+import { ClientContextService } from '../../../core/client-context/client-context.service';
 import { ResourceTypeDataService } from '../../../data-services/resource-type-data.service';
 import { ResourceTypeFormComponent } from '../components/resource-type-form.component';
 import { ResourceTypeRequest } from '../models/resource-type.models';
@@ -22,11 +24,18 @@ import { ResourceTypeRequest } from '../models/resource-type.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResourceTypeCreatePageComponent {
+  private readonly clientContext = inject(ClientContextService);
   private readonly resourceTypeDataService = inject(ResourceTypeDataService);
   private readonly router = inject(Router);
 
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+
+  public constructor() {
+    this.clientContext.clientChanged$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.errorMessage.set(null));
+  }
 
   protected createResourceType(request: ResourceTypeRequest): void {
     this.saving.set(true);

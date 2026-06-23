@@ -26,49 +26,55 @@ internal static class ScheduleEndpoints
         return endpoints;
     }
 
-    private static IResult ReadSchedule(
+    private static Task<IResult> ReadSchedule(
         BitScheduleConfiguration config,
         ScheduleFeatureService featureService,
-        ILogger<Program> logger)
+        ILogger<Program> logger,
+        CancellationToken cancellationToken)
     {
-        return featureService.ReadSchedule(config, logger);
+        return featureService.ReadScheduleAsync(config, logger, cancellationToken);
     }
 
-    private static IResult ReadTestSchedule(
+    private static Task<IResult> ReadTestSchedule(
         ScheduleFeatureService featureService,
-        ILogger<Program> logger)
+        ILogger<Program> logger,
+        CancellationToken cancellationToken)
     {
-        return featureService.ReadTestSchedule(logger);
+        return featureService.ReadTestScheduleAsync(logger, cancellationToken);
     }
 
     private static Task<IResult> WriteScheduleDayAsync(
         BitDayRequest request,
         ScheduleFeatureService featureService,
-        ILogger<Program> logger)
+        ILogger<Program> logger,
+        CancellationToken cancellationToken)
     {
-        return featureService.WriteScheduleDayAsync(request, logger);
+        return featureService.WriteScheduleDayAsync(request, logger, cancellationToken);
     }
 
     private static Task<IResult> WriteScheduleAsync(
         BitScheduleRequest request,
         ScheduleFeatureService featureService,
-        ILogger<Program> logger)
+        ILogger<Program> logger,
+        CancellationToken cancellationToken)
     {
-        return featureService.WriteScheduleAsync(request, logger);
+        return featureService.WriteScheduleAsync(request, logger, cancellationToken);
     }
 
-    private static IResult ReadScheduleDay(
+    private static Task<IResult> ReadScheduleDay(
         BitDayRequest request,
         ScheduleFeatureService featureService,
-        ILogger<Program> logger)
+        ILogger<Program> logger,
+        CancellationToken cancellationToken)
     {
-        return featureService.ReadScheduleDay(request, logger);
+        return featureService.ReadScheduleDayAsync(request, logger, cancellationToken);
     }
 
-    private static IResult ReadTestScheduleDay(
+    private static Task<IResult> ReadTestScheduleDay(
         ScheduleFeatureService featureService,
-        ILogger<Program> logger)
+        ILogger<Program> logger,
+        CancellationToken cancellationToken)
     {
-        return featureService.ReadTestScheduleDay(logger);
+        return featureService.ReadTestScheduleDayAsync(logger, cancellationToken);
     }
 }

@@ -1,26 +1,27 @@
+using BitScheduleServices.Features.Clients;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using BitScheduleServices.Features.Schedule;
 
 namespace BitScheduleServices.Features.ResourceTypes;
 
 public sealed class ResourceTypeFeatureService(
     IBitResourceTypeService resourceTypeService,
-    BitScheduleFactory scheduleFactory)
+    ICurrentBitClientAccessor currentBitClientAccessor)
 {
     public async Task<IResult> ListResourceTypesAsync(ILogger logger, CancellationToken cancellationToken)
     {
         try
         {
-            var resourceTypes = await resourceTypeService.ListResourceTypesAsync(scheduleFactory.DefaultClient, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var resourceTypes = await resourceTypeService.ListResourceTypesAsync(bitClientId, cancellationToken);
             return Results.Ok(resourceTypes);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while listing resource types for ClientId {ClientId}.", scheduleFactory.DefaultClient);
+            logger.LogError(ex, "Error occurred while listing resource types for the current BitClient.");
             return Results.Problem("An error occurred while listing resource types.", statusCode: 500);
         }
     }
@@ -29,7 +30,8 @@ public sealed class ResourceTypeFeatureService(
     {
         try
         {
-            var resourceType = await resourceTypeService.GetResourceTypeAsync(scheduleFactory.DefaultClient, bitResourceTypeId, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var resourceType = await resourceTypeService.GetResourceTypeAsync(bitClientId, bitResourceTypeId, cancellationToken);
             return resourceType is null ? Results.NotFound() : Results.Ok(resourceType);
         }
         catch (Exception ex)
@@ -41,10 +43,9 @@ public sealed class ResourceTypeFeatureService(
 
     public async Task<IResult> CreateResourceTypeAsync(BitResourceTypeRequest request, ILogger logger, CancellationToken cancellationToken)
     {
-        request.BitClientId = scheduleFactory.DefaultClient;
-
         try
         {
+            request.BitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
             var resourceType = await resourceTypeService.CreateResourceTypeAsync(request, cancellationToken);
             return Results.Ok(resourceType);
         }
@@ -67,11 +68,11 @@ public sealed class ResourceTypeFeatureService(
 
     public async Task<IResult> UpdateResourceTypeAsync(int bitResourceTypeId, BitResourceTypeRequest request, ILogger logger, CancellationToken cancellationToken)
     {
-        request.BitClientId = scheduleFactory.DefaultClient;
-
         try
         {
-            var resourceType = await resourceTypeService.UpdateResourceTypeAsync(scheduleFactory.DefaultClient, bitResourceTypeId, request, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            request.BitClientId = bitClientId;
+            var resourceType = await resourceTypeService.UpdateResourceTypeAsync(bitClientId, bitResourceTypeId, request, cancellationToken);
             return resourceType is null ? Results.NotFound() : Results.Ok(resourceType);
         }
         catch (ArgumentException ex)
@@ -95,7 +96,8 @@ public sealed class ResourceTypeFeatureService(
     {
         try
         {
-            var deleted = await resourceTypeService.DeleteResourceTypeAsync(scheduleFactory.DefaultClient, bitResourceTypeId, cancellationToken);
+            var bitClientId = await currentBitClientAccessor.GetCurrentClientIdAsync(cancellationToken);
+            var deleted = await resourceTypeService.DeleteResourceTypeAsync(bitClientId, bitResourceTypeId, cancellationToken);
             return deleted ? Results.NoContent() : Results.NotFound();
         }
         catch (DbUpdateException ex)

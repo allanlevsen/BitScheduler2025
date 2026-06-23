@@ -9,7 +9,7 @@ public sealed class BitScheduleDesignTimeDbContextFactory : IDesignTimeDbContext
     public BitScheduleDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<BitScheduleDbContext>();
-        optionsBuilder.UseNpgsql("Host=localhost;Database=BitScheduleDesignTime;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql("Host=localhost;Database=BitScheduler;Username=postgres;Password=app1e4u!");
 
         return new BitScheduleDbContext(optionsBuilder.Options);
     }
