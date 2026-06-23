@@ -3,6 +3,10 @@ export interface ClientListItem {
   name: string;
 }
 
+export interface ClientRequest {
+  name: string;
+}
+
 export interface ClientSelectionRequest {
   bitClientId: number;
 }

@@ -1,0 +1,82 @@
+<section class="page-heading">
+  <div>
+    <p class="section-label mb-2">Administration</p>
+    <h1>Clients</h1>
+    <p class="page-subtitle">
+      Manage the top-level client records that drive tenant selection across the scheduler.
+    </p>
+  </div>
+  <a class="btn btn-primary btn-lg" routerLink="/clients/new">Create Client</a>
+</section>
+
+<section class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Total Clients</p>
+        <p class="display-6 mb-0">{{ clientCount() }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card panel-card h-100">
+      <div class="card-body">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Current Client</p>
+        <p class="fs-4 mb-0">{{ selectedClientName() }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="card panel-card">
+    <div class="card-body p-0">
+      @if (loading()) {
+        <div class="p-4">Loading clients...</div>
+      } @else if (errorMessage(); as errorMessage) {
+        <div class="alert alert-danger m-4">{{ errorMessage }}</div>
+      } @else if (clients().length === 0) {
+        <div class="p-5 text-center">
+          <h2 class="h4 mb-2">No clients found</h2>
+          <p class="text-muted mb-0">Create a client before managing client-specific scheduling data.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Client</th>
+                <th scope="col">Identifier</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (client of clients(); track client.bitClientId) {
+                <tr>
+                  <td>
+                    <div class="fw-semibold">{{ client.name }}</div>
+                  </td>
+                  <td class="text-muted">#{{ client.bitClientId }}</td>
+                  <td>
+                    @if (isCurrentClient(client.bitClientId)) {
+                      <span class="badge text-bg-primary">Current</span>
+                    } @else {
+                      <span class="text-muted">Available</span>
+                    }
+                  </td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-2">
+                      <a class="btn btn-sm btn-outline-primary" [routerLink]="['/clients', client.bitClientId, 'edit']">Edit</a>
+                      <a class="btn btn-sm btn-outline-danger" [routerLink]="['/clients', client.bitClientId, 'delete']">Remove</a>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</section>

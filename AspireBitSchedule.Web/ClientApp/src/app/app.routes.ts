@@ -1,5 +1,9 @@
 import { Routes } from '@angular/router';
 
+import { ClientCreatePageComponent } from './features/clients/pages/client-create-page.component';
+import { ClientDeletePageComponent } from './features/clients/pages/client-delete-page.component';
+import { ClientEditPageComponent } from './features/clients/pages/client-edit-page.component';
+import { ClientListPageComponent } from './features/clients/pages/client-list-page.component';
 import { EventCreatePageComponent } from './features/events/pages/event-create-page.component';
 import { EventDeletePageComponent } from './features/events/pages/event-delete-page.component';
 import { EventEditPageComponent } from './features/events/pages/event-edit-page.component';
@@ -15,6 +19,10 @@ import { ResourceListPageComponent } from './features/resources/pages/resource-l
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'events' },
+  { path: 'clients', component: ClientListPageComponent },
+  { path: 'clients/new', component: ClientCreatePageComponent },
+  { path: 'clients/:bitClientId/edit', component: ClientEditPageComponent },
+  { path: 'clients/:bitClientId/delete', component: ClientDeletePageComponent },
   { path: 'events', component: EventListPageComponent },
   { path: 'events/new', component: EventCreatePageComponent },
   { path: 'events/:bitEventId/edit', component: EventEditPageComponent },

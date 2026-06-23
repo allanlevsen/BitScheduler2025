@@ -21,15 +21,20 @@ export class ClientContextService {
 
   public initialize(): Promise<void> {
     if (this.ready()) {
-      return Promise.resolve();
+      return this.reload();
     }
 
+    return this.reload();
+  }
+
+  public reload(): Promise<void> {
     if (this.initializePromise) {
       return this.initializePromise;
     }
 
     this.loading.set(true);
     this.errorMessage.set(null);
+    const previousClientId = this.currentClient()?.bitClientId ?? null;
 
     this.initializePromise = Promise.all([
       firstValueFrom(this.clientDataService.listClients()),
@@ -39,9 +44,14 @@ export class ClientContextService {
         this.clients.set(clients);
         this.currentClient.set(currentClient);
         this.ready.set(true);
+
+        if (currentClient.bitClientId !== previousClientId) {
+          this.clientChangedSubject.next(currentClient);
+        }
       })
       .catch(() => {
         this.errorMessage.set('Unable to load clients.');
+        this.ready.set(false);
         throw new Error('Unable to load clients.');
       })
       .finally(() => {

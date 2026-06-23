@@ -30,6 +30,7 @@
           </button>
 
           <div class="dropdown-menu dropdown-menu-end" [class.show]="administrationOpen()" (click)="closeAdministrationMenu()">
+            <a class="dropdown-item" routerLink="/clients" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Clients</a>
             <a class="dropdown-item" routerLink="/events" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Events</a>
             <a class="dropdown-item" routerLink="/resources" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Resources</a>
             <a class="dropdown-item" routerLink="/resource-types" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Resource Types</a>
