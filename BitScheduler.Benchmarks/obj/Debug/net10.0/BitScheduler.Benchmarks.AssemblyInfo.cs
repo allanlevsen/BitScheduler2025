@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BitScheduler.Benchmarks")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49257812becc8d2c0b01e4a25ba127a1a42029f5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6cb39e61beff7cea360679c2d9515ac10cd53a95")]
 [assembly: System.Reflection.AssemblyProductAttribute("BitScheduler.Benchmarks")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BitScheduler.Benchmarks")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

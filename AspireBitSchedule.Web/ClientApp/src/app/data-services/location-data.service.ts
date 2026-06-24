@@ -19,8 +19,4 @@ export class LocationDataService {
   public geocodeAddress(address: string): Observable<ResolvedLocationModel> {
     return this.apiService.get<ResolvedLocationModel>('/locations/geocode', { address });
   }
-
-  public resolveHexGrid(address: string): Observable<ResolvedLocationModel> {
-    return this.apiService.get<ResolvedLocationModel>('/locations/hex-grid', { address });
-  }
 }

@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 import { EventModel, EventRequest } from '../models/event.models';
 import { ResourceListItem } from '../../resources/models/resource.models';
 import { LocationDataService } from '../../../data-services/location-data.service';
+import { HexGridDataService } from '../../../data-services/hex-grid-data.service';
 import { AddressEntryComponent } from '../../../shared/address-entry/address-entry.component';
 
 @Component({
@@ -28,6 +29,7 @@ export class EventFormComponent {
 
   private readonly formBuilder = new FormBuilder();
   private readonly locationDataService = inject(LocationDataService);
+  private readonly hexGridDataService = inject(HexGridDataService);
 
   protected readonly startLocationMessage = signal<string | null>(null);
   protected readonly endLocationMessage = signal<string | null>(null);
@@ -161,26 +163,30 @@ export class EventFormComponent {
     this.setLocationMessage(kind, null);
     this.patchResolvedLocation(kind, null);
 
-    forkJoin({
-      geocoded: this.locationDataService.geocodeAddress(normalizedAddress).pipe(catchError(() => of(null))),
-      hexGrid: this.locationDataService.resolveHexGrid(normalizedAddress).pipe(catchError(() => of(null)))
-    }).subscribe({
-      next: ({ geocoded, hexGrid }) => {
-        if (!geocoded && !hexGrid) {
-          this.setLocationMessage(kind, `Unable to resolve the ${kind} address to coordinates or a hex grid id.`);
+    this.locationDataService.geocodeAddress(normalizedAddress).pipe(
+      switchMap((geocoded) =>
+        this.hexGridDataService.getCell(geocoded.latitude, geocoded.longitude).pipe(
+          map((hexGridCell) => ({ geocoded, hexGridCell })),
+          catchError(() => of({ geocoded, hexGridCell: null }))
+        )),
+      catchError(() => of(null))
+    ).subscribe({
+      next: (result) => {
+        if (!result) {
+          this.setLocationMessage(kind, `Unable to resolve the ${kind} address to coordinates.`);
           return;
         }
 
+        const { geocoded, hexGridCell } = result;
+
         this.patchResolvedLocation(kind, {
-          latitude: geocoded?.latitude ?? hexGrid?.latitude ?? null,
-          longitude: geocoded?.longitude ?? hexGrid?.longitude ?? null,
-          hexGridId: hexGrid?.hexGridId ?? null
+          latitude: geocoded.latitude,
+          longitude: geocoded.longitude,
+          hexGridId: hexGridCell?.id ?? null
         });
 
-        if (geocoded && !hexGrid) {
+        if (!hexGridCell) {
           this.setLocationMessage(kind, `Coordinates were found for the ${kind} address, but the hex grid id could not be determined.`);
-        } else if (!geocoded && hexGrid) {
-          this.setLocationMessage(kind, `A hex grid id was found for the ${kind} address, but coordinates could not be resolved.`);
         }
       },
       error: () => {
