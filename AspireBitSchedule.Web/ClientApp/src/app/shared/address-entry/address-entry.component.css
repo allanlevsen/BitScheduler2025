@@ -1,0 +1,49 @@
+.address-entry {
+  position: relative;
+}
+
+.address-entry__menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + .5rem);
+  left: 0;
+  right: 0;
+  max-height: 18rem;
+  overflow: auto;
+  border: 1px solid rgba(31, 41, 55, .14);
+  border-radius: .75rem;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(35, 42, 52, .12);
+}
+
+.address-entry__item {
+  display: block;
+  width: 100%;
+  padding: .8rem .95rem;
+  border: 0;
+  border-bottom: 1px solid rgba(31, 41, 55, .08);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.address-entry__item:last-child {
+  border-bottom: 0;
+}
+
+.address-entry__item:hover {
+  background: rgba(15, 118, 110, .08);
+}
+
+.address-entry__primary {
+  display: block;
+  font-weight: 600;
+  color: #172033;
+}
+
+.address-entry__secondary {
+  display: block;
+  margin-top: .15rem;
+  color: #526072;
+  font-size: .9rem;
+}

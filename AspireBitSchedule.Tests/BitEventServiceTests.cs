@@ -2,6 +2,7 @@ using BitSchedulerCore;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
+using BitScheduleServices.Features.Locations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -199,6 +200,44 @@ public class BitEventServiceTests : IAsyncLifetime
         Assert.Equal("500 Second Ave, Edmonton, AB", created.EndAddress);
     }
 
+    [Fact]
+    public async Task UpdateEventAsync_RegeocodesAddressWhenAddressChangesButOldCoordinatesRemain()
+    {
+        await using var dbContext = CreateDbContext();
+        await SeedClientAndResourceAsync(dbContext, clientId: 105, resourceId: 1005);
+
+        var geocodingService = new StubGeocodingService(
+            ("123 Main St", new GeocodingResult(53.51, -113.51, "123 Main St, Edmonton, AB")),
+            ("999 New Ave", new GeocodingResult(53.71, -113.71, "999 New Ave, Edmonton, AB")));
+        var hexGridService = new StubHexGridSearchService((53.51, -113.51, 7101), (53.71, -113.71, 7201));
+        var service = CreateEventService(dbContext, geocodingService, hexGridService);
+
+        var created = await service.CreateEventAsync(105, new BitEventRequest
+        {
+            BitResourceId = 1005,
+            StartDateTime = new DateTime(2025, 7, 12, 9, 0, 0, DateTimeKind.Utc),
+            EndDateTime = new DateTime(2025, 7, 12, 10, 0, 0, DateTimeKind.Utc),
+            StartAddress = "123 Main St"
+        });
+
+        var updated = await service.UpdateEventAsync(105, created.BitEventId, new BitEventRequest
+        {
+            BitResourceId = 1005,
+            StartDateTime = created.StartDateTime,
+            EndDateTime = created.EndDateTime,
+            StartAddress = "999 New Ave",
+            StartLatitude = created.StartLatitude,
+            StartLongitude = created.StartLongitude,
+            StartHexGridId = created.StartHexGridId
+        });
+
+        Assert.NotNull(updated);
+        Assert.Equal("999 New Ave, Edmonton, AB", updated.StartAddress);
+        Assert.Equal(53.71, updated.StartLatitude);
+        Assert.Equal(-113.71, updated.StartLongitude);
+        Assert.Equal(7201, updated.StartHexGridId);
+    }
+
     private BitScheduleDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<BitScheduleDbContext>()
@@ -249,8 +288,7 @@ public class BitEventServiceTests : IAsyncLifetime
         return new BitEventService(
             dbContext,
             new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter()),
-            geocodingService,
-            hexGridSearchService,
+            new AddressLocationService(geocodingService, hexGridSearchService),
             NullLogger<BitEventService>.Instance);
     }
 

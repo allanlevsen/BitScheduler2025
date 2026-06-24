@@ -41,7 +41,13 @@
 
       <div class="col-md-6">
         <label class="form-label" for="startDateTime">Start</label>
-        <input class="form-control" id="startDateTime" type="datetime-local" formControlName="startDateTime" />
+        <input
+          class="form-control"
+          id="startDateTime"
+          type="datetime-local"
+          formControlName="startDateTime"
+          (focus)="captureStartDateTimeSnapshot()"
+          (blur)="syncEndDateTimeFromStart()" />
       </div>
 
       <div class="col-md-6">
@@ -54,8 +60,16 @@
       </div>
 
       <div class="col-12">
-        <label class="form-label" for="startAddress">Start Address</label>
-        <input class="form-control" id="startAddress" type="text" formControlName="startAddress" />
+        <app-address-entry
+          id="startAddress"
+          label="Start Address"
+          placeholder="Start typing a pickup address"
+          formControlName="startAddress"
+          (selectedAddress)="resolveSelectedAddress('start', $event)"
+          (addressCommitted)="resolveSelectedAddress('start', $event)" />
+        @if (startLocationMessage(); as message) {
+          <small class="text-warning d-block mt-1">{{ message }}</small>
+        }
       </div>
 
       <div class="col-md-4">
@@ -78,8 +92,16 @@
       </div>
 
       <div class="col-12">
-        <label class="form-label" for="endAddress">End Address</label>
-        <input class="form-control" id="endAddress" type="text" formControlName="endAddress" />
+        <app-address-entry
+          id="endAddress"
+          label="End Address"
+          placeholder="Start typing a drop-off address"
+          formControlName="endAddress"
+          (selectedAddress)="resolveSelectedAddress('end', $event)"
+          (addressCommitted)="resolveSelectedAddress('end', $event)" />
+        @if (endLocationMessage(); as message) {
+          <small class="text-warning d-block mt-1">{{ message }}</small>
+        }
       </div>
 
       <div class="col-md-4">

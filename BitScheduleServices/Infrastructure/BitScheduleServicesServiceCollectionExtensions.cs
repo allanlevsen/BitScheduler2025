@@ -2,6 +2,7 @@ using BitScheduleServices.Features.Clients;
 using BitScheduleServices.Features.Configuration;
 using BitScheduleServices.Features.Events;
 using BitScheduleServices.Features.HexGrid;
+using BitScheduleServices.Features.Locations;
 using BitScheduleServices.Features.Resources;
 using BitScheduleServices.Features.ResourceTypes;
 using BitScheduleServices.Features.Schedule;
@@ -20,6 +21,11 @@ public static class BitScheduleServicesServiceCollectionExtensions
             configuration.GetSection(GoogleGeocodingOptions.SectionName));
         services.PostConfigure<GoogleGeocodingOptions>(options =>
         {
+            if (string.IsNullOrWhiteSpace(options.ApiKey))
+            {
+                options.ApiKey = configuration["GoogleMapping:ApiKey"] ?? string.Empty;
+            }
+
             if (string.IsNullOrWhiteSpace(options.Region))
             {
                 options.Region = configuration["GoogleMapping:Region"] ?? string.Empty;
@@ -36,6 +42,7 @@ public static class BitScheduleServicesServiceCollectionExtensions
         services.AddScoped<BitScheduleDataService>();
         services.AddHttpContextAccessor();
         services.AddHttpClient<IGeocodingService, GoogleGeocodingService>();
+        services.AddScoped<IAddressLocationService, AddressLocationService>();
         services.AddScoped<IBitClientService, BitClientService>();
         services.AddScoped<IBitEventService, BitEventService>();
         services.AddScoped<IBitResourceService, BitResourceService>();
@@ -48,6 +55,7 @@ public static class BitScheduleServicesServiceCollectionExtensions
         services.AddScoped<ResourceFeatureService>();
         services.AddScoped<ResourceTypeFeatureService>();
         services.AddScoped<HexGridFeatureService>();
+        services.AddScoped<LocationFeatureService>();
         services.AddScoped<ApiStartupInitializer>();
         services.AddSingleton<IHexCoordinateService>(_ => new HexCoordinateService(HexGridServiceAreas.EdmontonMetro));
         services.AddSingleton<HexGridTableBuilder>();

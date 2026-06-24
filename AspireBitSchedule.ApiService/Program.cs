@@ -2,6 +2,7 @@ using AspireBitSchedule.ApiService.Features.Clients;
 using AspireBitSchedule.ApiService.Features.Configuration;
 using AspireBitSchedule.ApiService.Features.Events;
 using AspireBitSchedule.ApiService.Features.HexGrid;
+using AspireBitSchedule.ApiService.Features.Locations;
 using AspireBitSchedule.ApiService.Features.Resources;
 using AspireBitSchedule.ApiService.Features.ResourceTypes;
 using AspireBitSchedule.ApiService.Features.Schedule;
@@ -69,6 +70,7 @@ app.MapEventEndpoints();
 app.MapResourceEndpoints();
 app.MapResourceTypeEndpoints();
 app.MapHexGridEndpoints();
+app.MapLocationEndpoints();
 app.MapDefaultEndpoints();
 
 app.Run();

@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, input, output } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { catchError, forkJoin, of } from 'rxjs';
 
 import { EventModel, EventRequest } from '../models/event.models';
 import { ResourceListItem } from '../../resources/models/resource.models';
+import { LocationDataService } from '../../../data-services/location-data.service';
+import { AddressEntryComponent } from '../../../shared/address-entry/address-entry.component';
 
 @Component({
   selector: 'app-event-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AddressEntryComponent],
   templateUrl: './event-form.component.html',
   styleUrls: ['./event-form.component.css']
 })
@@ -24,6 +27,11 @@ export class EventFormComponent {
   public readonly cancel = output<void>();
 
   private readonly formBuilder = new FormBuilder();
+  private readonly locationDataService = inject(LocationDataService);
+
+  protected readonly startLocationMessage = signal<string | null>(null);
+  protected readonly endLocationMessage = signal<string | null>(null);
+  protected startDateTimeSnapshot = '';
 
   protected readonly form = this.formBuilder.nonNullable.group({
     bitResourceId: [0, [Validators.required, Validators.min(1)]],
@@ -66,7 +74,9 @@ export class EventFormComponent {
           requiresReturnTransportation: false,
           reserveScheduleBits: true,
           updatedBy: 'system'
-        });
+        }, { emitEvent: false });
+        this.startLocationMessage.set(null);
+        this.endLocationMessage.set(null);
 
         return;
       }
@@ -88,7 +98,9 @@ export class EventFormComponent {
         requiresReturnTransportation: event.requiresReturnTransportation,
         reserveScheduleBits: event.scheduleBitsReserved,
         updatedBy: event.updatedBy || 'system'
-      });
+      }, { emitEvent: false });
+      this.startLocationMessage.set(null);
+      this.endLocationMessage.set(null);
     });
   }
 
@@ -118,6 +130,86 @@ export class EventFormComponent {
       updatedBy: normalizeOptionalText(value.updatedBy) ?? 'system'
     });
   }
+
+  protected captureStartDateTimeSnapshot(): void {
+    this.startDateTimeSnapshot = this.form.controls.startDateTime.getRawValue();
+  }
+
+  protected syncEndDateTimeFromStart(): void {
+    if (this.initialValue()) {
+      return;
+    }
+
+    const startDateTime = this.form.controls.startDateTime.getRawValue();
+    if (startDateTime === this.startDateTimeSnapshot || !isValidDateTimeLocalValue(startDateTime)) {
+      return;
+    }
+
+    this.form.patchValue({
+      endDateTime: addHoursToDateTimeLocalValue(startDateTime, 1)
+    });
+
+    this.startDateTimeSnapshot = startDateTime;
+  }
+
+  protected resolveSelectedAddress(kind: 'start' | 'end', address: string): void {
+    const normalizedAddress = address.trim();
+    if (!normalizedAddress) {
+      return;
+    }
+
+    this.setLocationMessage(kind, null);
+    this.patchResolvedLocation(kind, null);
+
+    forkJoin({
+      geocoded: this.locationDataService.geocodeAddress(normalizedAddress).pipe(catchError(() => of(null))),
+      hexGrid: this.locationDataService.resolveHexGrid(normalizedAddress).pipe(catchError(() => of(null)))
+    }).subscribe({
+      next: ({ geocoded, hexGrid }) => {
+        if (!geocoded && !hexGrid) {
+          this.setLocationMessage(kind, `Unable to resolve the ${kind} address to coordinates or a hex grid id.`);
+          return;
+        }
+
+        this.patchResolvedLocation(kind, {
+          latitude: geocoded?.latitude ?? hexGrid?.latitude ?? null,
+          longitude: geocoded?.longitude ?? hexGrid?.longitude ?? null,
+          hexGridId: hexGrid?.hexGridId ?? null
+        });
+
+        if (geocoded && !hexGrid) {
+          this.setLocationMessage(kind, `Coordinates were found for the ${kind} address, but the hex grid id could not be determined.`);
+        } else if (!geocoded && hexGrid) {
+          this.setLocationMessage(kind, `A hex grid id was found for the ${kind} address, but coordinates could not be resolved.`);
+        }
+      },
+      error: () => {
+        this.setLocationMessage(kind, `Unable to resolve the ${kind} address right now.`);
+      }
+    });
+  }
+
+  private setLocationMessage(kind: 'start' | 'end', message: string | null): void {
+    if (kind === 'start') {
+      this.startLocationMessage.set(message);
+      return;
+    }
+
+    this.endLocationMessage.set(message);
+  }
+
+  private patchResolvedLocation(
+    kind: 'start' | 'end',
+    location: { latitude: number | null; longitude: number | null; hexGridId?: number | null } | null
+  ): void {
+    const targetPrefix = kind === 'start' ? 'start' : 'end';
+
+    this.form.patchValue({
+      [`${targetPrefix}Latitude`]: location?.latitude ?? null,
+      [`${targetPrefix}Longitude`]: location?.longitude ?? null,
+      [`${targetPrefix}HexGridId`]: location?.hexGridId ?? null
+    }, { emitEvent: false });
+  }
 }
 
 function toDateTimeLocalValue(value: string): string {
@@ -131,22 +223,48 @@ function toIsoDateTime(value: string): string {
   return new Date(value).toISOString();
 }
 
-function parseOptionalNumber(value: string): number | null {
-  const normalized = normalizeOptionalText(value);
-  return normalized === null ? null : Number(normalized);
+function isValidDateTimeLocalValue(value: string): boolean {
+  return value.trim().length > 0 && !Number.isNaN(new Date(value).getTime());
 }
 
-function parseOptionalInteger(value: string): number | null {
-  const normalized = normalizeOptionalText(value);
-  return normalized === null ? null : Number.parseInt(normalized, 10);
+function addHoursToDateTimeLocalValue(value: string, hours: number): string {
+  const date = new Date(value);
+  date.setHours(date.getHours() + hours);
+  return toLocalDateTimeInputValue(date);
 }
 
-function normalizeOptionalText(value: string | null | undefined): string | null {
+function toLocalDateTimeInputValue(value: Date): string {
+  const timezoneOffset = value.getTimezoneOffset();
+  const localDate = new Date(value.getTime() - timezoneOffset * 60000);
+  return localDate.toISOString().slice(0, 16);
+}
+
+function parseOptionalNumber(value: string | number | null | undefined): number | null {
+  const normalized = normalizeOptionalText(value);
+  if (normalized === null) {
+    return null;
+  }
+
+  const parsed = Number(normalized);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+function parseOptionalInteger(value: string | number | null | undefined): number | null {
+  const normalized = normalizeOptionalText(value);
+  if (normalized === null) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(normalized, 10);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+function normalizeOptionalText(value: string | number | null | undefined): string | null {
   if (value === null || value === undefined) {
     return null;
   }
 
-  const trimmed = value.trim();
+  const trimmed = String(value).trim();
   return trimmed.length > 0 ? trimmed : null;
 }
 

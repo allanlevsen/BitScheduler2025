@@ -4,6 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 import { ClientContextService } from '../../../core/client-context/client-context.service';
+import { extractApiErrorMessage } from '../../../core/http/extract-api-error-message';
+import { ToastService } from '../../../core/toast/toast.service';
 import { EventDataService } from '../../../data-services/event-data.service';
 import { ResourceDataService } from '../../../data-services/resource-data.service';
 import { EventFormComponent } from '../components/event-form.component';
@@ -30,6 +32,7 @@ export class EventCreatePageComponent {
   private readonly clientContext = inject(ClientContextService);
   private readonly eventDataService = inject(EventDataService);
   private readonly resourceDataService = inject(ResourceDataService);
+  private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
 
   protected readonly resources = signal<ResourceListItem[]>([]);
@@ -48,9 +51,14 @@ export class EventCreatePageComponent {
     this.errorMessage.set(null);
 
     this.eventDataService.createEvent(request).subscribe({
-      next: () => void this.router.navigate(['/events']),
-      error: (error: { error?: string }) => {
-        this.errorMessage.set(error.error ?? 'Unable to create the event.');
+      next: () => {
+        this.toastService.success('The event was created successfully.', 'Event saved');
+        void this.router.navigate(['/events']);
+      },
+      error: (error: unknown) => {
+        const message = extractApiErrorMessage(error, 'Unable to create the event.');
+        this.errorMessage.set(message);
+        this.toastService.error(message, 'Unable to create event');
         this.saving.set(false);
       }
     });
@@ -65,7 +73,11 @@ export class EventCreatePageComponent {
 
     this.resourceDataService.listResources().subscribe({
       next: (resources) => this.resources.set(resources),
-      error: () => this.errorMessage.set('Unable to load resources.')
+      error: () => {
+        const message = 'Unable to load resources.';
+        this.errorMessage.set(message);
+        this.toastService.error(message, 'Load failed');
+      }
     });
   }
 }

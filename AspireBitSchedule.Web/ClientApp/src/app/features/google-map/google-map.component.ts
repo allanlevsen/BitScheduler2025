@@ -65,7 +65,7 @@ export class GoogleMapComponent implements OnChanges, AfterViewInit {
     this.map.setOptions(mapOptions);
 
     const markerLibrary = configuration.libraries.includes('marker')
-      ? await google.maps.importLibrary('marker') as google.maps.MarkerLibrary
+      ? await this.getMarkerLibrary()
       : null;
 
     if (markerLibrary?.AdvancedMarkerElement) {
@@ -109,5 +109,15 @@ export class GoogleMapComponent implements OnChanges, AfterViewInit {
     } finally {
       this.initializationInProgress = false;
     }
+  }
+
+  private async getMarkerLibrary(): Promise<google.maps.MarkerLibrary | null> {
+    if (typeof google.maps.importLibrary === 'function') {
+      return await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
+    }
+
+    return google.maps.marker
+      ? google.maps.marker as google.maps.MarkerLibrary
+      : null;
   }
 }

@@ -1,0 +1,18 @@
+@if (toastService.toasts().length > 0) {
+  <div class="toast-host" aria-live="polite" aria-atomic="true">
+    @for (toast of toastService.toasts(); track trackToast($index, toast)) {
+      <section class="toast-card" [class.toast-success]="toast.variant === 'success'" [class.toast-error]="toast.variant === 'error'" [class.toast-info]="toast.variant === 'info'" [class.toast-warning]="toast.variant === 'warning'">
+        <div class="toast-copy">
+          @if (toast.title) {
+            <p class="toast-title">{{ toast.title }}</p>
+          }
+          <p class="toast-message">{{ toast.message }}</p>
+        </div>
+
+        <button class="toast-close" type="button" (click)="dismiss(toast.id)" aria-label="Dismiss notification">
+          x
+        </button>
+      </section>
+    }
+  </div>
+}

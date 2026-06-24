@@ -4,6 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ClientContextService } from '../../../core/client-context/client-context.service';
+import { extractApiErrorMessage } from '../../../core/http/extract-api-error-message';
+import { ToastService } from '../../../core/toast/toast.service';
 import { EventDataService } from '../../../data-services/event-data.service';
 import { EventModel } from '../models/event.models';
 
@@ -17,6 +19,7 @@ import { EventModel } from '../models/event.models';
 export class EventDeletePageComponent {
   private readonly clientContext = inject(ClientContextService);
   private readonly eventDataService = inject(EventDataService);
+  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -39,9 +42,14 @@ export class EventDeletePageComponent {
     this.errorMessage.set(null);
 
     this.eventDataService.deleteEvent(this.bitEventId).subscribe({
-      next: () => void this.router.navigate(['/events']),
-      error: (error: { error?: string }) => {
-        this.errorMessage.set(error.error ?? 'Unable to delete the event.');
+      next: () => {
+        this.toastService.success('The event was removed successfully.', 'Event deleted');
+        void this.router.navigate(['/events']);
+      },
+      error: (error: unknown) => {
+        const message = extractApiErrorMessage(error, 'Unable to delete the event.');
+        this.errorMessage.set(message);
+        this.toastService.error(message, 'Unable to delete event');
         this.deleting.set(false);
       }
     });
@@ -57,7 +65,9 @@ export class EventDeletePageComponent {
         this.loading.set(false);
       },
       error: () => {
-        this.errorMessage.set('Unable to load the event.');
+        const message = 'Unable to load the event.';
+        this.errorMessage.set(message);
+        this.toastService.error(message, 'Load failed');
         this.loading.set(false);
       }
     });

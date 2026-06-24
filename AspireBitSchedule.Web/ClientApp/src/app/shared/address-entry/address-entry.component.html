@@ -1,0 +1,40 @@
+<div class="address-entry">
+  <label class="form-label" [attr.for]="id()">{{ label() }}</label>
+  <input
+    class="form-control"
+    [id]="id()"
+    type="text"
+    [placeholder]="placeholder()"
+    [formControl]="addressControl"
+    autocomplete="off"
+    autocapitalize="none"
+    spellcheck="false"
+    (focus)="focus()"
+    (blur)="markTouched()" />
+
+  @if (helpText(); as helpTextValue) {
+    <small class="text-muted d-block mt-1">{{ helpTextValue }}</small>
+  }
+
+  @if (statusMessage(); as message) {
+    <small class="text-warning d-block mt-1">{{ message }}</small>
+  }
+
+  @if (isLoading()) {
+    <small class="text-muted d-block mt-1">Searching address suggestions...</small>
+  }
+
+  @if (dropdownOpen() && suggestions().length > 0) {
+    <div class="address-entry__menu">
+      @for (suggestion of suggestions(); track suggestion.id) {
+        <button
+          type="button"
+          class="address-entry__item"
+          (mousedown)="$event.preventDefault(); selectSuggestion(suggestion)">
+          <span class="address-entry__primary">{{ suggestion.primaryText }}</span>
+          <span class="address-entry__secondary">{{ suggestion.secondaryText }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

@@ -2,6 +2,7 @@ using BitSchedulerCore;
 using BitSchedulerCore.Data.BitTimeScheduler.Data;
 using BitSchedulerCore.Models;
 using BitSchedulerCore.Services;
+using BitScheduleServices.Features.Locations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -334,8 +335,7 @@ public class TenantIsolationTests : IAsyncLifetime
         return new BitEventService(
             dbContext,
             new BitScheduleDataService(dbContext, new BitResourceScheduleRangePayloadConverter()),
-            new StubGeocodingService(),
-            new StubHexGridSearchService(),
+            new AddressLocationService(new StubGeocodingService(), new StubHexGridSearchService()),
             NullLogger<BitEventService>.Instance);
     }
 

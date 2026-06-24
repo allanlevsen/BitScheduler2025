@@ -8,8 +8,7 @@ namespace BitSchedulerCore.Services;
 public sealed class BitEventService(
     BitScheduleDbContext dbContext,
     BitScheduleDataService dataService,
-    IGeocodingService geocodingService,
-    IHexGridSearchService hexGridSearchService,
+    IAddressLocationService addressLocationService,
     ILogger<BitEventService> logger) : IBitEventService
 {
     public async Task<BitEvent> CreateEventAsync(int clientId, BitEventRequest request, CancellationToken cancellationToken = default)
@@ -359,16 +358,6 @@ public sealed class BitEventService(
             bitEvent.ScheduleBitsReserved);
     }
 
-    private int? ResolveHexGridId(double? latitude, double? longitude)
-    {
-        if (!latitude.HasValue || !longitude.HasValue)
-        {
-            return null;
-        }
-
-        return hexGridSearchService.GetGridId(latitude.Value, longitude.Value);
-    }
-
     private async Task<ResolvedEventLocation> ResolveLocationAsync(
         string? address,
         double? latitude,
@@ -381,18 +370,21 @@ public sealed class BitEventService(
         var resolvedLongitude = longitude;
         var resolvedAddress = normalizedAddress;
 
-        if ((!resolvedLatitude.HasValue || !resolvedLongitude.HasValue) && normalizedAddress is not null)
+        if (normalizedAddress is not null)
         {
-            var geocodingResult = await geocodingService.GeocodeAsync(normalizedAddress, cancellationToken);
-            if (geocodingResult is not null)
+            var resolvedAddressLocation = await addressLocationService.ResolveAddressAsync(normalizedAddress, cancellationToken);
+            if (resolvedAddressLocation is not null)
             {
-                resolvedLatitude = geocodingResult.Latitude;
-                resolvedLongitude = geocodingResult.Longitude;
-                resolvedAddress = Normalize(geocodingResult.FormattedAddress) ?? normalizedAddress;
+                resolvedLatitude = resolvedAddressLocation.Latitude;
+                resolvedLongitude = resolvedAddressLocation.Longitude;
+                resolvedAddress = Normalize(resolvedAddressLocation.Address) ?? normalizedAddress;
+                existingHexGridId = resolvedAddressLocation.HexGridId ?? existingHexGridId;
             }
         }
 
-        var resolvedHexGridId = ResolveHexGridId(resolvedLatitude, resolvedLongitude) ?? existingHexGridId;
+        var resolvedHexGridId = resolvedLatitude.HasValue && resolvedLongitude.HasValue
+            ? addressLocationService.ResolveHexGridId(resolvedLatitude.Value, resolvedLongitude.Value) ?? existingHexGridId
+            : existingHexGridId;
 
         return new ResolvedEventLocation(
             resolvedAddress,
